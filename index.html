@@ -77,6 +77,19 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 
 const ORKA_ACCOUNT_KEY='orka_loyalty_demo_v1';
 let currentCustomerPhone='';
+window.addEventListener('orka-firebase-auth-state',event=>{
+ const user=event.detail&&event.detail.user;
+ if(user&&user.phoneNumber){
+  currentCustomerPhone=user.phoneNumber;
+  const accounts=readOrkaAccounts();
+  if(!accounts[currentCustomerPhone])accounts[currentCustomerPhone]={name:'عميل ORKA',phone:currentCustomerPhone,points:0,pending:0,orders:[]};
+  saveOrkaAccounts(accounts);
+  const modal=document.getElementById('accountModal');
+  if(modal&&modal.classList.contains('show'))renderAccount();
+ }else{
+  currentCustomerPhone='';
+ }
+});
 function readOrkaAccounts(){try{return JSON.parse(localStorage.getItem(ORKA_ACCOUNT_KEY)||'{}')}catch(e){return {}}}
 function saveOrkaAccounts(accounts){try{localStorage.setItem(ORKA_ACCOUNT_KEY,JSON.stringify(accounts))}catch(e){toast('تعذر حفظ بيانات الحساب على هذا الجهاز')}}
 function currentCustomer(){if(!currentCustomerPhone)return null;return readOrkaAccounts()[currentCustomerPhone]||null}
