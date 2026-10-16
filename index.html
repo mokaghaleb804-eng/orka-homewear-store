@@ -82,10 +82,11 @@ function saveOrkaAccounts(accounts){try{localStorage.setItem(ORKA_ACCOUNT_KEY,JS
 function currentCustomer(){if(!currentCustomerPhone)return null;return readOrkaAccounts()[currentCustomerPhone]||null}
 function openAccount(){renderAccount();document.getElementById('accountModal').classList.add('show');document.body.style.overflow='hidden'}
 function closeAccount(){document.getElementById('accountModal').classList.remove('show');document.body.style.overflow=''}
-function renderAccount(){const host=document.getElementById('accountContent');const c=currentCustomer();if(!c){host.innerHTML=`<div class="eyebrow">ORKA CLUB</div><h3>حسابك ونقاطك ♡</h3><p>سجّلي برقم موبايلك لمتابعة رصيد نقاط ORKA والاستفادة من مكافآت الشراء.</p><form class="account-form" onsubmit="registerOrLogin(event)"><label>الاسم بالكامل<input name="name" required maxlength="80" placeholder="اسم العميل"></label><label>رقم الموبايل<input name="phone" required inputmode="tel" pattern="[0-9+() -]{8,20}" placeholder="01xxxxxxxxx"></label><button class="btn btn-gold" type="submit">تسجيل / دخول</button></form><p class="account-warning">نسخة تجريبية: الحساب محفوظ على نفس المتصفح فقط، وليس قاعدة بيانات مشتركة. لا تستخدمي بيانات حساسة.</p>`;return}host.innerHTML=`<div class="eyebrow">ORKA CLUB</div><h3>أهلًا يا ${escapeAccountText(c.name)} ♡</h3><p>رقم العضوية: ${escapeAccountText(c.phone)}</p><div class="points-card"><small>رصيد النقاط المعتمدة</small><div class="points-number">${Number(c.points||0)} <span style="font-size:15px">نقطة</span></div><small>كل 100 نقطة = خصم تجريبي 10 جنيهات بعد اعتماد سياسة المكافآت.</small></div><div class="points-grid"><div class="points-stat"><strong>${Number(c.pending||0)}</strong><small>نقاط معلقة لمراجعة الطلبات</small></div><div class="points-stat"><strong>${Math.floor(Number(c.points||0)/100)*10} ج.م</strong><small>قيمة الخصم التقديرية من النقاط المعتمدة</small></div></div><p>طريقة احتساب تجريبية: نقطة واحدة لكل 10 جنيهات من قيمة المنتجات، بعد تأكيد الشراء من ORKA.</p><button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="logoutOrka()">تسجيل الخروج</button><p class="account-warning">رصيد هذه النسخة محفوظ محليًا على هذا الجهاز فقط. النقاط المعلقة لا تُعد نقاطًا مستحقة، ولا يمكن التحقق من المشتريات أو مزامنة الرصيد بين الأجهزة دون نظام خلفي.</p>`;document.getElementById('accountBtn').textContent='♙ حسابي';}
+function renderAccount(){const host=document.getElementById('accountContent');const c=currentCustomer();if(!c){host.innerHTML=`<div class="eyebrow">ORKA CLUB</div><h3>حسابك ونقاطك ♡</h3><p>سجّلي برقم موبايلك، وهنبعتلك كود تحقق لتأكيد ملكية الرقم.</p><form class="account-form" onsubmit="registerOrLogin(event)"><label>الاسم بالكامل<input name="name" required maxlength="80" placeholder="اسم العميل" autocomplete="name"></label><label>رقم الموبايل المصري<input name="phone" required inputmode="tel" type="tel" pattern="[0-9+() -]{8,20}" placeholder="01xxxxxxxxx" autocomplete="tel"></label><div id="recaptcha-container" style="margin:12px 0"></div><button class="btn btn-gold" type="submit">إرسال كود التحقق</button></form><p class="account-warning">هنستخدم Firebase لتأكيد رقم الموبايل. قد تُرسل رسالة SMS حقيقية وتُحتسب ضمن حد المشروع اليومي؛ استخدمي رقم اختبار أولًا أثناء التجربة. رصيد النقاط في النسخة الحالية ما زال محفوظًا على هذا الجهاز فقط.</p>`;return}host.innerHTML=`<div class="eyebrow">ORKA CLUB</div><h3>أهلًا يا ${escapeAccountText(c.name)} ♡</h3><p>رقم العضوية الموثّق: ${escapeAccountText(c.phone)}</p><div class="points-card"><small>رصيد النقاط المعتمدة</small><div class="points-number">${Number(c.points||0)} <span style="font-size:15px">نقطة</span></div><small>كل 100 نقطة = خصم تجريبي 10 جنيهات بعد اعتماد سياسة المكافآت.</small></div><div class="points-grid"><div class="points-stat"><strong>${Number(c.pending||0)}</strong><small>نقاط معلقة لمراجعة الطلبات</small></div><div class="points-stat"><strong>${Math.floor(Number(c.points||0)/100)*10} ج.م</strong><small>قيمة الخصم التقديرية من النقاط المعتمدة</small></div></div><p>طريقة احتساب تجريبية: نقطة واحدة لكل 10 جنيهات من قيمة المنتجات، بعد تأكيد الشراء من ORKA.</p><button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="logoutOrka()">تسجيل الخروج</button><p class="account-warning">تم تأكيد رقم الموبايل عبر Firebase. تنبيه: بيانات النقاط والطلبات ما زالت محلية على هذا الجهاز وليست قاعدة بيانات مشتركة آمنة بعد.</p>`;const btn=document.getElementById('accountBtn');if(btn)btn.textContent='♙ حسابي';}
 function escapeAccountText(v){return String(v||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
-function registerOrLogin(e){e.preventDefault();const fd=new FormData(e.target);const name=String(fd.get('name')||'').trim();const phone=String(fd.get('phone')||'').replace(/[^0-9+]/g,'');if(!name||phone.length<8){toast('راجعي الاسم ورقم الموبايل');return}const accounts=readOrkaAccounts();if(accounts[phone]){accounts[phone].name=name||accounts[phone].name;toast('أهلًا بعودتك إلى ORKA CLUB')}else{accounts[phone]={name,phone,points:0,pending:0,orders:[]};toast('تم إنشاء حساب تجريبي بنجاح')}saveOrkaAccounts(accounts);currentCustomerPhone=phone;renderAccount()}
-function logoutOrka(){currentCustomerPhone='';renderAccount();toast('تم تسجيل الخروج')}
+async function registerOrLogin(e){e.preventDefault();const fd=new FormData(e.target);const name=String(fd.get('name')||'').trim();const rawPhone=String(fd.get('phone')||'').trim();if(!name||rawPhone.replace(/\\D/g,'').length<10){toast('راجعي الاسم ورقم الموبايل المصري');return}if(!window.startOrkaOtp){toast('خدمة التحقق لسه بتجهز، استني ثواني وجربي تاني');return}window.orkaPendingName=name;try{await window.startOrkaOtp(rawPhone);document.getElementById('accountContent').innerHTML=`<div class="eyebrow">ORKA CLUB</div><h3>تأكيد رقم الموبايل</h3><p>أدخل كود التحقق المكوّن من 6 أرقام الذي وصلك برسالة SMS.</p><form class="account-form" onsubmit="verifyOrkaOtp(event)"><label>كود التحقق<input name="otp" required inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="123456"></label><button class="btn btn-gold" type="submit">تأكيد الكود والدخول</button></form><button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="renderAccount()">رجوع</button><p class="account-warning">لو بتختبر النظام، استخدم رقمًا وكودًا تجريبيين أضفتهما في Firebase بدل إرسال SMS حقيقية.</p>`;toast('تم طلب كود التحقق. راجعي الرسالة أو استخدمي رقم الاختبار.')}catch(err){console.error(err);toast(window.orkaFirebaseErrorMessage?window.orkaFirebaseErrorMessage(err):'تعذر إرسال الكود. راجعي إعدادات Firebase وحاولي مرة أخرى.')}} 
+async function verifyOrkaOtp(e){e.preventDefault();const fd=new FormData(e.target);const code=String(fd.get('otp')||'').trim();if(!/^[0-9]{6}$/.test(code)){toast('اكتبي كود التحقق المكوّن من 6 أرقام');return}try{const user=await window.confirmOrkaOtp(code);const phone=user.phoneNumber||'';if(!phone){toast('لم نستطع تأكيد رقم الموبايل');return}const accounts=readOrkaAccounts();if(!accounts[phone])accounts[phone]={name:window.orkaPendingName||'عميل ORKA',phone,points:0,pending:0,orders:[]};else if(window.orkaPendingName)accounts[phone].name=window.orkaPendingName;saveOrkaAccounts(accounts);currentCustomerPhone=phone;renderAccount();toast('تم تأكيد رقم الموبايل بنجاح');}catch(err){console.error(err);toast(window.orkaFirebaseErrorMessage?window.orkaFirebaseErrorMessage(err):'الكود غير صحيح أو انتهت صلاحيته. حاولي مرة أخرى.')}} 
+function logoutOrka(){if(window.signOutOrkaFirebase)window.signOutOrkaFirebase();currentCustomerPhone='';renderAccount();toast('تم تسجيل الخروج')}
 
 const products=[
 {id:1,name:'طقم شتوي دافي — كحلي',category:'boys',desc:'قطعتان · تصميم يومي مريح',price:420,old:480,tag:'الأكثر طلبًا',img:'https://one2twelve.com/cdn/shop/files/268017---258055.png?v=1785133627&width=1024',sizes:['2-3 سنوات','4-5 سنوات','6-7 سنوات','8-9 سنوات']},
@@ -145,4 +146,61 @@ function changeQty(id,size,color,delta){const item=cart.find(x=>x.id===id&&x.siz
 تنبيه: لا تُعتمد النقاط إلا بعد تأكيد الطلب من الإدارة.`;}}const waUrl='https://wa.me/201021006006?text='+encodeURIComponent(lines+pointsNote);window.open(waUrl,'_blank','noopener,noreferrer');toast(member?'تم تجهيز الطلب؛ نقاطك المبدئية معلقة لحين تأكيد الشراء.':'فتحنا واتساب لإرسال تفاصيل الطلب؛ أكّد الإرسال من داخل واتساب.');}
 let heroIndex=0;const heroSlides=[...document.querySelectorAll('.hero-slideshow img')];const heroDots=[...document.querySelectorAll('.hero-dot')];const heroCaptions=['دفا وراحة طول الشتاء','ألوان شتوية لكل شخصية','اختيارات مريحة لأيام البيت'];function setHero(i){heroIndex=(i+heroSlides.length)%heroSlides.length;heroSlides.forEach((im,j)=>im.classList.toggle('active',j===heroIndex));heroDots.forEach((dot,j)=>dot.classList.toggle('active',j===heroIndex));document.getElementById('heroCaption').textContent=heroCaptions[heroIndex]}function changeHero(dir){setHero(heroIndex+dir)}let heroTimer=setInterval(()=>setHero(heroIndex+1),6000);const heroBox=document.querySelector('.hero-slideshow');heroBox.addEventListener('mouseenter',()=>clearInterval(heroTimer));heroBox.addEventListener('mouseleave',()=>{clearInterval(heroTimer);heroTimer=setInterval(()=>setHero(heroIndex+1),6000)});let toastTimer;function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3500)}renderProducts();updateCart();
 </script>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+const firebaseConfig = {
+  apiKey: "AIzaSyB3O_4JMgRni_EUWCaQzQ9dVuK4dRjJwtQ",
+  authDomain: "orka-homewear-e63db.firebaseapp.com",
+  projectId: "orka-homewear-e63db",
+  storageBucket: "orka-homewear-e63db.firebasestorage.app",
+  messagingSenderId: "437918635024",
+  appId: "1:437918635024:web:24df6283d6067e258fe695"
+};
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+let recaptchaVerifier = null;
+let confirmationResult = null;
+function normalizeEgyptPhone(input){
+  let digits=String(input||'').replace(/[^0-9]/g,'');
+  if(digits.startsWith('00')) digits=digits.slice(2);
+  if(digits.startsWith('0')) digits='20'+digits.slice(1);
+  else if(!digits.startsWith('20')) digits='20'+digits;
+  if(!/^201[0125][0-9]{8}$/.test(digits)) throw new Error('اكتبي رقم موبايل مصري صحيح يبدأ بـ 010 أو 011 أو 012 أو 015.');
+  return '+'+digits;
+}
+window.orkaFirebaseErrorMessage=(err)=>{
+ const code=String(err?.code||'');
+ if(code.includes('invalid-phone-number')) return 'رقم الموبايل غير صحيح. اكتبيه بصيغة مصرية مثل 010xxxxxxxx.';
+ if(code.includes('too-many-requests')) return 'تم طلب أكواد كثيرة. انتظري قليلًا قبل المحاولة مرة أخرى.';
+ if(code.includes('quota-exceeded')) return 'وصل المشروع للحد اليومي لرسائل SMS. لا تفعّلي الفوترة قبل مراجعة التكلفة.';
+ if(code.includes('captcha-check-failed')||code.includes('missing-recaptcha-token')) return 'اختبار الأمان لم يكتمل. حدّثي الصفحة وحاولي مرة أخرى.';
+ if(code.includes('unauthorized-domain')) return 'نطاق الموقع غير مسموح به في Firebase Authorized domains.';
+ if(code.includes('operation-not-allowed')) return 'تأكدي أن Phone مفعّل في Firebase Authentication.';
+ if(code.includes('invalid-verification-code')) return 'كود التحقق غير صحيح. راجعي الكود وحاولي مرة أخرى.';
+ return 'تعذر إكمال التحقق ('+(code||'خطأ غير معروف')+'). راجعي إعدادات Firebase ثم حاولي مرة أخرى.';
+};
+window.startOrkaOtp=async(input)=>{
+ const phoneNumber=normalizeEgyptPhone(input);
+ if(recaptchaVerifier){try{recaptchaVerifier.clear()}catch(e){}recaptchaVerifier=null;}
+ const container=document.getElementById('recaptcha-container');
+ if(!container) throw new Error('recaptcha-container غير موجود');
+ container.innerHTML='';
+ recaptchaVerifier=new RecaptchaVerifier(auth,'recaptcha-container',{size:'normal',callback:()=>{},'expired-callback':()=>{window.toast?.('انتهى اختبار الأمان؛ حدّثي الصفحة وحاولي مرة أخرى.')}});
+ await recaptchaVerifier.render();
+ confirmationResult=await signInWithPhoneNumber(auth,phoneNumber,recaptchaVerifier);
+ return true;
+};
+window.confirmOrkaOtp=async(code)=>{
+ if(!confirmationResult) throw new Error('لم يتم طلب كود تحقق بعد');
+ const result=await confirmationResult.confirm(String(code).trim());
+ return result.user;
+};
+window.signOutOrkaFirebase=async()=>{try{await signOut(auth)}catch(e){console.error(e)}};
+onAuthStateChanged(auth,user=>{
+ window.dispatchEvent(new CustomEvent('orka-firebase-auth-state',{detail:{user:user?{phoneNumber:user.phoneNumber,uid:user.uid}:null}}));
+});
+</script>
+
 </body></html>
