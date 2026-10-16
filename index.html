@@ -73,14 +73,19 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 <a class="wa-float" href="https://wa.me/201021006006?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20ORKA%20HOMEWEAR%D8%8C%20%D8%B9%D8%A7%D9%8A%D8%B2%20%D8%A3%D8%B3%D8%AA%D9%81%D8%B3%D8%B1%20%D8%B9%D9%86%20%D8%A7%D9%84%D9%85%D9%86%D8%AA%D8%AC%D8%A7%D8%AA" target="_blank" rel="noopener" aria-label="تواصل مع ORKA عبر واتساب">☏ واتساب ORKA</a><div class="image-zoom" id="imageZoom" onclick="if(event.target===this)closeImageZoom()" aria-label="عارض تكبير صورة المنتج"><button class="zoom-close" onclick="closeImageZoom()" aria-label="إغلاق التكبير">×</button><div class="zoom-toolbar"><button onclick="changeZoom(-0.5)" aria-label="تصغير الصورة">−</button><span class="zoom-level" id="zoomLevel">100%</span><button onclick="changeZoom(0.5)" aria-label="تكبير الصورة">+</button><button onclick="resetZoom()" aria-label="إعادة ضبط الصورة" style="font-size:15px;border-radius:22px;width:auto;padding:0 13px">إعادة ضبط</button></div><div class="zoom-stage" id="zoomStage"><img class="zoom-image" id="zoomImage" src="" alt="صورة المنتج مكبرة"></div><div class="zoom-help">استخدمي + و− أو عجلة الماوس للتكبير، واسحبي الصورة لرؤية التفاصيل</div></div><div class="overlay" id="cartOverlay" onclick="if(event.target===this)closeCart()"><aside class="drawer"><div class="drawer-head"><h3>سلة مشترياتك</h3><button class="close" onclick="closeCart()">×</button></div><div id="cartItems"></div><div id="cartSummary"></div><div id="checkoutArea"></div></aside></div><div class="toast" id="toast"></div>
 <div class="product-modal" id="productModal" onclick="if(event.target===this)closeProductDetails()"><div class="product-modal-card"><button class="modal-close" onclick="closeProductDetails()" aria-label="إغلاق">×</button><div class="detail-image-wrap"><img class="product-modal-image" id="detailImage" src="" alt="تفاصيل المنتج" onclick="openImageZoom()" title="اضغطي لتكبير الصورة"><span class="detail-brand-mark" aria-label="علامة ORKA"><img src="" alt="لوجو ORKA"></span><p class="zoom-hint">اضغطي على الصورة لمشاهدة التفاصيل مكبّرة 🔍</p></div><div class="product-modal-info"><div class="eyebrow">ORKA WINTER EDIT</div><h3 id="detailName">اسم المنتج</h3><p id="detailDesc"></p><div class="product-modal-price" id="detailPrice"></div><label>اختاري اللون</label><div class="color-options" id="detailColors"></div><label for="detailSize">اختاري المقاس</label><select id="detailSize"><option value="">اختاري المقاس</option></select><button class="btn btn-gold" id="detailAdd" type="button" disabled aria-disabled="true">البيع هيفتح قريبًا</button><div class="detail-note">دي صورة إلهام مبدئية وليست منتجًا معروضًا للبيع. تفاصيل المنتج والمقاسات والألوان والسعر هتتحدد بعد اعتماد عينات ORKA.</div><a class="wa-contact" href="https://wa.me/201021006006?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20ORKA%D8%8C%20%D9%85%D8%AD%D8%AA%D8%A7%D8%AC%20%D8%A3%D8%B3%D8%AA%D9%81%D8%B3%D8%B1%20%D8%B9%D9%86%20%D9%85%D9%86%D8%AA%D8%AC" target="_blank" rel="noopener">اسألي عن المنتج على واتساب</a></div></div></div>
 <div class="account-modal" id="accountModal" onclick="if(event.target===this)closeAccount()"><div class="account-card"><button class="modal-close" onclick="closeAccount()" aria-label="إغلاق">×</button><div id="accountContent"></div></div></div>
+<div class="account-modal" id="orkaAdminModal" onclick="if(event.target===this)window.closeOrkaAdminPanel()"><div class="account-card" style="width:min(900px,100%);max-height:92vh"><button class="modal-close" onclick="window.closeOrkaAdminPanel()" aria-label="إغلاق">×</button><div class="eyebrow">ORKA ADMIN</div><h3>إدارة الطلبات</h3><p>اعتمدي التسليم بعد استلام العميل للطلب. تُضاف نقطة لكل 50 جنيهًا من قيمة المنتجات، مرة واحدة فقط.</p><div id="orkaAdminOrders"><p>جاري تحميل الطلبات...</p></div></div></div>
 <script>
 
 const ORKA_ACCOUNT_KEY='orka_loyalty_demo_v1';
 let currentCustomerPhone='';
+let currentCustomerUid='';
 window.addEventListener('orka-firebase-auth-state',event=>{
  const user=event.detail&&event.detail.user;
  if(user&&user.phoneNumber){
   currentCustomerPhone=user.phoneNumber;
+  currentCustomerUid=user.uid||'';
+  window.orkaCurrentUid=currentCustomerUid;
+  if(window.checkOrkaAdminAccess)window.checkOrkaAdminAccess(currentCustomerUid);
   const accounts=readOrkaAccounts();
   if(!accounts[currentCustomerPhone])accounts[currentCustomerPhone]={name:'عميل ORKA',phone:currentCustomerPhone,points:0,pending:0,orders:[]};
   saveOrkaAccounts(accounts);
@@ -88,14 +93,17 @@ window.addEventListener('orka-firebase-auth-state',event=>{
   if(modal&&modal.classList.contains('show'))renderAccount();
  }else{
   currentCustomerPhone='';
+  currentCustomerUid='';
+  window.orkaCurrentUid='';
+  window.orkaIsAdmin=false;
  }
 });
 function readOrkaAccounts(){try{return JSON.parse(localStorage.getItem(ORKA_ACCOUNT_KEY)||'{}')}catch(e){return {}}}
 function saveOrkaAccounts(accounts){try{localStorage.setItem(ORKA_ACCOUNT_KEY,JSON.stringify(accounts))}catch(e){toast('تعذر حفظ بيانات الحساب على هذا الجهاز')}}
 function currentCustomer(){if(!currentCustomerPhone)return null;return readOrkaAccounts()[currentCustomerPhone]||null}
-function openAccount(){renderAccount();document.getElementById('accountModal').classList.add('show');document.body.style.overflow='hidden'}
+function openAccount(){renderAccount();if(currentCustomerUid&&window.loadOrkaCustomerPoints)window.loadOrkaCustomerPoints(currentCustomerUid);document.getElementById('accountModal').classList.add('show');document.body.style.overflow='hidden'}
 function closeAccount(){document.getElementById('accountModal').classList.remove('show');document.body.style.overflow=''}
-function renderAccount(){const host=document.getElementById('accountContent');const c=currentCustomer();if(!c){host.innerHTML=`<div class="eyebrow">ORKA CLUB</div><h3>حسابك ونقاطك ♡</h3><p>سجّلي برقم موبايلك، وهنبعتلك كود تحقق لتأكيد ملكية الرقم.</p><form class="account-form" onsubmit="registerOrLogin(event)"><label>الاسم بالكامل<input name="name" required maxlength="80" placeholder="اسم العميل" autocomplete="name"></label><label>رقم الموبايل المصري<input name="phone" required inputmode="tel" type="tel" pattern="[0-9+() -]{8,20}" placeholder="01xxxxxxxxx" autocomplete="tel"></label><div id="recaptcha-container" style="margin:12px 0"></div><button class="btn btn-gold" type="submit">إرسال كود التحقق</button></form><p class="account-warning">هنستخدم Firebase لتأكيد رقم الموبايل. قد تُرسل رسالة SMS حقيقية وتُحتسب ضمن حد المشروع اليومي؛ استخدمي رقم اختبار أولًا أثناء التجربة. رصيد النقاط في النسخة الحالية ما زال محفوظًا على هذا الجهاز فقط.</p>`;if(window.initOrkaRecaptcha){setTimeout(()=>window.initOrkaRecaptcha().catch(err=>console.error('ORKA reCAPTCHA init:',err)),0)}return}host.innerHTML=`<div class="eyebrow">ORKA CLUB</div><h3>أهلًا يا ${escapeAccountText(c.name)} ♡</h3><p>رقم العضوية الموثّق: ${escapeAccountText(c.phone)}</p><div class="points-card"><small>رصيد النقاط المعتمدة</small><div class="points-number">0 <span style="font-size:15px">نقطة</span></div><small>رصيدك يبدأ من صفر، ولا يُضاف أي رصيد إلا بعد استلام الطلب وتأكيده من ORKA.</small></div><div class="points-grid"><div class="points-stat"><strong>0</strong><small>نقاط معلقة</small></div><div class="points-stat"><strong>50 ج.م</strong><small>قيمة المشتريات المقابلة لنقطة واحدة</small></div></div><p>سياسة ORKA CLUB: نقطة واحدة لكل 50 جنيهًا من قيمة المنتجات، وتُضاف بعد استلام الطلب فقط. لا يمكن تعديل رصيد النقاط من حساب العميل.</p><button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="logoutOrka()">تسجيل الخروج</button><p class="account-warning">تم تأكيد رقم الموبايل عبر Firebase. تنبيه: بيانات النقاط والطلبات ما زالت محلية على هذا الجهاز وليست قاعدة بيانات مشتركة آمنة بعد.</p>`;const btn=document.getElementById('accountBtn');if(btn)btn.textContent='♙ حسابي';}
+function renderAccount(){const host=document.getElementById('accountContent');const c=currentCustomer();if(!c){host.innerHTML=`<div class="eyebrow">ORKA CLUB</div><h3>حسابك ونقاطك ♡</h3><p>سجّلي برقم موبايلك، وهنبعتلك كود تحقق لتأكيد ملكية الرقم.</p><form class="account-form" onsubmit="registerOrLogin(event)"><label>الاسم بالكامل<input name="name" required maxlength="80" placeholder="اسم العميل" autocomplete="name"></label><label>رقم الموبايل المصري<input name="phone" required inputmode="tel" type="tel" pattern="[0-9+() -]{8,20}" placeholder="01xxxxxxxxx" autocomplete="tel"></label><div id="recaptcha-container" style="margin:12px 0"></div><button class="btn btn-gold" type="submit">إرسال كود التحقق</button></form><p class="account-warning">هنستخدم Firebase لتأكيد رقم الموبايل. قد تُرسل رسالة SMS حقيقية وتُحتسب ضمن حد المشروع اليومي؛ استخدمي رقم اختبار أولًا أثناء التجربة. رصيد النقاط في النسخة الحالية ما زال محفوظًا على هذا الجهاز فقط.</p>`;if(window.initOrkaRecaptcha){setTimeout(()=>window.initOrkaRecaptcha().catch(err=>console.error('ORKA reCAPTCHA init:',err)),0)}return}host.innerHTML=`<div class="eyebrow">ORKA CLUB</div><h3>أهلًا يا ${escapeAccountText(c.name)} ♡</h3><p>رقم العضوية الموثّق: ${escapeAccountText(c.phone)}</p><div class="points-card"><small>رصيد النقاط المعتمدة</small><div id="orkaPointsValue" class="points-number">0 <span style="font-size:15px">نقطة</span></div><small>رصيدك يبدأ من صفر، ولا يُضاف أي رصيد إلا بعد استلام الطلب وتأكيده من ORKA.</small></div><div class="points-grid"><div class="points-stat"><strong>0</strong><small>نقاط معلقة</small></div><div class="points-stat"><strong>50 ج.م</strong><small>قيمة المشتريات المقابلة لنقطة واحدة</small></div></div><p>سياسة ORKA CLUB: نقطة واحدة لكل 50 جنيهًا من قيمة المنتجات، وتُضاف بعد استلام الطلب فقط. لا يمكن تعديل رصيد النقاط من حساب العميل.</p>${window.orkaIsAdmin?'<button class="btn" style="width:100%;margin-top:10px" onclick="window.openOrkaAdminPanel()">لوحة إدارة الطلبات</button>':''}<button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="logoutOrka()">تسجيل الخروج</button><p class="account-warning">رصيد النقاط المعروض يُقرأ من قاعدة بيانات ORKA عند توفر الاتصال.</p>`;if(currentCustomerUid&&window.loadOrkaCustomerPoints)window.loadOrkaCustomerPoints(currentCustomerUid);const btn=document.getElementById('accountBtn');if(btn)btn.textContent='♙ حسابي';}
 function escapeAccountText(v){return String(v||'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]))}
 async function registerOrLogin(e){e.preventDefault();const fd=new FormData(e.target);const name=String(fd.get('name')||'').trim();const rawPhone=String(fd.get('phone')||'').trim();if(!name||rawPhone.replace(/\\D/g,'').length<10){toast('راجعي الاسم ورقم الموبايل المصري');return}if(!window.startOrkaOtp){toast('خدمة التحقق لسه بتجهز، استني ثواني وجربي تاني');return}window.orkaPendingName=name;try{await window.startOrkaOtp(rawPhone);document.getElementById('accountContent').innerHTML=`<div class="eyebrow">ORKA CLUB</div><h3>تأكيد رقم الموبايل</h3><p>أدخل كود التحقق المكوّن من 6 أرقام الذي وصلك برسالة SMS.</p><form class="account-form" onsubmit="verifyOrkaOtp(event)"><label>كود التحقق<input name="otp" required inputmode="numeric" autocomplete="one-time-code" pattern="[0-9]{6}" maxlength="6" placeholder="123456"></label><button class="btn btn-gold" type="submit">تأكيد الكود والدخول</button></form><button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="renderAccount()">رجوع</button><p class="account-warning">لو بتختبر النظام، استخدم رقمًا وكودًا تجريبيين أضفتهما في Firebase بدل إرسال SMS حقيقية.</p>`;toast('تم طلب كود التحقق. راجعي الرسالة أو استخدمي رقم الاختبار.')}catch(err){console.error('ORKA Firebase phone sign-in error:',err);const code=String(err?.code||'unknown');const message=window.orkaFirebaseErrorMessage?window.orkaFirebaseErrorMessage(err):'تعذر إرسال الكود.';const host=document.getElementById('accountContent');if(host)host.innerHTML=`<div class="eyebrow">ORKA CLUB</div><h3>تعذر إرسال كود التحقق</h3><p>${escapeAccountText(message)}</p><p style="direction:ltr;text-align:left;word-break:break-word;font-size:12px;color:#7a7a7a">Firebase error: ${escapeAccountText(code)}</p><button class="btn btn-gold" type="button" onclick="renderAccount()">إعادة المحاولة</button><p class="account-warning">لم يتم تأكيد تسجيل الدخول. لا تفعّلي الفوترة الآن؛ أرسلي لنا نص الخطأ الظاهر لتحديد السبب.</p>`;}} 
 async function verifyOrkaOtp(e){e.preventDefault();const fd=new FormData(e.target);const code=String(fd.get('otp')||'').trim();if(!/^[0-9]{6}$/.test(code)){toast('اكتبي كود التحقق المكوّن من 6 أرقام');return}try{const user=await window.confirmOrkaOtp(code);const phone=user.phoneNumber||'';if(!phone){toast('لم نستطع تأكيد رقم الموبايل');return}const accounts=readOrkaAccounts();if(!accounts[phone])accounts[phone]={name:window.orkaPendingName||'عميل ORKA',phone,points:0,pending:0,orders:[]};else if(window.orkaPendingName)accounts[phone].name=window.orkaPendingName;saveOrkaAccounts(accounts);currentCustomerPhone=phone;try{await window.saveOrkaCustomerProfile(user,window.orkaPendingName||accounts[phone].name);accounts[phone].cloudProfile='synced';saveOrkaAccounts(accounts);toast('تم تأكيد الموبايل وحفظ ملف العميل في قاعدة البيانات');}catch(syncErr){console.error('ORKA profile cloud sync failed:',syncErr);toast('تم تأكيد الموبايل، لكن مزامنة الملف السحابي تحتاج ضبط قواعد Firestore');}renderAccount();}catch(err){console.error(err);toast(window.orkaFirebaseErrorMessage?window.orkaFirebaseErrorMessage(err):'الكود غير صحيح أو انتهت صلاحيته. حاولي مرة أخرى.')}} 
@@ -163,7 +171,7 @@ let heroIndex=0;const heroSlides=[...document.querySelectorAll('.hero-slideshow 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyB3O_4JMgRni_EUWCaQzQ9dVuK4dRjJwtQ",
   authDomain: "orka-homewear-e63db.firebaseapp.com",
@@ -175,6 +183,86 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
 const db = getFirestore(app);
+
+window.checkOrkaAdminAccess = async(uid) => {
+ if(!uid){window.orkaIsAdmin=false;return false;}
+ try{
+  const adminSnap=await getDoc(doc(db,'admins',uid));
+  window.orkaIsAdmin=adminSnap.exists()&&adminSnap.data().role==='admin';
+  const modal=document.getElementById('accountModal');
+  if(modal&&modal.classList.contains('show')&&window.renderAccount)window.renderAccount();
+  return window.orkaIsAdmin;
+ }catch(err){console.error('ORKA admin access check failed:',err);window.orkaIsAdmin=false;return false;}
+};
+
+window.loadOrkaCustomerPoints = async(uid) => {
+ if(!uid)return;
+ try{
+  const snap=await getDoc(doc(db,'customers',uid));
+  const points=snap.exists()&&Number.isInteger(snap.data().points)?snap.data().points:0;
+  const el=document.getElementById('orkaPointsValue');
+  if(el)el.innerHTML=String(points)+' <span style="font-size:15px">نقطة</span>';
+ }catch(err){console.error('ORKA points read failed:',err);}
+};
+
+window.openOrkaAdminPanel = async() => {
+ if(!window.orkaIsAdmin){window.toast?.('الحساب غير مصرح له بلوحة الإدارة.');return;}
+ const modal=document.getElementById('orkaAdminModal');
+ if(modal)modal.classList.add('show');
+ document.body.style.overflow='hidden';
+ await window.loadOrkaAdminOrders();
+};
+window.closeOrkaAdminPanel = () => {
+ const modal=document.getElementById('orkaAdminModal');
+ if(modal)modal.classList.remove('show');
+ document.body.style.overflow='';
+};
+window.loadOrkaAdminOrders = async() => {
+ const host=document.getElementById('orkaAdminOrders');
+ if(!host)return;
+ host.innerHTML='<p>جاري تحميل الطلبات...</p>';
+ try{
+  const snap=await getDocs(collection(db,'orders'));
+  if(snap.empty){host.innerHTML='<p>لا توجد طلبات مسجلة في قاعدة البيانات حتى الآن.</p>';return;}
+  const rows=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
+  host.innerHTML=rows.map(o=>{
+   const items=Array.isArray(o.items)?o.items.map(i=>escapeAdminText(i.name||'منتج')+' — '+escapeAdminText(i.color||'')+' — '+escapeAdminText(i.size||'')+' × '+Number(i.qty||1)).join('<br>'):'';
+   const isDone=o.status==='delivered'&&o.pointsAwarded===true;
+   return '<article style="border:1px solid #e8e4dc;border-radius:10px;padding:14px;margin:12px 0">'+
+    '<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><strong>طلب #'+escapeAdminText(o.id)+'</strong><strong>'+escapeAdminText(o.status||'pending')+'</strong></div>'+
+    '<p><b>العميل:</b> '+escapeAdminText(o.customer||'')+' · '+escapeAdminText(o.phone||'')+'<br><b>المحافظة:</b> '+escapeAdminText(o.gov||'')+'<br><b>العنوان:</b> '+escapeAdminText(o.address||'')+'</p>'+
+    '<p><b>المنتجات:</b><br>'+items+'</p><p><b>الإجمالي:</b> '+Number(o.total||0).toLocaleString('ar-EG')+' جنيه</p>'+
+    (isDone?'<p style="color:#16845b;font-weight:800">تم تأكيد التسليم واحتساب النقاط.</p>':(o.status==='pending'?'<button class="btn" onclick="window.deliverOrkaOrder(\''+escapeAdminText(o.id)+'\')">تأكيد الاستلام وإضافة النقاط</button>':'<p>حالة الطلب: '+escapeAdminText(o.status||'')+'</p>'))+
+   '</article>';
+  }).join('');
+ }catch(err){console.error('ORKA orders load failed:',err);host.innerHTML='<p style="color:#a60f36">تعذر تحميل الطلبات. تأكدي من نشر قواعد Firestore وأن حسابك الإداري صحيح.</p>';}
+};
+function escapeAdminText(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+window.deliverOrkaOrder = async(orderId) => {
+ if(!window.orkaIsAdmin){window.toast?.('غير مصرح لك بتنفيذ العملية.');return;}
+ if(!confirm('هل تأكدت أن العميل استلم الطلب فعليًا؟ سيتم اعتماد النقاط مرة واحدة ولا يمكن تكرارها.'))return;
+ try{
+  const orderRef=doc(db,'orders',orderId);
+  const result=await runTransaction(db,async(tx)=>{
+   const orderSnap=await tx.get(orderRef);
+   if(!orderSnap.exists())throw new Error('الطلب غير موجود.');
+   const order=orderSnap.data();
+   if(order.status!=='pending'||order.pointsAwarded===true)throw new Error('تم اعتماد هذا الطلب من قبل أو تغيرت حالته.');
+   if(!order.uid)throw new Error('الطلب لا يحتوي على حساب عميل مرتبط.');
+   const customerRef=doc(db,'customers',order.uid);
+   const customerSnap=await tx.get(customerRef);
+   if(!customerSnap.exists())throw new Error('ملف العميل غير موجود.');
+   const currentPoints=Number.isInteger(customerSnap.data().points)?customerSnap.data().points:0;
+   const addedPoints=Math.floor(Math.max(0,Number(order.total)||0)/50);
+   tx.update(customerRef,{points:currentPoints+addedPoints});
+   tx.update(orderRef,{status:'delivered',pointsAwarded:true,pointsAwardedAt:serverTimestamp()});
+   return addedPoints;
+  });
+  window.toast?.('تم تأكيد التسليم وإضافة '+result+' نقطة مرة واحدة.');
+  await window.loadOrkaAdminOrders();
+ }catch(err){console.error('ORKA delivery award failed:',err);window.toast?.('تعذر اعتماد الطلب: '+(err.message||'خطأ غير معروف'));}
+};
+
 window.saveOrkaCustomerProfile = async(user, displayName) => {
  if(!user?.uid || !user?.phoneNumber) throw new Error('لا يوجد حساب موثّق لحفظ بيانات العميل.');
  const profileRef=doc(db,'customers',user.uid);
