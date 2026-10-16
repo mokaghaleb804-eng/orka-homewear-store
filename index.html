@@ -207,11 +207,24 @@ window.loadOrkaCustomerPoints = async(uid) => {
 };
 
 window.openOrkaAdminPanel = async() => {
- if(!window.orkaIsAdmin){window.toast?.('الحساب غير مصرح له بلوحة الإدارة.');return;}
- const modal=document.getElementById('orkaAdminModal');
- if(modal)modal.classList.add('show');
- document.body.style.overflow='hidden';
- await window.loadOrkaAdminOrders();
+ try {
+  const host=document.getElementById('orkaAdminOrders');
+  const modal=document.getElementById('orkaAdminModal');
+  if(!modal){alert('لوحة الإدارة غير موجودة في نسخة الموقع الحالية. حدّثي الصفحة بعد دقيقة.');return;}
+  modal.classList.add('show');
+  document.body.style.overflow='hidden';
+  if(host)host.innerHTML='<p>جاري التحقق من صلاحية الحساب...</p>';
+  const uid=window.orkaCurrentUid||'';
+  const allowed=uid&&window.checkOrkaAdminAccess?await window.checkOrkaAdminAccess(uid):false;
+  if(!allowed){
+   if(host)host.innerHTML='<p style="color:#a60f36;font-weight:800">الحساب الحالي غير مُعرّف كمسؤول في Firebase. تأكدي أن مستند admins يحتوي على UID الحساب الحالي نفسه، وأن role نوعه نص وقيمته admin.</p><p>UID الحالي: <code style="direction:ltr;word-break:break-all">'+String(uid||'لم يتم تسجيل الدخول').replace(/[&<>"]/g,'')+'</code></p>';
+   return;
+  }
+  await window.loadOrkaAdminOrders();
+ } catch(err) {
+  console.error('ORKA admin panel open failed:',err);
+  alert('تعذر فتح لوحة الإدارة: '+(err?.message||'خطأ غير معروف'));
+ }
 };
 window.closeOrkaAdminPanel = () => {
  const modal=document.getElementById('orkaAdminModal');
