@@ -40,20 +40,20 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 @media(max-width:700px){.orka-sample-inner{align-items:flex-start;flex-wrap:wrap;gap:14px}.orka-sample-mark{width:58px;height:58px;flex-basis:58px;border-radius:18px;font-size:30px}.orka-sample-mark span{width:24px;height:24px;font-size:14px}.orka-sample-copy{min-width:calc(100% - 75px)}.orka-sample-inner>.btn{margin-right:72px}}
 
 \n.social-coming-soon{display:block;color:#8f9cab;font-size:11px;margin:9px 0;opacity:.85}\n
-/* ORKA full-width family hero */
-.hero-family{position:relative;isolation:isolate;width:100%;min-height:clamp(500px,62vw,760px);display:flex;align-items:center;overflow:hidden;background:#10294a}
-.hero-family-bg{position:absolute;inset:0;z-index:-3;background-image:url('https://images.pexels.com/photos/19316317/pexels-photo-19316317.jpeg?auto=compress&cs=tinysrgb&w=2200');background-size:cover;background-position:center 45%;transform-origin:center center;animation:orkaHeroDrift 18s ease-in-out infinite alternate;will-change:transform}
-.hero-family-overlay{position:absolute;inset:0;z-index:-2;background:linear-gradient(90deg,rgba(16,41,74,.08) 0%,rgba(16,41,74,.25) 35%,rgba(16,41,74,.82) 100%)}
-.hero-family-content{position:relative;z-index:1;width:100%;max-width:1240px;margin:auto;padding:70px 5.5vw;color:#fff;text-align:right}
+/* ORKA edge-to-edge full-width family hero */
+.hero-family{position:relative;isolation:isolate;width:100vw;max-width:none;margin-inline:calc(50% - 50vw);min-height:clamp(540px,66vw,800px);display:flex;align-items:center;overflow:hidden;border-radius:0;background:#10294a}
+.hero-family-bg{position:absolute;inset:0;z-index:-1;background-image:url('https://images.pexels.com/photos/29921649/pexels-photo-29921649.jpeg?auto=compress&cs=tinysrgb&w=2400');background-size:cover;background-position:center 42%;transform-origin:center center;animation:orkaHeroDrift 16s ease-in-out infinite alternate;will-change:transform}
+.hero-family-overlay{position:absolute;inset:0;z-index:0;background:linear-gradient(90deg,rgba(16,41,74,.12) 0%,rgba(16,41,74,.30) 36%,rgba(16,41,74,.78) 100%);pointer-events:none}
+.hero-family-content{position:relative;z-index:1;width:100%;max-width:1320px;margin:auto;padding:76px 6vw;color:#fff;text-align:right}
 .hero-family .eyebrow{color:#f2c7cc;font-size:13px;letter-spacing:1.4px}
-.hero-family h1{font-size:clamp(34px,5vw,64px);line-height:1.35;color:#fff;max-width:680px;margin:14px 0}
+.hero-family h1{font-size:clamp(34px,5vw,66px);line-height:1.35;color:#fff;max-width:680px;margin:14px 0}
 .hero-family h1 span{color:#f0bdc5}
 .hero-family p{font-size:clamp(15px,1.8vw,20px);line-height:1.9;color:#fff;max-width:540px}
 .hero-family .btn{background:#a60f36;color:#fff;border-color:#a60f36}
 .hero-family .btn-outline{background:#fff;color:#10294a;border-color:#fff}
-.hero-family-caption{position:absolute;bottom:22px;left:24px;background:#fffdf1e8;color:#10294a;padding:10px 16px;border-radius:999px;font-weight:800;font-size:13px;box-shadow:0 8px 30px #0002}
-@keyframes orkaHeroDrift{from{transform:scale(1)}to{transform:scale(1.09)}}
-@media(max-width:650px){.hero-family{min-height:520px;align-items:flex-end}.hero-family-bg{background-position:54% center}.hero-family-overlay{background:linear-gradient(0deg,rgba(16,41,74,.91) 0%,rgba(16,41,74,.55) 48%,rgba(16,41,74,.06) 100%)}.hero-family-content{padding:38px 20px 66px}.hero-family h1{font-size:36px}.hero-family p{font-size:14px}.hero-family-caption{bottom:12px;left:12px;font-size:11px}}
+.hero-family-caption{position:absolute;bottom:22px;left:24px;z-index:2;background:#fffdf1e8;color:#10294a;padding:10px 16px;border-radius:999px;font-weight:800;font-size:13px;box-shadow:0 8px 30px #0002}
+@keyframes orkaHeroDrift{from{transform:scale(1)}to{transform:scale(1.10)}}
+@media(max-width:650px){.hero-family{min-height:560px;align-items:flex-end}.hero-family-bg{background-position:54% center}.hero-family-overlay{background:linear-gradient(0deg,rgba(16,41,74,.92) 0%,rgba(16,41,74,.56) 48%,rgba(16,41,74,.08) 100%)}.hero-family-content{padding:38px 20px 76px}.hero-family h1{font-size:36px}.hero-family p{font-size:14px}.hero-family-caption{bottom:12px;left:12px;font-size:11px}}
 @media(prefers-reduced-motion:reduce){.hero-family-bg{animation:none}}
 </style>
 </head>
