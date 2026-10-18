@@ -1,4 +1,5 @@
 rules_version = '2';
+
 service cloud.firestore {
   match /databases/{database}/documents {
     function signedIn() {
@@ -11,6 +12,10 @@ service cloud.firestore {
         && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'admin';
     }
 
+    function validName(value) {
+      return value is string && value.size() > 0 && value.size() <= 80;
+    }
+
     match /admins/{uid} {
       allow read: if signedIn() && request.auth.uid == uid;
       allow write: if false;
@@ -21,55 +26,94 @@ service cloud.firestore {
 
       allow create: if signedIn()
         && request.auth.uid == uid
+        && request.resource.data.keys().hasAll(['displayName', 'phoneNumber', 'createdAt'])
         && request.resource.data.keys().hasOnly([
           'displayName', 'phoneNumber', 'points', 'createdAt',
           'shippingGov', 'shippingAddress'
         ])
+        && validName(request.resource.data.displayName)
         && request.resource.data.phoneNumber == request.auth.token.phone_number
-        && (!('points' in request.resource.data) || request.resource.data.points == 0);
+        && request.resource.data.createdAt == request.time
+        && (!('points' in request.resource.data) || (request.resource.data.points is int && request.resource.data.points == 0))
+        && (!('shippingGov' in request.resource.data) || request.resource.data.shippingGov is string)
+        && (!('shippingAddress' in request.resource.data) || request.resource.data.shippingAddress is string);
 
-      allow update: if isAdmin()
-        || (signedIn()
-          && request.auth.uid == uid
-          && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
-            'displayName', 'shippingGov', 'shippingAddress'
-          ]));
+      allow update: if (
+        signedIn()
+        && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'displayName', 'shippingGov', 'shippingAddress'
+        ])
+        && (!('displayName' in request.resource.data) || validName(request.resource.data.displayName))
+        && (!('shippingGov' in request.resource.data) || request.resource.data.shippingGov is string)
+        && (!('shippingAddress' in request.resource.data) || request.resource.data.shippingAddress is string)
+        && (!('shippingGov' in request.resource.data) || request.resource.data.shippingGov.size() <= 60)
+        && (!('shippingAddress' in request.resource.data) || request.resource.data.shippingAddress.size() <= 500)
+      ) || (
+        isAdmin()
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['points'])
+        && request.resource.data.points is int
+        && request.resource.data.points >= 0
+      );
 
       allow delete: if false;
     }
 
     match /orders/{orderId} {
-      allow read: if isAdmin()
-        || (signedIn() && resource.data.uid == request.auth.uid);
-
-      allow create: if request.resource.data.keys().hasOnly([
+      allow create: if request.resource.data.keys().hasAll([
           'uid', 'customer', 'phone', 'gov', 'address', 'notes',
           'items', 'total', 'status', 'createdAt'
         ])
-        && request.resource.data.keys().hasAll([
+        && request.resource.data.keys().hasOnly([
           'uid', 'customer', 'phone', 'gov', 'address', 'notes',
           'items', 'total', 'status', 'createdAt'
         ])
         && request.resource.data.status == 'pending'
         && request.resource.data.customer is string
         && request.resource.data.customer.size() > 0
+        && request.resource.data.customer.size() <= 80
         && request.resource.data.phone is string
         && request.resource.data.phone.size() >= 10
+        && request.resource.data.phone.size() <= 30
         && request.resource.data.gov is string
         && request.resource.data.gov.size() > 0
+        && request.resource.data.gov.size() <= 60
         && request.resource.data.address is string
         && request.resource.data.address.size() > 0
+        && request.resource.data.address.size() <= 500
+        && request.resource.data.notes is string
+        && request.resource.data.notes.size() <= 500
         && request.resource.data.items is list
         && request.resource.data.items.size() > 0
         && request.resource.data.items.size() <= 30
         && request.resource.data.total is number
         && request.resource.data.total >= 0
-        && request.resource.data.createdAt is timestamp
-        && ((signedIn() && request.resource.data.uid == request.auth.uid)
-          || (!signedIn() && request.resource.data.uid == null));
+        && request.resource.data.createdAt == request.time
+        && (
+          (signedIn()
+            && request.resource.data.uid == request.auth.uid
+            && request.resource.data.phone == request.auth.token.phone_number)
+          || (!signedIn() && request.resource.data.uid == null)
+        );
 
-      allow update: if isAdmin();
+      allow read: if isAdmin()
+        || (signedIn() && resource.data.uid == request.auth.uid);
+
+      allow update: if isAdmin()
+        && resource.data.status == 'pending'
+        && resource.data.get('pointsAwarded', false) == false
+        && request.resource.data.status == 'delivered'
+        && request.resource.data.pointsAwarded == true
+        && request.resource.data.pointsAwardedAt == request.time
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly([
+          'status', 'pointsAwarded', 'pointsAwardedAt'
+        ]);
+
       allow delete: if false;
+    }
+
+    match /{document=**} {
+      allow read, write: if false;
     }
   }
 }
