@@ -66,20 +66,22 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 @media(max-width:650px){.hero-family{min-height:560px;align-items:flex-end}.hero-family-bg{background-position:54% center}.hero-family-overlay{background:linear-gradient(0deg,rgba(16,41,74,.92) 0%,rgba(16,41,74,.56) 48%,rgba(16,41,74,.08) 100%)}.hero-family-content{padding:38px 20px 76px}.hero-family h1{font-size:36px}.hero-family p{font-size:14px}.hero-family-caption{bottom:12px;left:12px;font-size:11px}}
 @media(prefers-reduced-motion:reduce){.hero-family-bg{animation:none}}
 
-/* Use the original artwork itself for ORKA letters, including the open-back R; crop the wordmark from the supplied logo image rather than substituting a font. */
+/* Keep the original whale artwork and render the ORKA word as clean text, with the R's open-back detail retained. */
 .brand-image{gap:8px;min-width:0}
 .brand-image .brand-orca{width:46px;height:46px;flex:0 0 46px;object-fit:cover;object-position:center 28%;border-radius:50%}
-.brand-wordmark{display:flex;flex-direction:column;align-items:flex-start;gap:0;min-width:0}
-.brand-image .brand-orka-letters{display:block;width:112px;height:35px;object-fit:cover;object-position:center 84%;border-radius:0}
-.brand-image .brand-wordmark small{display:block;margin:0;padding:0 0 0 4px;font-family:Arial,sans-serif;font-size:10px;font-weight:800;letter-spacing:2.5px;line-height:1.15;color:#a60f36}
-@media(max-width:620px){.brand-image{gap:5px}.brand-image .brand-orca{width:36px;height:36px;flex-basis:36px}.brand-image .brand-orka-letters{width:78px;height:26px}.brand-image .brand-wordmark small{font-size:7px;letter-spacing:1.7px;padding-left:2px}}
+.brand-wordmark{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0}
+.brand-image .brand-wordmark strong{display:block;margin:0;font-family:Arial,Helvetica,sans-serif;font-size:27px;font-weight:900;letter-spacing:1px;line-height:1;color:var(--navy)}
+.brand-image .brand-wordmark .orka-r{position:relative;display:inline-block;letter-spacing:0}
+.brand-image .brand-wordmark .orka-r:after{content:"";position:absolute;right:-1px;top:22%;width:5px;height:28%;background:#fff;transform:rotate(-5deg)}
+.brand-image .brand-wordmark small{display:block;margin:0;padding:0 0 0 3px;font-family:Arial,sans-serif;font-size:9px;font-weight:800;letter-spacing:2.2px;line-height:1.15;color:#a60f36}
+@media(max-width:620px){.brand-image{gap:5px}.brand-image .brand-orca{width:36px;height:36px;flex-basis:36px}.brand-image .brand-wordmark strong{font-size:22px;letter-spacing:.7px}.brand-image .brand-wordmark small{font-size:7px;letter-spacing:1.6px;padding-left:2px}.brand-image .brand-wordmark .orka-r:after{width:4px}}
 
 </style>
 </head>
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
 <header class="header"><nav class="nav">
-<a class="brand brand-image" href="#home" aria-label="ORKA HOMEWEAR"><img class="brand-orca" src="1792320437989.jpg" alt="علامة الحوت من شعار ORKA"><span class="brand-wordmark" aria-label="ORKA HOMEWEAR"><img class="brand-orka-letters" src="1792320437989.jpg" alt="ORKA بالحروف الأصلية من الشعار"><small>HOMEWEAR</small></span></a>
+<a class="brand brand-image" href="#home" aria-label="ORKA HOMEWEAR"><img class="brand-orca" src="1792320437989.jpg" alt="علامة الحوت من شعار ORKA"><span class="brand-wordmark" aria-label="ORKA HOMEWEAR"><strong>O<span class="orka-r">R</span>KA</strong><small>HOMEWEAR</small></span></a>
 <div class="links"><a href="#home">الرئيسية</a><a href="#shop">تسوقي الآن</a><a href="#story">حكاية ORKA</a><a href="#contact">تواصل معنا</a></div>
 <div class="nav-actions"><button class="iconbtn" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">⌕ بحث</button><button class="iconbtn" onclick="openAccount()" id="accountBtn">♙ حسابي</button><button class="iconbtn" onclick="openCart()">السلة <span class="cart-count" id="cartCount">0</span></button></div>
 </nav></header>
