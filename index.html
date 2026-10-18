@@ -129,7 +129,7 @@ window.addEventListener('orka-firebase-auth-state',event=>{
 function readOrkaAccounts(){try{return JSON.parse(localStorage.getItem(ORKA_ACCOUNT_KEY)||'{}')}catch(e){return {}}}
 function saveOrkaAccounts(accounts){try{localStorage.setItem(ORKA_ACCOUNT_KEY,JSON.stringify(accounts))}catch(e){toast('تعذر حفظ بيانات الحساب على هذا الجهاز')}}
 function currentCustomer(){if(!currentCustomerPhone)return null;return readOrkaAccounts()[currentCustomerPhone]||null}
-function openAccount(){renderAccount();if(currentCustomerUid&&window.loadOrkaCustomerPoints)window.loadOrkaCustomerPoints(currentCustomerUid);document.getElementById('accountModal').classList.add('show');document.body.style.overflow='hidden'}
+async function openAccount(){try{if(window.orkaAuthReady)await window.orkaAuthReady;}catch(e){console.warn("ORKA auth initialization:",e)}renderAccount();if(currentCustomerUid&&window.loadOrkaCustomerPoints)window.loadOrkaCustomerPoints(currentCustomerUid);document.getElementById('accountModal').classList.add('show');document.body.style.overflow='hidden'}
 function closeAccount(){document.getElementById('accountModal').classList.remove('show');document.body.style.overflow=''}
 function renderAccount(){const host=document.getElementById('accountContent');const c=currentCustomer();if(!c){host.innerHTML=`<div class="eyebrow">ORKA CLUB</div><h3>حسابك ونقاطك ♡</h3><p>سجّلي برقم موبايلك، وهنبعتلك كود تحقق لتأكيد ملكية الرقم.</p><form class="account-form" onsubmit="registerOrLogin(event)"><label>الاسم بالكامل<input name="name" required maxlength="80" placeholder="اسم العميل" autocomplete="name"></label><label>رقم الموبايل المصري<input name="phone" required inputmode="tel" type="tel" pattern="[0-9+() -]{8,20}" placeholder="01xxxxxxxxx" autocomplete="tel"></label><div id="recaptcha-container" style="margin:12px 0"></div><button class="btn btn-gold" type="submit">إرسال كود التحقق</button></form><p class="account-warning">هنستخدم Firebase لتأكيد رقم الموبايل. قد تُرسل رسالة SMS حقيقية وتُحتسب ضمن حد المشروع اليومي؛ استخدمي رقم اختبار أولًا أثناء التجربة. رصيد النقاط في النسخة الحالية ما زال محفوظًا على هذا الجهاز فقط.</p>`;if(window.initOrkaRecaptcha){setTimeout(()=>window.initOrkaRecaptcha().catch(err=>console.error('ORKA reCAPTCHA init:',err)),0)}return}host.innerHTML=`<div class="eyebrow">ORKA CLUB</div><h3 id="orkaCustomerGreeting">أهلًا يا ${escapeAccountText(c.name)} ♡</h3><p>رقم العضوية الموثّق: ${escapeAccountText(c.phone)}</p><div class="points-card"><small>رصيد النقاط المعتمدة</small><div id="orkaPointsValue" class="points-number">0 <span style="font-size:15px">نقطة</span></div><small>رصيدك يبدأ من صفر، ولا يُضاف أي رصيد إلا بعد استلام الطلب وتأكيده من ORKA.</small></div><div class="points-grid"><div class="points-stat"><strong>50 ج.م</strong><small>قيمة المشتريات المقابلة لنقطة واحدة</small></div><div class="points-stat"><strong>بعد الاستلام</strong><small>موعد إضافة نقاط الولاء</small></div></div><section style="margin-top:20px"><h4 style="color:var(--navy);margin:0 0 10px">طلباتي</h4><div id="orkaCustomerOrderList"><p class="notice">جاري تحميل طلباتك...</p></div></section><p>سياسة ORKA CLUB: نقطة واحدة لكل 50 جنيهًا من قيمة المنتجات، وتُضاف بعد استلام الطلب فقط. لا يمكن تعديل رصيد النقاط من حساب العميل.</p><button id="orkaAdminButton" class="btn" style="width:100%;margin-top:10px;display:none" onclick="window.openOrkaAdminPanel()">لوحة إدارة الطلبات</button><button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="logoutOrka()">تسجيل الخروج</button><p class="account-warning">رصيد النقاط المعروض يُقرأ من قاعدة بيانات ORKA عند توفر الاتصال.</p>`;if(currentCustomerUid&&window.loadOrkaCustomerPoints)window.loadOrkaCustomerPoints(currentCustomerUid);const btn=document.getElementById('accountBtn');if(btn)btn.textContent='♙ حسابي';}
 window.renderOrkaAccount = renderAccount;
@@ -202,7 +202,7 @@ window.addEventListener('load',function(){try{if(typeof renderProducts==='functi
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, query, where, limit, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyB3O_4JMgRni_EUWCaQzQ9dVuK4dRjJwtQ",
@@ -214,6 +214,9 @@ const firebaseConfig = {
 };
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
+// Keep the customer signed in across page reloads and future visits on this browser.
+try { await setPersistence(auth, browserLocalPersistence); }
+catch (err) { console.warn("ORKA local auth persistence unavailable; Firebase default persistence will be used:", err); }
 const db = getFirestore(app);
 
 window.checkOrkaAdminAccess = async(uid) => {
@@ -431,8 +434,13 @@ window.confirmOrkaOtp=async(code)=>{
  return result.user;
 };
 window.signOutOrkaFirebase=async()=>{try{await signOut(auth)}catch(e){console.error(e)}};
-onAuthStateChanged(auth,user=>{
- window.dispatchEvent(new CustomEvent('orka-firebase-auth-state',{detail:{user:user?{phoneNumber:user.phoneNumber,uid:user.uid}:null}}));
+window.orkaAuthReady=new Promise(resolve=>{
+ let firstAuthState=true;
+ onAuthStateChanged(auth,user=>{
+  window.orkaCurrentUser=user||null;
+  window.dispatchEvent(new CustomEvent('orka-firebase-auth-state',{detail:{user:user?{phoneNumber:user.phoneNumber,uid:user.uid}:null}}));
+  if(firstAuthState){firstAuthState=false;resolve(user||null);}
+ });
 });
 </script>
 
