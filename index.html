@@ -243,10 +243,7 @@ window.loadOrkaCustomerPoints = async(uid) => {
    if(accounts[currentCustomerPhone]){accounts[currentCustomerPhone].name=displayName;saveOrkaAccounts(accounts);}
   }
   const adminButton=document.getElementById('orkaAdminButton');
-  if(adminButton&&window.checkOrkaAdminAccess){
-   const allowed=await window.checkOrkaAdminAccess(uid);
-   adminButton.style.display=allowed?'block':'none';
-  }
+  if(adminButton)adminButton.style.display=window.orkaIsAdmin?'block':'none';
   await window.loadOrkaCustomerOrders(uid);
  }catch(err){
   console.error('ORKA customer dashboard load failed:',err);
