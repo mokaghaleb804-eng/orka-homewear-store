@@ -314,7 +314,32 @@ window.loginOrkaSocial=async(providerName)=>{
  try{
   const provider=providerName==='facebook'?new FacebookAuthProvider():new GoogleAuthProvider();
   provider.setCustomParameters(providerName==='google'?{prompt:'select_account'}:{});
-  await signInWithPopup(auth,provider);
+  const credential=await signInWithPopup(auth,provider);
+  const user=credential.user;
+  // Create the Firestore customer profile for Google/Facebook users too.
+  // A phone number is collected at checkout, so it is not required for social sign-in.
+  try {
+   const profileRef=doc(db,'customers',user.uid);
+   const profileSnap=await getDoc(profileRef);
+   if(!profileSnap.exists()){
+    await setDoc(profileRef,{
+     displayName:String(user.displayName||'عميل ORKA').trim().slice(0,80)||'عميل ORKA',
+     email:user.email||'',
+     phoneNumber:'',
+     points:0,
+     createdAt:serverTimestamp()
+    });
+   } else {
+    const profile=profileSnap.data();
+    const updates={};
+    if(!profile.displayName&&user.displayName)updates.displayName=String(user.displayName).slice(0,80);
+    if(!profile.email&&user.email)updates.email=user.email;
+    if(!Number.isInteger(profile.points))updates.points=0;
+    if(Object.keys(updates).length)await updateDoc(profileRef,updates);
+   }
+  } catch(profileErr) {
+   console.error('ORKA social customer profile setup:',profileErr);
+  }
   const modal=document.getElementById('accountModal');if(modal)modal.classList.remove('show');
   document.body.style.overflow='';
   if(window.toast)window.toast('تم تسجيل الدخول بنجاح ♡');
@@ -460,14 +485,23 @@ window.deliverOrkaOrder = async(orderId) => {
 };
 
 window.saveOrkaCustomerProfile = async(user, displayName) => {
- if(!user?.uid || !user?.phoneNumber) throw new Error('لا يوجد حساب موثّق لحفظ بيانات العميل.');
+ if(!user?.uid) throw new Error('لا يوجد حساب مسجّل لحفظ بيانات العميل.');
  const profileRef=doc(db,'customers',user.uid);
  const existing=await getDoc(profileRef);
- const safeName=String(displayName||'عميل ORKA').trim().slice(0,80)||'عميل ORKA';
+ const safeName=String(displayName||user.displayName||'عميل ORKA').trim().slice(0,80)||'عميل ORKA';
  if(existing.exists()){
-  await updateDoc(profileRef,{displayName:safeName});
+  const updates={displayName:safeName};
+  if(user.email)updates.email=user.email;
+  if(user.phoneNumber)updates.phoneNumber=user.phoneNumber;
+  await updateDoc(profileRef,updates);
  }else{
-  await setDoc(profileRef,{displayName:safeName,phoneNumber:user.phoneNumber,createdAt:serverTimestamp()});
+  await setDoc(profileRef,{
+   displayName:safeName,
+   email:user.email||'',
+   phoneNumber:user.phoneNumber||'',
+   points:0,
+   createdAt:serverTimestamp()
+  });
  }
  return true;
 };
