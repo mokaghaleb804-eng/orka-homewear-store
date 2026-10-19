@@ -135,13 +135,13 @@ let currentCustomerPhone='';
 let currentCustomerUid='';
 window.addEventListener('orka-firebase-auth-state',event=>{
  const user=event.detail&&event.detail.user;
- if(user&&user.phoneNumber){
-  currentCustomerPhone=user.phoneNumber;
-  currentCustomerUid=user.uid||'';
+ if(user&&user.uid){
+  currentCustomerPhone=user.phoneNumber||('social:'+user.uid);
+  currentCustomerUid=user.uid;
   window.orkaCurrentUid=currentCustomerUid;
   if(window.checkOrkaAdminAccess)window.checkOrkaAdminAccess(currentCustomerUid);
   const accounts=readOrkaAccounts();
-  if(!accounts[currentCustomerPhone])accounts[currentCustomerPhone]={name:'عميل ORKA',phone:currentCustomerPhone,points:0,pending:0,orders:[]};
+  if(!accounts[currentCustomerPhone])accounts[currentCustomerPhone]={name:user.displayName||'عميل ORKA',phone:user.phoneNumber||'',email:user.email||'',points:0,pending:0,orders:[]};
   saveOrkaAccounts(accounts);
   const modal=document.getElementById('accountModal');
   if(modal&&modal.classList.contains('show'))renderAccount();
@@ -161,7 +161,7 @@ function renderAccount(){
  const host=document.getElementById('accountContent');
  const c=currentCustomer();
  if(!c){
-  host.innerHTML='<div class="eyebrow">ORKA CLUB</div><h3>حسابك ونقاطك ♡</h3><p>ادخلي برقم الموبايل وكلمة المرور، أو فعّلي حسابك برسالة تحقق مرة واحدة.</p><form class="account-form" onsubmit="loginOrkaPassword(event)"><label>رقم الموبايل المصري<input name="phone" required inputmode="tel" type="tel" pattern="[0-9+() -]{8,20}" placeholder="01xxxxxxxxx" autocomplete="tel"></label><label>كلمة المرور<input name="password" type="password" required minlength="8" autocomplete="current-password" placeholder="8 أحرف أو أكثر"></label><button class="btn btn-gold" type="submit">دخول إلى حسابي</button></form><button class="btn btn-outline" type="button" style="width:100%;margin-top:10px" onclick="renderOrkaPhoneSetup()">إنشاء حساب / نسيت كلمة المرور</button><p class="account-warning">التحقق برسالة SMS مطلوب عند إنشاء الحساب أو إعادة تعيين كلمة المرور. لا تُخزّن كلمة المرور داخل ملف العميل.</p>';
+  host.innerHTML='<div class="eyebrow">ORKA CLUB</div><h3>ادخلي لحسابك بسهولة ♡</h3><p>اختاري الدخول بحساب Google أو Facebook. مش محتاجين كود SMS لتسجيل الدخول.</p><button class="btn btn-gold" type="button" style="width:100%;margin-top:12px" onclick="loginOrkaSocial(\'google\')">🌐 المتابعة باستخدام Google</button><button class="btn btn-outline" type="button" style="width:100%;margin-top:10px" onclick="loginOrkaSocial(\'facebook\')">f المتابعة باستخدام Facebook</button><p class="account-warning">رقم الموبايل هيتطلب عند إتمام طلب الشراء، علشان شركة الشحن تتواصل معاكي.</p>';
   return;
  }
  host.innerHTML='<div class="eyebrow">ORKA CLUB</div><h3 id="orkaCustomerGreeting">أهلًا يا '+escapeAccountText(c.name)+' ♡</h3><p>رقم العضوية الموثّق: '+escapeAccountText(c.phone)+'</p><div class="points-card"><small>رصيد النقاط المعتمدة</small><div id="orkaPointsValue" class="points-number">0 <span style="font-size:15px">نقطة</span></div><small>لا تُضاف النقاط إلا بعد استلام الطلب وتأكيده.</small></div><section style="margin-top:18px"><h4 style="color:var(--navy);margin:0 0 8px">عنوان الشحن المحفوظ</h4><form class="account-form" onsubmit="saveOrkaAddress(event)"><label>المحافظة<select name="gov" required><option value="">اختاري المحافظة</option>'+['القاهرة','الجيزة','الإسكندرية','القليوبية','الشرقية','الدقهلية','البحيرة','الغربية','المنوفية','كفر الشيخ','دمياط','بورسعيد','الإسماعيلية','السويس','الفيوم','بني سويف','المنيا','أسيوط','سوهاج','قنا','الأقصر','أسوان','البحر الأحمر','مطروح','شمال سيناء','جنوب سيناء','الوادي الجديد'].map(g=>'<option>'+g+'</option>').join('')+'</select></label><label>العنوان بالتفصيل<textarea name="address" required maxlength="500" placeholder="المنطقة، الشارع، رقم العقار، علامة مميزة"></textarea></label><button class="btn btn-outline" type="submit">حفظ عنوان الشحن</button></form></section><section style="margin-top:20px"><h4 style="color:var(--navy);margin:0 0 10px">طلباتي</h4><div id="orkaCustomerOrderList"><p class="notice">جاري تحميل طلباتك...</p></div></section><p>سياسة ORKA CLUB: نقطة لكل 50 جنيهًا من قيمة المنتجات، وتُضاف بعد الاستلام فقط.</p><button id="orkaAdminButton" class="btn" style="width:100%;margin-top:10px;display:none" onclick="window.openOrkaAdminPanel()">لوحة إدارة الطلبات</button><button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="logoutOrka()">تسجيل الخروج</button>';
@@ -294,7 +294,7 @@ window.addEventListener('load',function(){try{if(typeof renderProducts==='functi
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-import { getAuth, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence, EmailAuthProvider, signInWithEmailAndPassword, linkWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence, EmailAuthProvider, signInWithEmailAndPassword, linkWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, query, where, limit, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyB3O_4JMgRni_EUWCaQzQ9dVuK4dRjJwtQ",
@@ -310,6 +310,20 @@ const auth = getAuth(app);
 try { await setPersistence(auth, browserLocalPersistence); }
 catch (err) { console.warn("ORKA local auth persistence unavailable; Firebase default persistence will be used:", err); }
 const db = getFirestore(app);
+window.loginOrkaSocial=async(providerName)=>{
+ try{
+  const provider=providerName==='facebook'?new FacebookAuthProvider():new GoogleAuthProvider();
+  provider.setCustomParameters(providerName==='google'?{prompt:'select_account'}:{});
+  await signInWithPopup(auth,provider);
+  const modal=document.getElementById('accountModal');if(modal)modal.classList.remove('show');
+  document.body.style.overflow='';
+  if(window.toast)window.toast('تم تسجيل الدخول بنجاح ♡');
+ }catch(err){
+  console.error('ORKA social sign-in:',err);
+  const msg=err?.code==='auth/operation-not-allowed'?'طريقة الدخول دي لسه محتاجة تفعيل من إعدادات Firebase.':err?.code==='auth/popup-closed-by-user'?'تم إغلاق نافذة تسجيل الدخول قبل إكمالها.':err?.code==='auth/account-exists-with-different-credential'?'الإيميل ده مسجل بطريقة دخول مختلفة؛ جرّبي نفس الطريقة السابقة.':'تعذر تسجيل الدخول. تأكدي من تفعيل مزود الدخول والدومين في Firebase.';
+  if(window.toast)window.toast(msg);else alert(msg);
+ }
+};
 
 window.checkOrkaAdminAccess = async(uid) => {
  if(!uid){window.orkaIsAdmin=false;return false;}
@@ -464,7 +478,7 @@ window.prefillOrkaCheckout=()=>{
  if(user?.phoneNumber&&form.elements.phone&&!form.elements.phone.value)form.elements.phone.value=user.phoneNumber;
  const saved=window.orkaSavedAddress;
  if(saved){if(saved.gov&&form.elements.gov)form.elements.gov.value=saved.gov;if(saved.address&&form.elements.address)form.elements.address.value=saved.address;}
- if(user?.phoneNumber&&form.elements.name&&!form.elements.name.value){const accounts=readOrkaAccounts();form.elements.name.value=accounts[user.phoneNumber]?.name||'';}
+ if(form.elements.name&&!form.elements.name.value){const key=user?.phoneNumber||('social:'+user?.uid);const accounts=readOrkaAccounts();form.elements.name.value=accounts[key]?.name||user?.displayName||'';}
 };
 window.saveOrkaOrder = async(order) => {
  const user=auth.currentUser;
@@ -541,7 +555,7 @@ window.orkaAuthReady=new Promise(resolve=>{
  let firstAuthState=true;
  onAuthStateChanged(auth,user=>{
   window.orkaCurrentUser=user||null;
-  window.dispatchEvent(new CustomEvent('orka-firebase-auth-state',{detail:{user:user?{phoneNumber:user.phoneNumber,uid:user.uid}:null}}));
+  window.dispatchEvent(new CustomEvent('orka-firebase-auth-state',{detail:{user:user?{phoneNumber:user.phoneNumber,uid:user.uid,email:user.email,displayName:user.displayName}:null}}));
   if(firstAuthState){firstAuthState=false;resolve(user||null);}
  });
 });
