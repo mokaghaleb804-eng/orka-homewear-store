@@ -63,18 +63,19 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .hero-family .btn-outline{background:#fff;color:#10294a;border-color:#fff}
 .hero-family-caption{position:absolute;bottom:22px;left:24px;z-index:2;background:#fffdf1e8;color:#10294a;padding:10px 16px;border-radius:999px;font-weight:800;font-size:13px;box-shadow:0 8px 30px #0002}
 @keyframes orkaHeroDrift{from{transform:scale(1)}to{transform:scale(1.10)}}
-@media(max-width:650px){.hero-family{min-height:560px;align-items:flex-end}.hero-family-bg{background-position:54% center}.hero-family-overlay{background:linear-gradient(0deg,rgba(16,41,74,.92) 0%,rgba(16,41,74,.56) 48%,rgba(16,41,74,.08) 100%)}.hero-family-content{padding:38px 20px 76px}.hero-family h1{font-size:36px}.hero-family p{font-size:14px}.hero-family-caption{bottom:12px;left:12px;font-size:11px}}
+@media(max-width:650px){.hero-family{min-height:0;height:auto;aspect-ratio:4/5;align-items:flex-end;background:#10294a}.hero-family-bg{background-size:contain;background-repeat:no-repeat;background-position:center center;animation:none;transform:none}.hero-family-overlay{background:linear-gradient(0deg,rgba(16,41,74,.68) 0%,rgba(16,41,74,.18) 34%,rgba(16,41,74,0) 68%)}.hero-family-content{padding:24px 16px 62px}.hero-family h1{font-size:30px}.hero-family p{font-size:13px}.hero-family-caption{bottom:10px;left:10px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.hero-family-bg{animation:none}}
 
 /* Keep the original whale artwork and render the ORKA word as clean text, with the R's open-back detail retained. */
-.brand-image{gap:8px;min-width:0}
-.brand-image .brand-orca{width:46px;height:46px;flex:0 0 46px;object-fit:cover;object-position:center 28%;border-radius:50%}
-.brand-wordmark{display:flex;flex-direction:column;align-items:flex-start;gap:2px;min-width:0}
-.brand-image .brand-wordmark strong{display:block;margin:0;font-family:Arial,Helvetica,sans-serif;font-size:27px;font-weight:900;letter-spacing:1px;line-height:1;color:var(--navy)}
+/* ORKA header: retain editable text lettering and make the whale emblem sit cleanly inside its frame. */
+.brand-image{gap:8px;min-width:0;max-width:245px}
+.brand-image .brand-orca{width:48px;height:48px;flex:0 0 48px;object-fit:contain;object-position:center;border-radius:50%;background:#fff;border:1px solid #e7d9d1;padding:2px}
+.brand-wordmark{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;min-width:0}
+.brand-image .brand-wordmark strong{display:block;margin:0;font-family:Arial,Helvetica,sans-serif;font-size:28px;font-weight:900;letter-spacing:1px;line-height:1;color:#10294a}
 .brand-image .brand-wordmark .orka-r{position:relative;display:inline-block;letter-spacing:0}
-.brand-image .brand-wordmark .orka-r:after{content:"";position:absolute;right:-1px;top:22%;width:5px;height:28%;background:#fff;transform:rotate(-5deg)}
-.brand-image .brand-wordmark small{display:block;margin:0;padding:0 0 0 3px;font-family:Arial,sans-serif;font-size:9px;font-weight:800;letter-spacing:2.2px;line-height:1.15;color:#a60f36}
-@media(max-width:620px){.brand-image{gap:5px}.brand-image .brand-orca{width:36px;height:36px;flex-basis:36px}.brand-image .brand-wordmark strong{font-size:22px;letter-spacing:.7px}.brand-image .brand-wordmark small{font-size:7px;letter-spacing:1.6px;padding-left:2px}.brand-image .brand-wordmark .orka-r:after{width:4px}}
+.brand-image .brand-wordmark .orka-r:after{content:"";position:absolute;right:-1px;top:20%;width:5px;height:28%;background:#fff;transform:rotate(-5deg)}
+.brand-image .brand-wordmark small{display:block;margin:0;padding:0 0 0 3px;font-family:Arial,sans-serif;font-size:9px;font-weight:800;letter-spacing:2.1px;line-height:1.15;color:#a60f36}
+@media(max-width:620px){.brand-image{gap:5px;max-width:145px}.brand-image .brand-orca{width:36px;height:36px;flex-basis:36px;padding:1px}.brand-image .brand-wordmark strong{font-size:21px;letter-spacing:.5px}.brand-image .brand-wordmark .orka-r:after{width:4px}.brand-image .brand-wordmark small{font-size:7px;letter-spacing:1.3px;padding-left:1px}}
 
 </style>
 </head>
