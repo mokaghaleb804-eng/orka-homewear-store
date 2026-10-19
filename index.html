@@ -52,7 +52,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .orka-tagline{width:100%;margin:0;padding:20px 18px 16px;text-align:center;background:#fffaf5;color:#10294a}
 .orka-tagline h1{margin:0;font-size:clamp(28px,4vw,46px);line-height:1.2;font-weight:800;letter-spacing:.01em}
 .hero-family{position:relative;isolation:isolate;width:100vw;max-width:none;margin-inline:calc(50% - 50vw);min-height:clamp(540px,66vw,800px);display:flex;align-items:center;overflow:hidden;border-radius:0;background:#10294a}
-.hero-family-bg{position:absolute;inset:0;z-index:-1;background-image:url('FB_IMG_1792303378391.jpg');background-size:cover;background-position:center 42%;transform-origin:center center;animation:orkaHeroDrift 10s ease-in-out infinite alternate;will-change:transform}
+.hero-family-slides{position:absolute;inset:0;z-index:-1;overflow:hidden;background:#10294a}
+.hero-family-slide{position:absolute;inset:0;background-size:cover;background-repeat:no-repeat;opacity:0;transform:scale(1.02);transition:opacity 1s ease,transform 7s ease;will-change:opacity,transform}
+.hero-family-slide.active{opacity:1;transform:scale(1.08)}
+.hero-family-slide.family-crop{background-size:cover}
+@media(max-width:650px){.hero-family-slide{background-size:contain;background-position:center!important;background-color:#10294a}.hero-family-slide.active{transform:none}.hero-family-slide.family-crop{background-size:contain;background-position:center!important}}
 .hero-family-overlay{position:absolute;inset:0;z-index:0;background:linear-gradient(90deg,rgba(16,41,74,.12) 0%,rgba(16,41,74,.30) 36%,rgba(16,41,74,.78) 100%);pointer-events:none}
 .hero-family-content{position:relative;z-index:1;width:100%;max-width:1320px;margin:auto;padding:76px 6vw;color:#fff;text-align:right}
 .hero-family .eyebrow{color:#f2c7cc;font-size:13px;letter-spacing:1.4px}
@@ -63,7 +67,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .hero-family .btn-outline{background:#fff;color:#10294a;border-color:#fff}
 .hero-family-caption{position:absolute;bottom:22px;left:24px;z-index:2;background:#fffdf1e8;color:#10294a;padding:10px 16px;border-radius:999px;font-weight:800;font-size:13px;box-shadow:0 8px 30px #0002}
 @keyframes orkaHeroDrift{from{transform:scale(1)}to{transform:scale(1.10)}}
-@media(max-width:650px){.hero-family{min-height:0;height:auto;aspect-ratio:4/5;align-items:flex-end;background:#10294a}.hero-family-bg{background-size:contain;background-repeat:no-repeat;background-position:center center;animation:none;transform:none}.hero-family-overlay{background:linear-gradient(0deg,rgba(16,41,74,.68) 0%,rgba(16,41,74,.18) 34%,rgba(16,41,74,0) 68%)}.hero-family-content{padding:24px 16px 62px}.hero-family h1{font-size:30px}.hero-family p{font-size:13px}.hero-family-caption{bottom:10px;left:10px;font-size:10px}}
+@media(max-width:650px){.hero-family{min-height:0;height:auto;aspect-ratio:4/5;align-items:flex-end;background:#10294a}.hero-family-slides{background:#10294a}.hero-family-overlay{background:linear-gradient(0deg,rgba(16,41,74,.68) 0%,rgba(16,41,74,.18) 34%,rgba(16,41,74,0) 68%)}.hero-family-content{padding:24px 16px 62px}.hero-family h1{font-size:30px}.hero-family p{font-size:13px}.hero-family-caption{bottom:10px;left:10px;font-size:10px}}
 @media(prefers-reduced-motion:reduce){.hero-family-bg{animation:none}}
 
 /* Keep the original whale artwork and render the ORKA word as clean text, with the R's open-back detail retained. */
@@ -71,18 +75,16 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .brand-image{gap:8px;min-width:0;max-width:245px}
 .brand-image .brand-orca{width:48px;height:48px;flex:0 0 48px;object-fit:contain;object-position:center;border-radius:50%;background:#fff;border:1px solid #e7d9d1;padding:2px}
 .brand-wordmark{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:2px;min-width:0}
-.brand-image .brand-wordmark strong{display:block;margin:0;font-family:Arial,Helvetica,sans-serif;font-size:28px;font-weight:900;letter-spacing:1px;line-height:1;color:#10294a}
-.brand-image .brand-wordmark .orka-r{position:relative;display:inline-block;letter-spacing:0}
-.brand-image .brand-wordmark .orka-r:after{content:"";position:absolute;right:-1px;top:20%;width:5px;height:28%;background:#fff;transform:rotate(-5deg)}
-.brand-image .brand-wordmark small{display:block;margin:0;padding:0 0 0 3px;font-family:Arial,sans-serif;font-size:9px;font-weight:800;letter-spacing:2.1px;line-height:1.15;color:#a60f36}
-@media(max-width:620px){.brand-image{gap:5px;max-width:145px}.brand-image .brand-orca{width:36px;height:36px;flex-basis:36px;padding:1px}.brand-image .brand-wordmark strong{font-size:21px;letter-spacing:.5px}.brand-image .brand-wordmark .orka-r:after{width:4px}.brand-image .brand-wordmark small{font-size:7px;letter-spacing:1.3px;padding-left:1px}}
+.brand-image .brand-wordmark strong{display:block;margin:0;font-family:Arial,Helvetica,sans-serif;font-size:29px;font-weight:900;letter-spacing:.7px;line-height:1;color:#10294a}
+.brand-image .brand-wordmark small{display:block;margin:3px 0 0;padding:0;font-family:Arial,sans-serif;font-size:8px;font-weight:800;letter-spacing:1.1px;line-height:1.15;color:#a60f36;white-space:nowrap}
+@media(max-width:620px){.brand-image{gap:5px;max-width:160px}.brand-image .brand-orca{width:36px;height:36px;flex-basis:36px;padding:1px}.brand-image .brand-wordmark strong{font-size:21px;letter-spacing:.4px}.brand-image .brand-wordmark small{font-size:7px;letter-spacing:.6px;margin-top:3px}}
 
 </style>
 </head>
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
 <header class="header"><nav class="nav">
-<a class="brand brand-image" href="#home" aria-label="ORKA HOMEWEAR"><img class="brand-orca" src="1792320437989.jpg" alt="علامة الحوت من شعار ORKA"><span class="brand-wordmark" aria-label="ORKA HOMEWEAR"><strong>O<span class="orka-r">R</span>KA</strong><small>HOMEWEAR</small></span></a>
+<a class="brand brand-image" href="#home" aria-label="ORKA HOMEWEAR"><img class="brand-orca" src="1792320437989.jpg" alt="علامة الحوت من شعار ORKA"><span class="brand-wordmark" aria-label="ORKA HOMEWEAR"><strong class="orka-word">ORKA</strong><small class="homewear-word">H O M E W E A R</small></span></a>
 <div class="links"><a href="#home">الرئيسية</a><a href="#shop">تسوقي الآن</a><a href="#story">حكاية ORKA</a><a href="#contact">تواصل معنا</a></div>
 <div class="nav-actions"><button class="iconbtn" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">⌕ بحث</button><button class="iconbtn" onclick="openAccount()" id="accountBtn">♙ حسابي</button><button class="iconbtn" onclick="openCart()">السلة <span class="cart-count" id="cartCount">0</span></button></div>
 </nav></header>
@@ -91,7 +93,11 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
   <h1>حكاية كل بيت</h1>
 </section>
 <section class="hero hero-family" id="home" aria-label="الواجهة الرئيسية">
-  <div class="hero-family-bg" role="img" aria-label="أجواء عائلية دافئة وملابس شتوية منزلية"></div>
+  <div class="hero-family-slides" aria-label="صور ORKA المتحركة">
+    <div class="hero-family-slide active" style="background-image:url('FB_IMG_1792303378391.jpg');background-position:center 42%"></div>
+    <div class="hero-family-slide" style="background-image:url('https://carrotegypt.com/wp-content/uploads/2024/10/2435702%D8%A3%D9%88%D8%B1%D9%86%D8%AC25__.jpg');background-position:center center"></div>
+    <div class="hero-family-slide family-crop" style="background-image:url('FB_IMG_1792303378391.jpg');background-position:70% center"></div>
+  </div>
   <div class="hero-family-overlay"></div>
   <div class="hero-family-content">
     <p>ملابس بيت شتوية مريحة للأطفال، ولحظات دافية وضحكة من القلب تجمع العيلة كلها.</p>
@@ -540,6 +546,9 @@ window.orkaAuthReady=new Promise(resolve=>{
   if(firstAuthState){firstAuthState=false;resolve(user||null);}
  });
 });
+
+// ORKA hero: automatically rotate through three visual slides.
+(()=>{const slides=[...document.querySelectorAll('.hero-family-slide')];if(slides.length<2)return;let i=0;setInterval(()=>{slides[i].classList.remove('active');i=(i+1)%slides.length;slides[i].classList.add('active')},5000)})();
 </script>
 
 </body></html>
