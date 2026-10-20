@@ -78,6 +78,17 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 .brand-image .brand-wordmark small{display:block;margin:3px 0 0;padding:0;font-family:Arial,sans-serif;font-size:8px;font-weight:800;letter-spacing:1.1px;line-height:1.15;color:#a60f36;white-space:nowrap}
 @media(max-width:620px){.brand-image{gap:5px;max-width:160px}.brand-image .brand-orca{width:36px;height:36px;flex-basis:36px;padding:1px}.brand-image .brand-wordmark strong{font-size:21px;letter-spacing:.4px}.brand-image .brand-wordmark small{font-size:7px;letter-spacing:.6px;margin-top:3px}}
 
+
+/* ORKA bilingual switch */
+.language-toggle{border:1px solid var(--gold)!important;color:var(--navy)!important;font-weight:900;white-space:nowrap;min-width:68px}
+html[lang="en"] body{font-family:Arial,Helvetica,sans-serif;direction:ltr;text-align:left}
+html[lang="en"] .topbar{text-align:center;letter-spacing:0}
+html[lang="en"] .nav,html[lang="en"] .nav-actions{direction:ltr}
+html[lang="en"] .section-head,html[lang="en"] .story-inner,html[lang="en"] .orka-sample-inner{direction:ltr}
+html[lang="en"] .footer-inner{direction:ltr}
+html[lang="en"] .wa-float{direction:ltr}
+@media(max-width:760px){.language-toggle{padding:7px 9px!important;font-size:11px!important;min-width:62px}}
+
 </style>
 </head>
 <body>
@@ -85,7 +96,7 @@ button:focus-visible,a:focus-visible,input:focus-visible,select:focus-visible{ou
 <header class="header"><nav class="nav">
 <a class="brand brand-image" href="#home" aria-label="ORKA HOMEWEAR"><img class="brand-orca" src="1792320437989.jpg" alt="علامة الحوت من شعار ORKA"><span class="brand-wordmark" aria-label="ORKA HOMEWEAR"><strong class="orka-word">ORKA</strong><small class="homewear-word">H O M E W E A R</small></span></a>
 <div class="links"><a href="#home">الرئيسية</a><a href="#shop">تسوقي الآن</a><a href="#story">حكاية ORKA</a><a href="#contact">تواصل معنا</a></div>
-<div class="nav-actions"><button class="iconbtn" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">⌕ بحث</button><button class="iconbtn" onclick="openAccount()" id="accountBtn">♙ حسابي</button><button class="iconbtn" onclick="openCart()">السلة <span class="cart-count" id="cartCount">0</span></button></div>
+<div class="nav-actions"><button class="iconbtn language-toggle" id="orkaLanguageToggle" type="button" onclick="toggleOrkaLanguage()" aria-label="Switch language">English</button><button class="iconbtn" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">⌕ بحث</button><button class="iconbtn" onclick="openAccount()" id="accountBtn">♙ حسابي</button><button class="iconbtn" onclick="openCart()">السلة <span class="cart-count" id="cartCount">0</span></button></div>
 </nav></header>
 <main>
 <section class="orka-tagline" aria-label="شعار ORKA">
@@ -618,6 +629,135 @@ window.orkaAuthReady=new Promise(resolve=>{
 
 // ORKA hero: automatically rotate through three visual slides.
 (()=>{const slides=[...document.querySelectorAll('.hero-family-slide')];if(slides.length<2)return;let i=0;setInterval(()=>{slides[i].classList.remove('active');i=(i+1)%slides.length;slides[i].classList.add('active')},5000)})();
+</script>
+
+
+<script>
+(function(){
+ const translations = {
+ "ORKA HOMEWEAR للأطفال 🐳 —":"ORKA HOMEWEAR for kids 🐳 —",
+ "بنجهّز أول مجموعة شتوية":"Our first winter collection is in the works",
+ "قريبًا":"Coming soon",
+ "الرئيسية":"Home","تسوقي الآن":"Shop now","حكاية ORKA":"Our story","تواصل معنا":"Contact us",
+ "⌕ بحث":"⌕ Search","♙ حسابي":"♙ My account","السلة ":"Cart ",
+ "حكاية كل بيت":"A story in every home",
+ "ملابس بيت شتوية مريحة للأطفال، ولحظات دافية وضحكة من القلب تجمع العيلة كلها.":"Cozy winter homewear for kids, made for warm moments and heartfelt family smiles.",
+ "اكتشفي التشكيلة ":"Explore the collection ","حكايتنا":"Our story","دفا يجمع العيلة طول الشتاء ❤️":"Warmth that brings the family together all winter ❤️",
+ "اختياراتنا المفضلة":"Our favorites","بنحضّر أول مجموعة ORKA للأطفال. المعروض هنا أفكار إلهام فقط، وليست منتجات للبيع؛ الصور والأسعار والمقاسات النهائية هتتحدد بعد تجهيز العينات.":"We’re preparing ORKA’s first kidswear collection. These images are for inspiration only, not for sale. Final photos, prices, and sizes will be confirmed after samples are ready.",
+ "كل المنتجات":"All products","أولاد":"Boys","بنات":"Girls","أطقم شتوي":"Winter sets",
+ "دليل المقاسات حسب العمر　＋":"Size guide by age　＋","العمر":"Age","المقاس المعروض":"Displayed size","ملاحظة":"Note",
+ "للأطفال الأصغر":"For younger children","اختاري حسب بنية الطفل":"Choose based on your child’s build","راجعي وصف المنتج":"Check the product description","تأكدي من القياسات قبل الطلب":"Check measurements before ordering",
+ "دليل مبدئي حسب الفئات العمرية فقط، وليس جدول قياسات بالسنتيمتر. هنضيف قياسات الصدر والطول وطول البنطلون بعد اعتماد عينات ORKA الفعلية. لو محتارة في المقاس، اسألي خدمة العملاء على واتساب قبل الطلب.":"This is a preliminary age-based guide, not a centimeter measurement chart. Chest, height, and trouser measurements will be added after ORKA samples are approved. If you’re unsure about sizing, contact customer service on WhatsApp before ordering.",
+ "اسألي عن المقاس على واتساب":"Ask about sizing on WhatsApp",
+ "طقم شتوي دافي — كحلي":"Cozy winter set — Navy","طقم بناتي — وردي هادي":"Girls’ set — Soft pink","بيجامة شتوي — يوم دافي":"Winter pajamas — Cozy day",
+ "طقم أطفال — بيج وكريمي":"Kids’ set — Beige & cream","طقم بناتي — تفاصيل لطيفة":"Girls’ set — Sweet details","طقم شتوي — ألوان الطبيعة":"Winter set — Nature tones",
+ "طقم يومي — أزرق هادي":"Everyday set — Soft blue","طقم بناتي شتوي — كريمي":"Girls’ winter set — Cream",
+ "تصور مبدئي للتصميم — السعر النهائي بعد اعتماد العينات":"Design concept — final price after sample approval",
+ "المقاس":"Size","اختاري المقاس":"Choose a size","الألوان المتاحة مبدئيًا":"Preliminary color options","اللون":"Color","السعر قريبًا":"Price coming soon",
+ "كحلي":"Navy","أحمر":"Red","كريمي":"Cream","وردي":"Pink","موف":"Mauve","أزرق":"Blue","رمادي":"Grey","بيج":"Beige","أخضر":"Green","وردي فاتح":"Light pink",
+ "راحة طول اليوم":"Comfort all day","تصميمات مناسبة للعب والنوم":"Designed for play and sleep","ألوان مبهجة":"Cheerful colors","اختيارات تناسب كل شخصية":"Options for every personality","تفاصيل بحب":"Details made with love","اهتمام بالتفاصيل الصغيرة":"Care in every little detail","توصيل لحد البيت":"Delivery to your door","خيارات شحن داخل مصر":"Shipping options across Egypt",
+ "أول مجموعة ORKA بتتجهّز بحب.":"The first ORKA collection is being made with love.",
+ "بنطوّر عينات ملابس بيت أطفال بعناية. الصور والألوان المعروضة هنا إلهام مبدئي فقط؛ الأسعار والخامات والمقاسات النهائية هتتحدد بعد مراجعة العينات.":"We’re carefully developing kids’ homewear samples. Images and colors are for inspiration only; final prices, fabrics, and sizes will be set after sample review.",
+ "للأطفال فقط":"Kids only","اختيار اللون والمقاس":"Choose color and size","الحوت علامة ORKA":"The whale is ORKA’s signature","استكشفي الأفكار":"Explore the ideas",
+ "البيت أحلى":"Home feels better","بضحكتهم.":"with their smiles.","ORKA HOMEWEAR اتعملت علشان كل طفل يحس بالراحة وهو بيلعب، بيتعلم، أو بيستعد لنوم هادي. بنختار تصميمات بسيطة وعملية، ونؤمن إن أجمل التفاصيل هي اللي بتخلّي يومهم أسهل وأحلى.":"ORKA HOMEWEAR was created to help every child feel comfortable while playing, learning, or getting ready for a peaceful sleep. We choose simple, practical designs and believe the smallest details can make their day happier.",
+ "اختاري طقم لطفلك":"Choose a set for your child",
+ "محتاجين نساعدك؟":"How can we help?","خدمة عملاء ORKA على واتساب.":"ORKA customer service is available on WhatsApp.",
+ "واتساب ORKA":"ORKA WhatsApp","استفسارات وطلبات العملاء":"Customer questions and orders","تواصل على واتساب":"Chat on WhatsApp","البريد الإلكتروني":"Email","سيُضاف البريد الرسمي لاحقًا":"Official email coming soon","إنستجرام":"Instagram",
+ "أسئلة بتتكرر":"Frequently asked questions","معلومات واضحة تساعدك قبل ما تطلبي.":"Clear information to help you before ordering.",
+ "إزاي أطلب من ORKA؟":"How do I order from ORKA?","اختاري المنتجات والمقاسات، أضيفيها للسلة، واملي بيانات التوصيل. بعد كده هتتفتح رسالة الطلب على واتساب لمراجعتها وإرسالها لخدمة العملاء.":"Choose products and sizes, add them to your cart, and fill in your delivery details. An order message will then open in WhatsApp for you to review and send to customer service.",
+ "هل الدفع عند الاستلام متاح؟":"Is cash on delivery available?","الموقع مجهز حاليًا لاختيار الدفع عند الاستلام. توافر الخدمة وتفاصيلها النهائية لازم تتأكد مع خدمة العملاء قبل تأكيد الطلب.":"The site currently offers cash on delivery as a selection. Please confirm availability and final details with customer service before placing your order.",
+ "الشحن بكام وبيوصل إمتى؟":"How much is shipping, and when will it arrive?","تكلفة الشحن وموعد الوصول بيتحددوا حسب المحافظة وشركة الشحن، وخدمة العملاء هتأكدهم قبل اعتماد الطلب.":"Shipping cost and delivery time depend on your governorate and the courier. Customer service will confirm both before the order is approved.",
+ "أقدر أستبدل أو أرجع المنتج؟":"Can I exchange or return a product?","يمكن طلب الاستبدال أو الاسترجاع خلال 14 يومًا من الاستلام، وفقًا لشروط السياسة والحقوق القانونية للمستهلك. ":"You may request an exchange or return within 14 days of delivery, subject to the policy terms and consumer rights. ",
+ "اقرئي سياسة الاستبدال والاسترجاع وابدئي الطلب من هنا ↗":"Read the exchange and return policy and start here ↗",
+ "ملاحظة قبل الإطلاق:":"Pre-launch note:","الأسعار والصور الحالية تجريبية، والموقع لا يحفظ الطلبات في قاعدة بيانات؛ الطلب يُرسل عبر واتساب ويحتاج تأكيد خدمة العملاء.":"Current prices and images are placeholders. Orders are sent through WhatsApp and require customer-service confirmation.",
+ "خليكي أول واحدة تعرف":"Be the first to know","اشتركي علشان توصلك أخبار التشكيلات الجديدة والعروض.":"Subscribe for updates on new collections and special offers.","بريدك الإلكتروني":"Your email address","اشتركي معنا":"Subscribe",
+ "حكاية كل بيت":"A story in every home","ملابس بيت للأطفال بتفاصيل بسيطة ولحظات أكبر.":"Kids’ homewear with simple details and bigger moments.",
+ "تسوقي":"Shop","أطقم الأولاد":"Boys’ sets","أطقم البنات":"Girls’ sets","التشكيلة الشتوية":"Winter collection",
+ "خدمة العملاء":"Customer service","اتصل بنا":"Contact us","الشحن والتوصيل":"Shipping & delivery","الاستبدال والاسترجاع":"Exchanges & returns","الأسئلة الشائعة":"FAQs",
+ "تابعينا":"Follow us","تابعي جديد ORKA HOMEWEAR وعروضنا على حساباتنا الرسمية.":"Follow ORKA HOMEWEAR for news and offers on our official channels.",
+ "فيسبوك ↗":"Facebook ↗","إنستجرام — قريبًا":"Instagram — coming soon","© 2026 ORKA HOMEWEAR. جميع الحقوق محفوظة.":"© 2026 ORKA HOMEWEAR. All rights reserved.","صُنع بحب لأيام صغيرة سعيدة.":"Made with love for little happy days.",
+ "إعادة ضبط":"Reset zoom","اضغطي على الصورة لمشاهدة التفاصيل مكبّرة 🔍":"Tap the image to zoom in 🔍","استخدمي + و− أو عجلة الماوس للتكبير، واسحبي الصورة لرؤية التفاصيل":"Use +/− or the mouse wheel to zoom, then drag to explore details",
+ "سلة مشترياتك":"Your shopping cart","اسم المنتج":"Product name","اختاري اللون":"Choose a color","البيع هيفتح قريبًا":"Sales opening soon",
+ "دي صورة إلهام مبدئية وليست منتجًا معروضًا للبيع. تفاصيل المنتج والمقاسات والألوان والسعر هتتحدد بعد اعتماد عينات ORKA.":"This is an inspiration image, not a product for sale. Product details, sizes, colors, and prices will be confirmed after ORKA samples are approved.",
+ "اسألي عن المنتج على واتساب":"Ask about this product on WhatsApp","ادخلي لحسابك بسهولة ♡":"Sign in to your account ♡",
+ "اختاري الدخول بحساب Google أو Facebook. مش محتاجين كود SMS لتسجيل الدخول.":"Sign in with Google or Facebook. No SMS code is needed to sign in.",
+ "🌐 المتابعة باستخدام Google":"🌐 Continue with Google","إدارة الطلبات":"Order management","جاري تحميل الطلبات...":"Loading orders...",
+ "تم تسجيل الدخول بنجاح":"Signed in successfully","تم تسجيل الخروج":"Signed out","الاسم بالكامل":"Full name","رقم الموبايل":"Mobile number",
+ "المحافظة":"Governorate","العنوان بالتفصيل":"Full address","ملاحظات (اختياري)":"Notes (optional)","طريقة الدفع":"Payment method","الدفع عند الاستلام":"Cash on delivery",
+ "بيانات التوصيل":"Delivery details","اسم العميل":"Customer name","01xxxxxxxxx":"01xxxxxxxxx","اختاري المحافظة":"Choose your governorate",
+ "المنطقة، الشارع، رقم العقار، علامة مميزة":"Area, street, building number, nearby landmark","أي تفاصيل إضافية":"Any additional details","تجهيز الطلب":"Prepare order",
+ "إجمالي المنتجات":"Products subtotal","تكلفة الشحن ستُحدد حسب المحافظة قبل تأكيد الطلب. الأسعار المعروضة تجريبية لحين إدخال أسعار المنتجات الفعلية.":"Shipping will be calculated by governorate before confirmation. Displayed prices are placeholders until actual prices are added.",
+ "سلتك لسه فاضية.":"Your cart is empty.","اختاري طقم يفرّح طفلك ♡":"Choose a set to make your child smile ♡",
+ "عرض فكرة التصميم":"View design concept","قريبًا":"Coming soon","المفضلة":"Favorites",
+ "نقطة":"points","عميل ORKA":"ORKA customer","الطلبات":"Orders","أهلًا يا ":"Welcome, ",
+ "نقطة واحدة لكل 50 جنيهًا من قيمة المنتجات، مرة واحدة فقط.":"One point per EGP 50 spent on products, credited once after delivery.",
+ "سياسة الولاء: نقطة واحدة لكل 50 جنيهًا من قيمة المنتجات، ولا تُضاف النقاط قبل الاستلام.":"Loyalty policy: earn one point per EGP 50 of product value. Points are added only after delivery.",
+ "طريقة الدخول: ":"Sign-in method: ","رقم الموبايل: ":"Mobile number: "
+ };
+ const attrTranslations = {
+ "اختاري المقاس":"Choose a size","بريدك الإلكتروني":"Your email address","اسم العميل":"Customer name",
+ "01xxxxxxxxx":"01xxxxxxxxx","المنطقة، الشارع، رقم العقار، علامة مميزة":"Area, street, building number, nearby landmark",
+ "أي تفاصيل إضافية":"Any additional details","علامة الحوت من شعار ORKA":"The whale mark from the ORKA logo",
+ "تصميم طقم شتوي كحلي":"Navy winter set concept","تصميم طقم بناتي وردي":"Pink girls’ set concept",
+ "تصميم بيجامة شتوية":"Winter pajamas concept","تصميم طقم أطفال بيج وكريمي":"Beige and cream kids’ set concept",
+ "تصميم طقم بناتي":"Girls’ set concept","تصميم طقم شتوي بألوان الطبيعة":"Winter set in nature-inspired colors",
+ "تصميم طقم يومي أزرق":"Blue everyday set","تصميم طقم بناتي كريمي":"Cream girls’ set",
+ "إغلاق":"Close","إغلاق التكبير":"Close zoom","تصغير الصورة":"Zoom out","تكبير الصورة":"Zoom in",
+ "إعادة ضبط الصورة":"Reset image","زيارة صفحة ORKA HOMEWEAR على فيسبوك":"Visit ORKA HOMEWEAR on Facebook",
+ "تواصل مع ORKA عبر واتساب":"Contact ORKA on WhatsApp","عارض تكبير صورة المنتج":"Product image zoom viewer"
+ };
+ const textOriginals = new WeakMap(), attrOriginals = new WeakMap();
+ function translateTextNode(node, lang){
+   if(!textOriginals.has(node)) textOriginals.set(node,node.nodeValue);
+   const original=textOriginals.get(node);
+   const key=original.trim();
+   if(!key)return;
+   const translated=lang==='en'?(translations[key]||translations[key.replace(/\s+$/,'')]||null):original;
+   if(translated!==null && translated!==undefined){
+     const leading=(original.match(/^\s*/)||[''])[0], trailing=(original.match(/\s*$/)||[''])[0];
+     const value=lang==='en'?leading+translated+trailing:original;
+     if(node.nodeValue!==value)node.nodeValue=value;
+   }
+ }
+ function translateAttributes(el,lang){
+   ['placeholder','aria-label','title','alt'].forEach(attr=>{
+     if(!el.hasAttribute(attr))return;
+     let map=attrOriginals.get(el);if(!map){map={};attrOriginals.set(el,map)}
+     if(!(attr in map))map[attr]=el.getAttribute(attr);
+     const original=map[attr];const value=lang==='en'?(attrTranslations[original]||translations[original]||original):original;
+     if(el.getAttribute(attr)!==value)el.setAttribute(attr,value);
+   });
+ }
+ function walk(root,lang){
+   if(root.nodeType===Node.TEXT_NODE){translateTextNode(root,lang);return}
+   if(root.nodeType!==Node.ELEMENT_NODE && root.nodeType!==Node.DOCUMENT_NODE)return;
+   if(root.nodeType===Node.ELEMENT_NODE)translateAttributes(root,lang);
+   const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
+   let node;while((node=walker.nextNode()))translateTextNode(node,lang);
+   if(root.querySelectorAll)root.querySelectorAll('*').forEach(el=>translateAttributes(el,lang));
+ }
+ window.setOrkaLanguage=function(lang){
+   lang=lang==='en'?'en':'ar';
+   document.documentElement.lang=lang;document.documentElement.dir=lang==='en'?'ltr':'rtl';
+   document.body.dir=lang==='en'?'ltr':'rtl';
+   walk(document.body,lang);
+   const btn=document.getElementById('orkaLanguageToggle');
+   if(btn){btn.textContent=lang==='en'?'العربية':'English';btn.setAttribute('aria-label',lang==='en'?'Switch to Arabic':'Switch to English')}
+   try{localStorage.setItem('orka-language',lang)}catch(e){}
+ };
+ window.toggleOrkaLanguage=function(){window.setOrkaLanguage(document.documentElement.lang==='en'?'ar':'en')};
+ const observer=new MutationObserver(mutations=>{
+   const lang=document.documentElement.lang==='en'?'en':'ar';
+   mutations.forEach(m=>{
+     if(m.type==='childList')m.addedNodes.forEach(n=>{if(n.nodeType===Node.ELEMENT_NODE||n.nodeType===Node.TEXT_NODE)walk(n,lang)});
+     else if(m.type==='characterData')translateTextNode(m.target,lang);
+     else if(m.type==='attributes'&&m.target.nodeType===Node.ELEMENT_NODE)translateAttributes(m.target,lang);
+   });
+ });
+ observer.observe(document.body,{subtree:true,childList:true,characterData:true,attributes:true,attributeFilter:['placeholder','aria-label','title','alt']});
+ let saved='ar';try{saved=localStorage.getItem('orka-language')||'ar'}catch(e){}
+ window.setOrkaLanguage(saved);
+})();
 </script>
 
 </body></html>
