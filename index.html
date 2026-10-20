@@ -294,7 +294,7 @@ window.addEventListener('load',function(){try{if(typeof renderProducts==='functi
 
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
-import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence, EmailAuthProvider, signInWithEmailAndPassword, linkWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
+import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence, EmailAuthProvider, signInWithEmailAndPassword, linkWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
 import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, query, where, limit, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyB3O_4JMgRni_EUWCaQzQ9dVuK4dRjJwtQ",
@@ -310,45 +310,61 @@ const auth = getAuth(app);
 try { await setPersistence(auth, browserLocalPersistence); }
 catch (err) { console.warn("ORKA local auth persistence unavailable; Firebase default persistence will be used:", err); }
 const db = getFirestore(app);
+async function finishOrkaSocialLogin(user){
+ // Create the Firestore customer profile for Google/Facebook users too.
+ // A phone number is collected at checkout, so it is not required for social sign-in.
+ try {
+  const profileRef=doc(db,'customers',user.uid);
+  const profileSnap=await getDoc(profileRef);
+  if(!profileSnap.exists()){
+   await setDoc(profileRef,{
+    displayName:String(user.displayName||'عميل ORKA').trim().slice(0,80)||'عميل ORKA',
+    email:user.email||'',
+    phoneNumber:'',
+    points:0,
+    createdAt:serverTimestamp()
+   });
+  } else {
+   const profile=profileSnap.data();
+   const updates={};
+   if(!profile.displayName&&user.displayName)updates.displayName=String(user.displayName).slice(0,80);
+   if(!profile.email&&user.email)updates.email=user.email;
+   if(!Number.isInteger(profile.points))updates.points=0;
+   if(Object.keys(updates).length)await updateDoc(profileRef,updates);
+  }
+ } catch(profileErr) {
+  console.error('ORKA social customer profile setup:',profileErr);
+ }
+ const modal=document.getElementById('accountModal');if(modal)modal.classList.remove('show');
+ document.body.style.overflow='';
+ if(window.toast)window.toast('تم تسجيل الدخول بنجاح ♡');
+}
 window.loginOrkaSocial=async(providerName)=>{
  try{
   const provider=providerName==='facebook'?new FacebookAuthProvider():new GoogleAuthProvider();
   provider.setCustomParameters(providerName==='google'?{prompt:'select_account'}:{});
-  const credential=await signInWithPopup(auth,provider);
-  const user=credential.user;
-  // Create the Firestore customer profile for Google/Facebook users too.
-  // A phone number is collected at checkout, so it is not required for social sign-in.
-  try {
-   const profileRef=doc(db,'customers',user.uid);
-   const profileSnap=await getDoc(profileRef);
-   if(!profileSnap.exists()){
-    await setDoc(profileRef,{
-     displayName:String(user.displayName||'عميل ORKA').trim().slice(0,80)||'عميل ORKA',
-     email:user.email||'',
-     phoneNumber:'',
-     points:0,
-     createdAt:serverTimestamp()
-    });
-   } else {
-    const profile=profileSnap.data();
-    const updates={};
-    if(!profile.displayName&&user.displayName)updates.displayName=String(user.displayName).slice(0,80);
-    if(!profile.email&&user.email)updates.email=user.email;
-    if(!Number.isInteger(profile.points))updates.points=0;
-    if(Object.keys(updates).length)await updateDoc(profileRef,updates);
-   }
-  } catch(profileErr) {
-   console.error('ORKA social customer profile setup:',profileErr);
+  // Mobile browsers can close Firebase popups immediately; use the safer redirect flow there.
+  const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||window.matchMedia('(max-width: 768px)').matches;
+  if(isMobile){
+   await signInWithRedirect(auth,provider);
+   return;
   }
-  const modal=document.getElementById('accountModal');if(modal)modal.classList.remove('show');
-  document.body.style.overflow='';
-  if(window.toast)window.toast('تم تسجيل الدخول بنجاح ♡');
+  const credential=await signInWithPopup(auth,provider);
+  await finishOrkaSocialLogin(credential.user);
  }catch(err){
   console.error('ORKA social sign-in:',err);
-  const msg=err?.code==='auth/operation-not-allowed'?'طريقة الدخول دي لسه محتاجة تفعيل من إعدادات Firebase.':err?.code==='auth/popup-closed-by-user'?'تم إغلاق نافذة تسجيل الدخول قبل إكمالها.':err?.code==='auth/account-exists-with-different-credential'?'الإيميل ده مسجل بطريقة دخول مختلفة؛ جرّبي نفس الطريقة السابقة.':'تعذر تسجيل الدخول. تأكدي من تفعيل مزود الدخول والدومين في Firebase.';
+  const msg=err?.code==='auth/operation-not-allowed'?'طريقة الدخول دي لسه محتاجة تفعيل من إعدادات Firebase.':err?.code==='auth/popup-closed-by-user'?'تم إغلاق نافذة تسجيل الدخول قبل إكمالها.':err?.code==='auth/account-exists-with-different-credential'?'الإيميل ده مسجل بطريقة دخول مختلفة؛ جرّبي نفس الطريقة السابقة.':err?.code==='auth/unauthorized-domain'?'دومين الموقع غير مضاف ضمن Authorized domains في Firebase.':'تعذر تسجيل الدخول. راجعي اتصال الإنترنت وإعدادات مزود الدخول في Firebase.';
   if(window.toast)window.toast(msg);else alert(msg);
  }
 };
+// Complete the sign-in after a mobile redirect returns to the ORKA site.
+getRedirectResult(auth).then(async result=>{
+ if(result&&result.user)await finishOrkaSocialLogin(result.user);
+}).catch(err=>{
+ console.error('ORKA social redirect sign-in:',err);
+ const msg=err?.code==='auth/operation-not-allowed'?'Google Login غير مفعّل في Firebase.':err?.code==='auth/unauthorized-domain'?'دومين الموقع غير مصرح به في Firebase.':'تعذر إكمال تسجيل الدخول. افتحي حسابي وحاولي مرة أخرى.';
+ if(window.toast)window.toast(msg);
+});
 
 window.checkOrkaAdminAccess = async(uid) => {
  if(!uid){window.orkaIsAdmin=false;return false;}
