@@ -638,7 +638,7 @@ window.orkaAuthReady=new Promise(resolve=>{
  "ORKA HOMEWEAR للأطفال 🐳 —":"ORKA HOMEWEAR for kids 🐳 —",
  "بنجهّز أول مجموعة شتوية":"Our first winter collection is in the works",
  "قريبًا":"Coming soon",
- "الرئيسية":"Home","تسوقي الآن":"Shop now","حكاية ORKA":"Our story","تواصل معنا":"Contact us",
+ "الرئيسية":"Home","تسوقي الآن":"Shop now","حكاية ORKA":"Our story","تواصل معنا":"Contact us","السلة":"Cart","اكتشفي التشكيلة":"Explore the collection","2-3 سنوات":"2–3 years","4-5 سنوات":"4–5 years","6-7 سنوات":"6–7 years","8-9 سنوات":"8–9 years","2–3 سنوات":"2–3 years","4–5 سنوات":"4–5 years","6–7 سنوات":"6–7 years","8–9 سنوات":"8–9 years",
  "⌕ بحث":"⌕ Search","♙ حسابي":"♙ My account","السلة ":"Cart ",
  "حكاية كل بيت":"A story in every home",
  "ملابس بيت شتوية مريحة للأطفال، ولحظات دافية وضحكة من القلب تجمع العيلة كلها.":"Cozy winter homewear for kids, made for warm moments and heartfelt family smiles.",
@@ -738,7 +738,7 @@ window.orkaAuthReady=new Promise(resolve=>{
  }
  window.setOrkaLanguage=function(lang){
    lang=lang==='en'?'en':'ar';
-   document.documentElement.lang=lang;document.documentElement.dir=lang==='en'?'ltr':'rtl';
+   document.documentElement.lang=lang;document.documentElement.dir=lang==='en'?'ltr':'rtl';document.title=lang==='en'?'ORKA HOMEWEAR | A story in every home':'ORKA HOMEWEAR | حكاية كل بيت';
    document.body.dir=lang==='en'?'ltr':'rtl';
    walk(document.body,lang);
    const btn=document.getElementById('orkaLanguageToggle');
