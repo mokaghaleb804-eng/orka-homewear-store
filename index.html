@@ -213,6 +213,39 @@ html[lang="en"] .product-modal .modal-close{left:auto;right:10px}
  *,*::before,*::after{scroll-behavior:auto!important;transition-duration:.01ms!important;animation-duration:.01ms!important;animation-iteration-count:1!important}
 }
 
+
+/* Mobile alignment + refined ORKA wordmark */
+html,body{width:100%;max-width:100%;overflow-x:clip}
+*,*::before,*::after{box-sizing:border-box}
+img,video,iframe{max-width:100%}
+@supports not (overflow:clip){html,body{overflow-x:hidden}}
+.brand-image{display:flex;align-items:center;flex:0 1 auto;min-width:0;max-width:100%;gap:10px}
+.brand-image .brand-orca{display:block;flex:0 0 48px;width:48px;height:48px;object-fit:contain;object-position:center;border-radius:50%;padding:2px;background:#fff;border:1px solid #eadde0}
+.brand-wordmark{min-width:0;flex:0 1 auto}
+.brand-image .brand-wordmark strong{font-family:Arial,Helvetica,sans-serif;font-size:30px;font-weight:900;letter-spacing:1.1px;line-height:.98;color:#10294a;text-shadow:0 1px 0 rgba(255,255,255,.8);position:relative}
+.brand-image .brand-wordmark small{font-family:Arial,Helvetica,sans-serif;font-size:8px;font-weight:800;letter-spacing:1.35px;line-height:1.2;color:#a60f36;white-space:nowrap}
+.brand-image .brand-wordmark strong:after{content:"";display:block;width:35%;height:2px;margin-top:4px;border-radius:2px;background:linear-gradient(90deg,#a60f36,#d6a85f)}
+@media(max-width:900px){
+ .nav{width:100%;max-width:100%;padding-inline:14px;gap:12px}
+ .brand-image .brand-orca{width:42px;height:42px;flex-basis:42px}
+ .brand-image .brand-wordmark strong{font-size:26px}
+ .brand-image .brand-wordmark small{font-size:7px;letter-spacing:1px}
+ .nav-actions{min-width:0;max-width:100%}
+}
+@media(max-width:620px){
+ .nav{width:100%;padding:9px 12px;gap:5px;justify-content:space-between;overflow:visible}
+ .brand.brand-image{flex:0 1 auto;min-width:0;max-width:46%;gap:5px}
+ .brand-image .brand-orca{width:35px;height:35px;flex-basis:35px;padding:1px}
+ .brand-image .brand-wordmark strong{font-size:21px;letter-spacing:.65px}
+ .brand-image .brand-wordmark small{font-size:6.4px;letter-spacing:.48px}
+ .brand-image .brand-wordmark strong:after{height:2px;width:32%;margin-top:3px}
+ .nav-actions{display:flex;align-items:center;justify-content:flex-end;gap:4px;flex:0 1 auto;min-width:0;margin:0}
+ .nav-actions .iconbtn{max-width:100%;padding:7px 6px;font-size:10px;white-space:nowrap}
+ .nav-actions .language-toggle{min-width:56px!important}
+ .hero-family,.hero-family-slides,.hero-family-slide{max-width:100%;width:100%}
+ .section,.section-inner,.products,.footer-inner,.story-inner{max-width:100%;min-width:0}
+}
+
 </style>
 </head>
 <body>
