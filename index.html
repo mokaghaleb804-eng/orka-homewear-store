@@ -339,32 +339,38 @@ async function finishOrkaSocialLogin(user){
  document.body.style.overflow='';
  if(window.toast)window.toast('تم تسجيل الدخول بنجاح ♡');
 }
+function showOrkaAuthError(err,stage){
+ console.error('ORKA social sign-in ['+stage+']:',err);
+ const code=String(err?.code||'unknown');
+ let msg='تعذر تسجيل الدخول. جرّبي فتح الموقع في Chrome وتحققي من اتصال الإنترنت.';
+ if(code==='auth/operation-not-allowed')msg='تسجيل الدخول باستخدام Google غير مفعّل في Firebase Authentication.';
+ else if(code==='auth/unauthorized-domain')msg='عنوان الموقع غير مسموح به في Firebase Authorized domains.';
+ else if(code==='auth/popup-blocked')msg='المتصفح منع نافذة Google. افتحي الموقع مباشرة في Chrome واسمحي بالنوافذ المنبثقة.';
+ else if(code==='auth/popup-closed-by-user')msg='نافذة تسجيل Google اتقفلت قبل اكتمال الدخول. حاولي مرة أخرى من Chrome.';
+ else if(code==='auth/account-exists-with-different-credential')msg='هذا البريد مسجل بطريقة دخول أخرى. استخدمي طريقة الدخول السابقة.';
+ else if(code==='auth/network-request-failed')msg='الاتصال بالإنترنت انقطع أثناء تسجيل الدخول. حاولي مرة أخرى.';
+ const host=document.getElementById('accountContent');
+ if(host)host.insertAdjacentHTML('beforeend','<p class="account-warning" style="overflow-wrap:anywhere">'+escapeAccountText(msg)+'<br><small style="direction:ltr;display:inline-block">Firebase: '+escapeAccountText(code)+'</small></p>');
+ if(window.toast)window.toast(msg);else alert(msg);
+}
 window.loginOrkaSocial=async(providerName)=>{
+ const host=document.getElementById('accountContent');
  try{
+  if(host)host.insertAdjacentHTML('beforeend','<p id="orkaLoginProgress" class="account-warning">جاري فتح تسجيل الدخول الآمن…</p>');
   const provider=providerName==='facebook'?new FacebookAuthProvider():new GoogleAuthProvider();
-  provider.setCustomParameters(providerName==='google'?{prompt:'select_account'}:{});
-  // Mobile browsers can close Firebase popups immediately; use the safer redirect flow there.
-  const isMobile=/Android|iPhone|iPad|iPod/i.test(navigator.userAgent)||window.matchMedia('(max-width: 768px)').matches;
-  if(isMobile){
-   await signInWithRedirect(auth,provider);
-   return;
-  }
+  if(providerName==='google')provider.setCustomParameters({prompt:'select_account'});
+  // Use a popup on mobile too so browser storage/redirect restrictions cannot silently return without a result.
   const credential=await signInWithPopup(auth,provider);
   await finishOrkaSocialLogin(credential.user);
  }catch(err){
-  console.error('ORKA social sign-in:',err);
-  const msg=err?.code==='auth/operation-not-allowed'?'طريقة الدخول دي لسه محتاجة تفعيل من إعدادات Firebase.':err?.code==='auth/popup-closed-by-user'?'تم إغلاق نافذة تسجيل الدخول قبل إكمالها.':err?.code==='auth/account-exists-with-different-credential'?'الإيميل ده مسجل بطريقة دخول مختلفة؛ جرّبي نفس الطريقة السابقة.':err?.code==='auth/unauthorized-domain'?'دومين الموقع غير مضاف ضمن Authorized domains في Firebase.':'تعذر تسجيل الدخول. راجعي اتصال الإنترنت وإعدادات مزود الدخول في Firebase.';
-  if(window.toast)window.toast(msg);else alert(msg);
+  const progress=document.getElementById('orkaLoginProgress');if(progress)progress.remove();
+  showOrkaAuthError(err,'popup');
  }
 };
-// Complete the sign-in after a mobile redirect returns to the ORKA site.
+// Keep redirect-result handling as a recovery path for any older pending sign-in attempt.
 getRedirectResult(auth).then(async result=>{
  if(result&&result.user)await finishOrkaSocialLogin(result.user);
-}).catch(err=>{
- console.error('ORKA social redirect sign-in:',err);
- const msg=err?.code==='auth/operation-not-allowed'?'Google Login غير مفعّل في Firebase.':err?.code==='auth/unauthorized-domain'?'دومين الموقع غير مصرح به في Firebase.':'تعذر إكمال تسجيل الدخول. افتحي حسابي وحاولي مرة أخرى.';
- if(window.toast)window.toast(msg);
-});
+}).catch(err=>showOrkaAuthError(err,'redirect'));
 
 window.checkOrkaAdminAccess = async(uid) => {
  if(!uid){window.orkaIsAdmin=false;return false;}
