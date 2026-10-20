@@ -246,6 +246,30 @@ img,video,iframe{max-width:100%}
  .section,.section-inner,.products,.footer-inner,.story-inner{max-width:100%;min-width:0}
 }
 
+
+/* ORKA product-card art direction: consistent frames, full-garment visibility, quiet brand cue */
+.product{border:1px solid #e8e1d8;border-radius:15px;box-shadow:0 5px 18px rgba(16,41,74,.045);background:#fff;overflow:hidden}
+.product:hover{transform:translateY(-3px);box-shadow:0 13px 30px rgba(16,41,74,.11);border-color:#d8c4b5}
+.product-img-wrap{height:clamp(220px,25vw,290px);display:flex;align-items:center;justify-content:center;background:linear-gradient(145deg,#fbf8f2,#f1ece3);padding:8px}
+.product-img-wrap:before{content:"تصور مبدئي";position:absolute;top:11px;right:11px;z-index:2;background:rgba(255,255,255,.93);color:#8d2337;border:1px solid rgba(166,15,54,.13);border-radius:30px;padding:5px 9px;font-size:10px;font-weight:800;letter-spacing:.1px;pointer-events:none}
+.product-img{width:100%;height:100%;min-height:0;object-fit:contain;object-position:center;display:block;border-radius:9px;transition:transform .35s ease}
+.product:hover .product-img{transform:scale(1.025)}
+.product-info{padding:16px}
+.product-info h3{font-size:15px;line-height:1.6;letter-spacing:-.1px}
+.product-info>p{color:#7a7f88;font-size:11px;line-height:1.8}
+.product .price{font-weight:900;color:#a60f36}
+.product .variant-block{margin-top:12px}
+.product select:focus,.product button:focus-visible{outline:2px solid #b98b56;outline-offset:2px}
+@media(max-width:900px){.product-img-wrap{height:clamp(190px,31vw,250px)}.product-info{padding:12px}}
+@media(max-width:620px){
+ .product{border-radius:12px}
+ .product-img-wrap{height:clamp(170px,49vw,215px);padding:5px}
+ .product-img-wrap:before{top:7px;right:7px;padding:4px 7px;font-size:9px}
+ .product-info{padding:10px}
+ .product-info h3{font-size:12px;line-height:1.6}
+ .product-info>p{font-size:10px}
+}
+
 </style>
 </head>
 <body>
