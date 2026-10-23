@@ -341,15 +341,8 @@ img,video,iframe{max-width:100%}
 .header .nav{max-width:none;width:100%;padding:10px 16px 12px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 18px}
 .header .nav > .orka-new-header-logo{order:0;flex:0 0 100%;width:100%;max-width:none;min-width:0;justify-content:center;margin:0;padding:0}
 .header .nav > .orka-new-header-logo .orka-header-full-logo{display:block;width:min(100%,760px);height:auto;max-height:190px;flex:0 1 auto;object-fit:contain;object-position:center;border:0;border-radius:0;box-shadow:none}
-/* ORKA logo: slow right-to-left reveal, then rest for one minute; repeat every 70 seconds */
-@keyframes orkaLogoRightToLeftMinute{
-  0%{clip-path:inset(0 0 0 100%)}
-  1%{clip-path:inset(0 0 0 100%)}
-  14.285%{clip-path:inset(0 0 0 0)}
-  100%{clip-path:inset(0 0 0 0)}
-}
-.header .nav > .orka-new-header-logo .orka-header-full-logo{animation:orkaLogoRightToLeftMinute 70s linear infinite}
-@media(prefers-reduced-motion:reduce){.header .nav > .orka-new-header-logo .orka-header-full-logo{animation:none;clip-path:none}}
+/* ORKA logo: no parent-level wipe or repeating curtain; each letter animates once inside the SVG */
+.header .nav > .orka-new-header-logo .orka-header-full-logo{animation:none!important;clip-path:none!important;}
 
 .header .nav > .links{order:1;flex:1 1 auto;justify-content:center}
 .header .nav > .nav-actions{order:2;flex:0 0 auto;justify-content:center}
