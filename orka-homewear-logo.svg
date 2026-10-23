@@ -2,9 +2,9 @@
   <rect width="1000" height="300" fill="#ffffff"/>
   <style>
     .orka-letter{font-family:Georgia,'Times New Roman',serif;font-weight:bold;font-size:190px;fill:#10294A;opacity:0;animation:orkaLetterArrive 70s linear infinite}
-    .orka-o{animation-delay:3s}.orka-r{animation-delay:2s}.orka-k{animation-delay:1s}.orka-a{animation-delay:0s}
+    .orka-o{animation-delay:0s}.orka-r{animation-delay:1s}.orka-k{animation-delay:2s}.orka-a{animation-delay:3s}
     .orka-trail{font-family:Georgia,'Times New Roman',serif;font-weight:bold;font-size:190px;fill:#A60F36;opacity:0;animation:orkaTrailFade 70s linear infinite}
-    .trail-o{animation-delay:3s}.trail-r{animation-delay:2s}.trail-k{animation-delay:1s}.trail-a{animation-delay:0s}
+    .trail-o{animation-delay:0s}.trail-r{animation-delay:1s}.trail-k{animation-delay:2s}.trail-a{animation-delay:3s}
     @keyframes orkaLetterArrive{0%,4.2%{opacity:0;transform:translateX(500px)}5.2%{opacity:1;transform:translateX(0)}100%{opacity:1;transform:translateX(0)}}
     @keyframes orkaTrailFade{0%,4.2%{opacity:0;transform:translateX(500px)}5.2%{opacity:.2;transform:translateX(0)}7%{opacity:0;transform:translateX(0)}100%{opacity:0;transform:translateX(0)}}
     @media(prefers-reduced-motion:reduce){.orka-letter{animation:none!important;opacity:1!important;transform:none!important}.orka-trail{display:none!important}}
