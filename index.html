@@ -353,6 +353,19 @@ img,video,iframe{max-width:100%}
  .header .nav > .nav-actions .iconbtn:first-child{font-size:0;width:34px;height:34px;padding:0}
 }
 
+
+/* ORKA hero: wide landscape family photos, full-bleed and responsive */
+.hero-family{min-height:clamp(420px,52vw,720px)}
+.hero-family-slide{background-size:cover;background-position:center center;background-repeat:no-repeat}
+@media(max-width:650px){
+ .hero-family{min-height:440px}
+ .hero-family-slide{background-size:cover;background-position:center center}
+ .hero-family-overlay{background:linear-gradient(90deg,rgba(16,41,74,.18) 0%,rgba(16,41,74,.40) 42%,rgba(16,41,74,.78) 100%)}
+}
+/* Give the navy announcement strip more vertical presence */
+.topbar{padding:13px 16px;font-size:13px;line-height:1.6}
+@media(max-width:620px){.topbar{padding:10px 10px;font-size:11px;line-height:1.55}}
+
 </style>
 
 <style id="orka-final-logo-style">
@@ -376,9 +389,9 @@ img,video,iframe{max-width:100%}
 </section>
 <section class="hero hero-family" id="home" aria-label="الواجهة الرئيسية">
   <div class="hero-family-slides" aria-label="صور ORKA المتحركة">
-    <div class="hero-family-slide active" style="background-image:url('FB_IMG_1792303378391.jpg');background-position:center center"></div>
-    <div class="hero-family-slide" style="background-image:url('https://images.unsplash.com/photo-1519238263530-99bdd11df2ea?auto=format&fit=crop&w=2000&q=85');background-position:center center"></div>
-    <div class="hero-family-slide" style="background-image:url('https://images.unsplash.com/photo-1516627145497-ae6968895b74?auto=format&fit=crop&w=2000&q=85');background-position:center center"></div>
+    <div class="hero-family-slide active" style="background-image:url('https://images.pexels.com/photos/6617770/pexels-photo-6617770.jpeg?auto=compress&cs=tinysrgb&w=2400');background-position:center center"></div>
+    <div class="hero-family-slide" style="background-image:url('https://images.pexels.com/photos/6617784/pexels-photo-6617784.jpeg?auto=compress&cs=tinysrgb&w=2400');background-position:center center"></div>
+    <div class="hero-family-slide" style="background-image:url('https://images.pexels.com/photos/19869818/pexels-photo-19869818.jpeg?auto=compress&cs=tinysrgb&w=2400');background-position:center center"></div>
   </div>
   <div class="hero-family-overlay"></div>
   <div class="hero-family-content">
