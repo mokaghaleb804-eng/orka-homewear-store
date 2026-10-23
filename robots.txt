@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://www.orkahomewear.com/sitemap.xml
+Sitemap: https://orkahomewear.com/sitemap.xml
