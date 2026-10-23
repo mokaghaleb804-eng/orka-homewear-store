@@ -1030,4 +1030,64 @@ window.orkaAuthReady=new Promise(resolve=>{
 
 
 
+
+<style id="orka-opening-celebration-style">
+#orka-opening-celebration{position:fixed;inset:0;z-index:100000;display:flex;align-items:center;justify-content:center;padding:22px;background:rgba(9,24,43,.78);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);opacity:0;visibility:hidden;transition:opacity .45s ease,visibility .45s ease}
+#orka-opening-celebration.is-visible{opacity:1;visibility:visible}
+#orka-opening-celebration .orka-celebration-card{position:relative;isolation:isolate;overflow:hidden;width:min(430px,100%);padding:36px 24px 28px;text-align:center;color:#10294A;background:linear-gradient(155deg,#fffdf8 0%,#f8f0e4 100%);border:1px solid rgba(221,184,112,.8);border-radius:24px;box-shadow:0 28px 90px rgba(0,0,0,.32);transform:translateY(18px) scale(.96);transition:transform .6s cubic-bezier(.2,.8,.2,1)}
+#orka-opening-celebration.is-visible .orka-celebration-card{transform:translateY(0) scale(1)}
+#orka-opening-celebration .orka-celebration-glow{position:absolute;z-index:-1;width:230px;height:230px;top:-105px;left:calc(50% - 115px);border-radius:50%;background:rgba(210,169,93,.18);filter:blur(8px)}
+#orka-opening-celebration .orka-celebration-logo{position:relative;display:grid;place-items:center;width:112px;height:112px;margin:0 auto 20px;border-radius:50%;background:#fff;border:1px solid #d8bb80;box-shadow:0 0 0 8px rgba(216,187,128,.13),0 12px 32px rgba(16,41,74,.14);animation:orkaCelebrationLogo 1.15s cubic-bezier(.2,.8,.2,1) both}
+#orka-opening-celebration .orka-celebration-logo img{display:block;width:100%;height:100%;object-fit:contain;border-radius:50%;padding:7px}
+#orka-opening-celebration .orka-celebration-kicker{display:block;color:#a60f36;font-size:10px;letter-spacing:3px;font-weight:900;margin-bottom:10px}
+#orka-opening-celebration h2{margin:0;color:#10294A;font-size:clamp(25px,6vw,34px);font-weight:900;line-height:1.5}
+#orka-opening-celebration .orka-celebration-slogan{margin:8px 0 21px;color:#7b6040;font-size:16px;font-weight:800}
+#orka-opening-celebration .orka-celebration-rule{width:58px;height:2px;margin:0 auto 19px;background:linear-gradient(90deg,transparent,#b98b45,transparent)}
+#orka-opening-celebration .orka-celebration-welcome{margin:0 auto 24px;max-width:300px;color:#596474;font-size:13px;line-height:1.9}
+#orka-opening-celebration .orka-celebration-enter{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:190px;padding:13px 22px;border:0;border-radius:7px;background:#10294A;color:#fff;font-weight:800;font-size:13px;box-shadow:0 7px 18px rgba(16,41,74,.18);transition:transform .2s,background .2s}
+#orka-opening-celebration .orka-celebration-enter:hover{background:#244f75;transform:translateY(-2px)}
+#orka-opening-celebration .orka-celebration-close{position:absolute;top:12px;left:12px;width:34px;height:34px;border:1px solid #e5dccb;border-radius:50%;background:#fff;color:#526071;font-size:22px;line-height:1}
+#orka-opening-celebration .orka-celebration-spark{position:absolute;top:-14px;width:7px;height:20px;border-radius:3px;background:#c7a05a;opacity:0;animation:orkaCelebrationFall 2.5s ease-in-out infinite}
+#orka-opening-celebration .orka-celebration-spark:nth-of-type(1){left:13%;animation-delay:.1s;transform:rotate(24deg)}
+#orka-opening-celebration .orka-celebration-spark:nth-of-type(2){left:28%;height:12px;background:#a60f36;animation-delay:.8s;transform:rotate(-28deg)}
+#orka-opening-celebration .orka-celebration-spark:nth-of-type(3){left:72%;height:14px;animation-delay:.4s;transform:rotate(35deg)}
+#orka-opening-celebration .orka-celebration-spark:nth-of-type(4){left:87%;background:#a60f36;animation-delay:1.1s;transform:rotate(-20deg)}
+@keyframes orkaCelebrationLogo{0%{opacity:0;transform:scale(.68) rotate(-8deg)}70%{opacity:1;transform:scale(1.06) rotate(2deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+@keyframes orkaCelebrationFall{0%{opacity:0;transform:translateY(-5px) rotate(0)}20%{opacity:1}80%{opacity:.8}100%{opacity:0;transform:translateY(175px) rotate(170deg)}}
+@media(max-width:480px){#orka-opening-celebration .orka-celebration-card{padding:32px 19px 24px;border-radius:20px}#orka-opening-celebration .orka-celebration-logo{width:96px;height:96px;margin-bottom:17px}#orka-opening-celebration .orka-celebration-welcome{font-size:12px}}
+@media(prefers-reduced-motion:reduce){#orka-opening-celebration *,#orka-opening-celebration *:before,#orka-opening-celebration *:after{animation:none!important;transition:none!important}}
+</style>
+<div id="orka-opening-celebration" role="dialog" aria-modal="true" aria-labelledby="orka-celebration-title" aria-hidden="true">
+  <div class="orka-celebration-card">
+    <span class="orka-celebration-glow" aria-hidden="true"></span>
+    <span class="orka-celebration-spark" aria-hidden="true"></span><span class="orka-celebration-spark" aria-hidden="true"></span><span class="orka-celebration-spark" aria-hidden="true"></span><span class="orka-celebration-spark" aria-hidden="true"></span>
+    <button type="button" class="orka-celebration-close" aria-label="إغلاق الاحتفال" id="orka-celebration-close">×</button>
+    <div class="orka-celebration-logo"><img src="1792320437989.jpg" alt="ORKA HOMEWEAR"></div>
+    <span class="orka-celebration-kicker">A NEW STORY BEGINS</span>
+    <h2 id="orka-celebration-title">أهلاً بيكم في عالم ORKA</h2>
+    <div class="orka-celebration-rule"></div>
+    <p class="orka-celebration-slogan">حكاية كل بيت</p>
+    <p class="orka-celebration-welcome">بكل حب، بنرحّب بيكم في أول خطوة من حكايتنا معاكم.</p>
+    <button type="button" class="orka-celebration-enter" id="orka-celebration-enter">ابدأوا الحكاية <span aria-hidden="true">←</span></button>
+  </div>
+</div>
+<script id="orka-opening-celebration-script">
+(()=> {
+ const overlay=document.getElementById('orka-opening-celebration');
+ if(!overlay)return;
+ const key='orka-opening-celebration-seen-v1';
+ const close=()=>{overlay.classList.remove('is-visible');overlay.setAttribute('aria-hidden','true');document.body.style.overflow='';};
+ const enter=document.getElementById('orka-celebration-enter');
+ const closeButton=document.getElementById('orka-celebration-close');
+ [enter,closeButton].forEach(button=>button&&button.addEventListener('click',close));
+ overlay.addEventListener('click',event=>{if(event.target===overlay)close()});
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&overlay.classList.contains('is-visible'))close()});
+ let seen=false;
+ try{seen=localStorage.getItem(key)==='1'}catch(error){}
+ if(seen)return;
+ try{localStorage.setItem(key,'1')}catch(error){}
+ window.setTimeout(()=>{overlay.classList.add('is-visible');overlay.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'},650);
+})();
+</script>
+
 </body></html>
