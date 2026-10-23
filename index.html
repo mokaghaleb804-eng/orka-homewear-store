@@ -300,6 +300,30 @@ img,video,iframe{max-width:100%}
 }
 
 
+/* ORKA noticeable interaction layer — motion without zooming or cropping hero images */
+.orka-motion-ready .orka-reveal{transform:translateY(38px) scale(.985);transition:opacity .85s cubic-bezier(.2,.7,.25,1),transform .85s cubic-bezier(.2,.7,.25,1);transition-delay:var(--orka-delay,0ms)}
+.orka-motion-ready .orka-reveal.is-visible{transform:translateY(0) scale(1)}
+.product{transition:transform .32s cubic-bezier(.2,.7,.25,1),box-shadow .32s ease,border-color .32s ease}
+.product:hover{transform:translateY(-9px) scale(1.015);box-shadow:0 22px 46px rgba(16,41,74,.16);border-color:#d9c8b9}
+.product-img-wrap{overflow:hidden}
+.product-img{transition:transform .55s cubic-bezier(.2,.7,.25,1),filter .35s ease}
+.product:hover .product-img{transform:scale(1.065);filter:saturate(1.06)}
+.add,.details-btn,.btn,.filter,.color-choice,.iconbtn{transition:transform .22s ease,box-shadow .22s ease,background-color .22s ease,color .22s ease,border-color .22s ease}
+.add:hover,.details-btn:hover,.btn:hover{transform:translateY(-3px);box-shadow:0 9px 20px rgba(16,41,74,.15)}
+.add:active,.details-btn:active,.btn:active,.iconbtn:active,.filter:active,.color-choice:active{transform:scale(.96)}
+.color-choice:hover,.filter:hover{transform:translateY(-2px)}
+.links a::after{content:"";position:absolute;right:0;bottom:1px;width:0;height:2px;background:#a60f36;transition:width .28s ease}
+.links a:hover::after{width:100%}
+.hero-family-caption{animation:orkaCaptionFloat 2.8s ease-in-out infinite;box-shadow:0 10px 32px rgba(0,0,0,.16)}
+.hero-family .btn{box-shadow:0 8px 22px rgba(166,15,54,.24)}
+.hero-family .btn:hover{box-shadow:0 14px 30px rgba(166,15,54,.35)}
+#orka-scroll-progress{height:4px;box-shadow:0 0 12px rgba(166,15,54,.38)}
+.orka-backtop{width:50px;height:50px;font-size:24px}
+.orka-backtop.is-visible{animation:orkaBackPop .38s cubic-bezier(.2,.8,.2,1) both}
+@keyframes orkaBackPop{from{transform:translateY(18px) scale(.7)}to{transform:translateY(0) scale(1)}}
+@media(hover:none){.product:hover{transform:none;box-shadow:var(--shadow)}.product:hover .product-img{transform:none}.add:hover,.details-btn:hover,.btn:hover{transform:none}}
+@media(prefers-reduced-motion:reduce){.orka-motion-ready .orka-reveal,.product,.product-img,.add,.details-btn,.btn,.filter,.color-choice,.iconbtn,.links a::after,.hero-family-caption,.orka-backtop.is-visible{animation:none!important;transition:none!important;transform:none!important}.orka-motion-ready .orka-reveal{opacity:1!important}}
+
 /* ORKA premium motion polish */
 #orka-scroll-progress{position:fixed;top:0;right:0;width:0;height:3px;background:linear-gradient(90deg,#a60f36,#d9ad69);z-index:1000;pointer-events:none}
 .orka-backtop{position:fixed;bottom:22px;left:22px;z-index:50;width:44px;height:44px;border:1px solid rgba(255,255,255,.55);border-radius:50%;background:rgba(16,41,74,.94);color:#fff;font-size:20px;box-shadow:0 10px 28px rgba(16,41,74,.22);display:grid;place-items:center;opacity:0;visibility:hidden;transform:translateY(12px);transition:opacity .25s ease,transform .25s ease,visibility .25s ease}
