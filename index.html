@@ -1075,17 +1075,20 @@ window.orkaAuthReady=new Promise(resolve=>{
 (()=> {
  const overlay=document.getElementById('orka-opening-celebration');
  if(!overlay)return;
- const key='orka-opening-celebration-seen-v1';
+ // Set this to the actual launch date/time when ORKA officially launches.
+ // Example: '2026-10-26T10:00:00+03:00'
+ const launchAt=null;
+ if(!launchAt)return;
+ const launchTime=new Date(launchAt).getTime();
+ const endTime=launchTime+(3*24*60*60*1000);
+ const now=Date.now();
+ if(!Number.isFinite(launchTime)||now<launchTime||now>=endTime)return;
  const close=()=>{overlay.classList.remove('is-visible');overlay.setAttribute('aria-hidden','true');document.body.style.overflow='';};
  const enter=document.getElementById('orka-celebration-enter');
  const closeButton=document.getElementById('orka-celebration-close');
  [enter,closeButton].forEach(button=>button&&button.addEventListener('click',close));
  overlay.addEventListener('click',event=>{if(event.target===overlay)close()});
  document.addEventListener('keydown',event=>{if(event.key==='Escape'&&overlay.classList.contains('is-visible'))close()});
- let seen=false;
- try{seen=localStorage.getItem(key)==='1'}catch(error){}
- if(seen)return;
- try{localStorage.setItem(key,'1')}catch(error){}
  window.setTimeout(()=>{overlay.classList.add('is-visible');overlay.setAttribute('aria-hidden','false');document.body.style.overflow='hidden'},650);
 })();
 </script>
