@@ -1,10 +1,13 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" role="img" aria-label="ORKA HOMEWEAR">
   <rect width="1000" height="300" fill="#ffffff"/>
   <style>
-    .orka-letter{font-family:Georgia,'Times New Roman',serif;font-weight:bold;font-size:190px;fill:#10294A;opacity:1;transform:translateX(0);animation:orkaLetterArrive 1.1s cubic-bezier(.22,.75,.25,1) both}
-    .orka-o{animation-delay:0s}.orka-r{animation-delay:1s}.orka-k{animation-delay:2s}.orka-a{animation-delay:3s}
+    .orka-letter{font-family:Georgia,'Times New Roman',serif;font-weight:bold;font-size:190px;fill:#10294A;opacity:1;transform:translateX(0);animation:orkaLetterArrive .9s cubic-bezier(.22,.75,.25,1) both}
+    .orka-o{animation-delay:0s}.orka-r{animation-delay:.85s}.orka-k{animation-delay:1.7s}.orka-a{animation-delay:2.55s}
+    .homewear-letter{font-family:Georgia,'Times New Roman',serif;font-size:48px;fill:#A60F36;opacity:1;transform:translateX(0);animation:homewearLetterArrive .42s cubic-bezier(.22,.75,.25,1) both}
+    .home-h{animation-delay:3.5s}.home-o{animation-delay:3.85s}.home-m{animation-delay:4.2s}.home-e1{animation-delay:4.55s}.home-w{animation-delay:4.9s}.home-e2{animation-delay:5.25s}.home-a{animation-delay:5.6s}.home-r{animation-delay:5.95s}
     @keyframes orkaLetterArrive{from{opacity:0;transform:translateX(500px)}to{opacity:1;transform:translateX(0)}}
-    @media(prefers-reduced-motion:reduce){.orka-letter{animation:none!important;opacity:1!important;transform:none!important}}
+    @keyframes homewearLetterArrive{from{opacity:0;transform:translateX(180px)}to{opacity:1;transform:translateX(0)}}
+    @media(prefers-reduced-motion:reduce){.orka-letter,.homewear-letter{animation:none!important;opacity:1!important;transform:none!important}}
   </style>
   <g aria-hidden="true">
     <text class="orka-letter orka-o" x="250" y="172" text-anchor="middle">O</text>
@@ -12,5 +15,14 @@
     <text class="orka-letter orka-k" x="530" y="172" text-anchor="middle">K</text>
     <text class="orka-letter orka-a" x="670" y="172" text-anchor="middle">A</text>
   </g>
-  <text x="500" y="258" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="48" letter-spacing="18" fill="#A60F36">HOMEWEAR</text>
+  <g aria-hidden="true" text-anchor="middle">
+    <text class="homewear-letter home-h" x="310" y="258">H</text>
+    <text class="homewear-letter home-o" x="364" y="258">O</text>
+    <text class="homewear-letter home-m" x="422" y="258">M</text>
+    <text class="homewear-letter home-e1" x="476" y="258">E</text>
+    <text class="homewear-letter home-w" x="534" y="258">W</text>
+    <text class="homewear-letter home-e2" x="591" y="258">E</text>
+    <text class="homewear-letter home-a" x="640" y="258">A</text>
+    <text class="homewear-letter home-r" x="694" y="258">R</text>
+  </g>
 </svg>
