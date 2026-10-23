@@ -1030,7 +1030,7 @@ window.orkaAuthReady=new Promise(resolve=>{
 
 <style id="orka-whale-visitor-style">
 /* ORKA signature whale: a brief swim across the page once per minute */
-#orka-whale-visitor{position:fixed;left:0;bottom:clamp(72px,14vh,150px);z-index:9998;width:clamp(112px,19vw,190px);height:auto;pointer-events:none;opacity:0;transform:translate3d(-130vw,0,0);filter:drop-shadow(0 8px 12px rgba(13,35,64,.22));}
+#orka-whale-visitor{position:fixed;left:0;top:clamp(42px,5.5vw,68px);z-index:9998;width:clamp(76px,10vw,118px);height:auto;pointer-events:none;opacity:0;transform:translate3d(-130vw,0,0);filter:drop-shadow(0 5px 8px rgba(13,35,64,.2));}
 #orka-whale-visitor.is-swimming{opacity:1;animation:orkaWhaleSwim 8s cubic-bezier(.45,.05,.55,.95) both;}
 #orka-whale-visitor .orka-whale-body{fill:#102b4e}
 #orka-whale-visitor .orka-whale-belly{fill:#f6f0e8}
@@ -1045,9 +1045,9 @@ window.orkaAuthReady=new Promise(resolve=>{
   48%{transform:translate3d(0,-2px,0) rotate(-2deg)}
   68%{transform:translate3d(42vw,-12px,0) rotate(3deg)}
   82%{opacity:1;transform:translate3d(72vw,8px,0) rotate(10deg)}
-  100%{opacity:0;transform:translate3d(125vw,130px,0) rotate(24deg)}
+  100%{opacity:0;transform:translate3d(125vw,18px,0) rotate(12deg)}
 }
-@media (max-width:600px){#orka-whale-visitor{bottom:18vh;width:112px}}
+@media (max-width:600px){#orka-whale-visitor{top:38px;width:76px}}
 @media (prefers-reduced-motion:reduce){#orka-whale-visitor.is-swimming{animation:none;opacity:1;transform:translate3d(calc(50vw - 50%),0,0)}}
 </style>
 <svg id="orka-whale-visitor" viewBox="0 0 220 125" role="img" aria-label="ORKA whale" xmlns="http://www.w3.org/2000/svg">
