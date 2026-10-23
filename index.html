@@ -336,6 +336,23 @@ img,video,iframe{max-width:100%}
 @keyframes orkaCaptionFloat{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
 @media(max-width:620px){.orka-backtop{bottom:14px;left:14px;width:40px;height:40px}}
 @media(prefers-reduced-motion:reduce){#orka-scroll-progress,.orka-backtop,.orka-motion-ready .orka-reveal,.hero-family-content,.hero-family-caption{animation:none!important;transition:none!important;transform:none!important}.orka-motion-ready .orka-reveal{opacity:1!important}}
+
+/* ORKA: full-width, prominent header logo */
+.header .nav{max-width:none;width:100%;padding:10px 16px 12px;display:flex;flex-wrap:wrap;justify-content:center;gap:10px 18px}
+.header .nav > .orka-new-header-logo{order:0;flex:0 0 100%;width:100%;max-width:none;min-width:0;justify-content:center;margin:0;padding:0}
+.header .nav > .orka-new-header-logo .orka-header-full-logo{display:block;width:min(100%,760px);height:auto;max-height:190px;flex:0 1 auto;object-fit:contain;object-position:center;border:0;border-radius:0;box-shadow:none}
+.header .nav > .links{order:1;flex:1 1 auto;justify-content:center}
+.header .nav > .nav-actions{order:2;flex:0 0 auto;justify-content:center}
+@media(max-width:620px){
+ .header .nav{padding:6px 8px 9px;gap:7px}
+ .header .nav > .orka-new-header-logo{flex-basis:100%;width:100%}
+ .header .nav > .orka-new-header-logo .orka-header-full-logo{width:100%;max-width:100%;height:auto;max-height:118px;object-fit:contain}
+ .header .nav > .links{display:none}
+ .header .nav > .nav-actions{width:100%;justify-content:center;gap:7px}
+ .header .nav > .nav-actions .iconbtn{font-size:11px;padding:7px 10px}
+ .header .nav > .nav-actions .iconbtn:first-child{font-size:0;width:34px;height:34px;padding:0}
+}
+
 </style>
 
 <style id="orka-final-logo-style">
