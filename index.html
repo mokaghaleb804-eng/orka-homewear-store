@@ -1027,4 +1027,46 @@ window.orkaAuthReady=new Promise(resolve=>{
 })();
 </script>
 
+
+<style id="orka-whale-visitor-style">
+/* ORKA signature whale: a brief swim across the page once per minute */
+#orka-whale-visitor{position:fixed;left:0;bottom:clamp(72px,14vh,150px);z-index:9998;width:clamp(112px,19vw,190px);height:auto;pointer-events:none;opacity:0;transform:translate3d(-130vw,0,0);filter:drop-shadow(0 8px 12px rgba(13,35,64,.22));}
+#orka-whale-visitor.is-swimming{opacity:1;animation:orkaWhaleSwim 8s cubic-bezier(.45,.05,.55,.95) both;}
+#orka-whale-visitor .orka-whale-body{fill:#102b4e}
+#orka-whale-visitor .orka-whale-belly{fill:#f6f0e8}
+#orka-whale-visitor .orka-whale-accent{fill:#8d2338}
+#orka-whale-visitor .orka-whale-eye{fill:#fff}
+#orka-whale-visitor .orka-whale-pupil{fill:#102b4e}
+#orka-whale-visitor .orka-whale-bubble{fill:#8bcbd4;opacity:.85}
+@keyframes orkaWhaleSwim{
+  0%{opacity:0;transform:translate3d(-130vw,0,0) rotate(-5deg)}
+  8%{opacity:1}
+  25%{transform:translate3d(-55vw,-12px,0) rotate(2deg)}
+  48%{transform:translate3d(0,-2px,0) rotate(-2deg)}
+  68%{transform:translate3d(42vw,-12px,0) rotate(3deg)}
+  82%{opacity:1;transform:translate3d(72vw,8px,0) rotate(10deg)}
+  100%{opacity:0;transform:translate3d(125vw,130px,0) rotate(24deg)}
+}
+@media (max-width:600px){#orka-whale-visitor{bottom:18vh;width:112px}}
+@media (prefers-reduced-motion:reduce){#orka-whale-visitor.is-swimming{animation:none;opacity:1;transform:translate3d(calc(50vw - 50%),0,0)}}
+</style>
+<svg id="orka-whale-visitor" viewBox="0 0 220 125" role="img" aria-label="ORKA whale" xmlns="http://www.w3.org/2000/svg">
+  <g>
+    <path class="orka-whale-body" d="M18 69C24 43 55 27 94 31c30 3 52 17 68 19 15 2 24-4 34-14-1 17-8 29-21 35 10 8 21 8 31 4-9 18-28 26-48 17-19 16-44 22-71 18C47 105 24 91 18 69Z"/>
+    <path class="orka-whale-belly" d="M31 73c16 14 37 20 62 18 23-2 39-10 51-19-14 23-39 33-65 31-22-2-39-12-48-30Z"/>
+    <path class="orka-whale-accent" d="M74 32c7-13 19-18 32-16-7 7-10 13-10 20Z"/>
+    <path class="orka-whale-body" d="M111 35c-1-12 6-20 17-24-3 11-2 18 5 25Z"/>
+    <ellipse class="orka-whale-eye" cx="54" cy="57" rx="7" ry="8"/>
+    <circle class="orka-whale-pupil" cx="56" cy="58" r="3.5"/>
+    <path d="M38 75q12 9 24 1" fill="none" stroke="#8d2338" stroke-width="3" stroke-linecap="round"/>
+    <circle class="orka-whale-bubble" cx="27" cy="39" r="5"/>
+    <circle class="orka-whale-bubble" cx="17" cy="27" r="3"/>
+    <circle class="orka-whale-bubble" cx="35" cy="20" r="2.5"/>
+    <path d="M91 103q-5 10 2 16 7-9 2-16" fill="#8bcbd4" opacity=".85"/>
+  </g>
+</svg>
+<script id="orka-whale-visitor-script">
+(()=>{const whale=document.getElementById('orka-whale-visitor');if(!whale||window.matchMedia('(prefers-reduced-motion: reduce)').matches)return;let timer;const swim=()=>{whale.classList.remove('is-swimming');void whale.getBoundingClientRect();whale.classList.add('is-swimming');clearTimeout(timer);timer=setTimeout(()=>whale.classList.remove('is-swimming'),8200)};setTimeout(()=>{swim();setInterval(swim,60000)},12000)})();
+</script>
+
 </body></html>
