@@ -2,9 +2,9 @@
   <rect width="1000" height="300" fill="#ffffff"/>
   <style>
     .orka-letter{font-family:Georgia,'Times New Roman',serif;font-weight:bold;font-size:190px;fill:#10294A;opacity:1;transform:translateX(0);animation:orkaLetterArrive .16s cubic-bezier(.22,.75,.25,1) both}
-    .orka-o{animation-delay:0s}.orka-r{animation-delay:.14s}.orka-k{animation-delay:.28s}.orka-a{animation-delay:.42s}
+    .orka-o{animation-delay:0s}.orka-r{animation-delay:.10s}.orka-k{animation-delay:.20s}.orka-a{animation-delay:.30s}
     .homewear-letter{font-family:Georgia,'Times New Roman',serif;font-size:48px;fill:#A60F36;opacity:1;transform:translateX(0);animation:homewearLetterArrive .16s cubic-bezier(.22,.75,.25,1) both}
-    .home-h{animation-delay:1.35s}.home-o{animation-delay:1.49s}.home-m{animation-delay:1.63s}.home-e1{animation-delay:1.77s}.home-w{animation-delay:1.91s}.home-e2{animation-delay:2.05s}.home-a{animation-delay:2.19s}.home-r{animation-delay:2.33s}
+    .home-h{animation-delay:.46s}.home-o{animation-delay:.56s}.home-m{animation-delay:.66s}.home-e1{animation-delay:.76s}.home-w{animation-delay:.86s}.home-e2{animation-delay:.96s}.home-a{animation-delay:1.06s}.home-r{animation-delay:1.16s}
     @keyframes orkaLetterArrive{from{opacity:0;transform:translateX(500px)}to{opacity:1;transform:translateX(0)}}
     @keyframes homewearLetterArrive{from{opacity:0;transform:translateX(180px)}to{opacity:1;transform:translateX(0)}}
     @media(prefers-reduced-motion:reduce){.orka-letter,.homewear-letter{animation:none!important;opacity:1!important;transform:none!important}}
