@@ -15,7 +15,7 @@
     <text class="orka-letter orka-k" x="530" y="172" text-anchor="middle">K</text>
     <text class="orka-letter orka-a" x="670" y="172" text-anchor="middle">A</text>
   </g>
-  <g aria-hidden="true" text-anchor="middle">
+  <g aria-hidden="true" text-anchor="middle" transform="translate(500 0) scale(1.32 1) translate(-500 0)">
     <text class="homewear-letter home-h" x="310" y="258">H</text>
     <text class="homewear-letter home-o" x="364" y="258">O</text>
     <text class="homewear-letter home-m" x="422" y="258">M</text>
