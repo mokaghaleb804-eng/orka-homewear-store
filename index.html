@@ -415,6 +415,46 @@ img,video,iframe{max-width:100%}
 
 
 
+
+<style id="orka-brand-palette">
+/* ORKA palette inspired by the original multicolor kids logo */
+:root{
+  --orka-turquoise:#68B7BB;
+  --orka-coral:#E67578;
+  --orka-yellow:#E9BD4C;
+  --orka-mint:#83BFAF;
+  --orka-pale:#F2FAF9;
+  --orka-white:#FFFFFF;
+  --orka-ink:#244B55;
+}
+/* Calm, light page surfaces */
+body{background:var(--orka-pale)!important;color:var(--orka-ink)}
+section, .section, .products-section, .product-section, .shop-section{background:transparent}
+.product-card,.product-item,.cart-panel,.modal-content,.checkout-card,.order-card,
+.category-card,.feature-card,.faq-item,.account-card{
+  background:var(--orka-white);
+}
+/* Header and navigation use the logo's water turquoise */
+.header,.site-header,header.header{background:var(--orka-turquoise)!important}
+.header .nav a,.header .nav button,.header .nav .brand:not(.brand-image){color:var(--orka-white)}
+/* Main actions: coral, with clear white text */
+button.primary,.btn-primary,.primary-button,.checkout-button,
+button[type="submit"],.add-to-cart,.buy-now,.checkout-btn{
+  background:var(--orka-coral)!important;
+  border-color:var(--orka-coral)!important;
+  color:var(--orka-white)!important;
+}
+/* Warm yellow for promo accents; mint for secondary details */
+.sale-badge,.discount-badge,.promo-badge,.offer-badge{
+  background:var(--orka-yellow)!important;color:#4A3B13!important;
+}
+.secondary-button,.btn-secondary,.outline-button{
+  border-color:var(--orka-mint)!important;color:var(--orka-ink)!important;
+}
+a{ text-decoration-color:var(--orka-mint); }
+:focus-visible{outline:2px solid var(--orka-coral);outline-offset:2px}
+</style>
+
 </head>
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
