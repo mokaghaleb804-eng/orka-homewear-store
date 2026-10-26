@@ -1,28 +1,37 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 300" role="img" aria-label="ORKA HOMEWEAR">
-  <rect width="1000" height="300" fill="#ffffff"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 600" role="img" aria-label="ORKA kids homewear">
+  <title>ORKA kids homewear</title>
+  <rect width="1000" height="600" fill="#fff"/>
   <style>
-    .orka-letter{font-family:Georgia,'Times New Roman',serif;font-weight:bold;font-size:190px;fill:#10294A;opacity:1;transform:translateX(0);animation:orkaLetterArrive .22s cubic-bezier(.22,.75,.25,1) both}
-    .orka-o{animation-delay:0s}.orka-r{animation-delay:.12s}.orka-k{animation-delay:.24s}.orka-a{animation-delay:.36s}
-    .homewear-letter{font-family:Georgia,'Times New Roman',serif;font-size:48px;fill:#A60F36;opacity:1;transform:translateX(0);animation:homewearLetterArrive .16s cubic-bezier(.22,.75,.25,1) both}
-    .home-h{animation-delay:.46s}.home-o{animation-delay:.56s}.home-m{animation-delay:.66s}.home-e1{animation-delay:.76s}.home-w{animation-delay:.86s}.home-e2{animation-delay:.96s}.home-a{animation-delay:1.06s}.home-r{animation-delay:1.16s}
-    @keyframes orkaLetterArrive{from{opacity:0;transform:translateX(500px)}to{opacity:1;transform:translateX(0)}}
-    @keyframes homewearLetterArrive{from{opacity:0;transform:translateX(180px)}to{opacity:1;transform:translateX(0)}}
-    @media(prefers-reduced-motion:reduce){.orka-letter,.homewear-letter{animation:none!important;opacity:1!important;transform:none!important}}
+    .letter{font-family:'Trebuchet MS',Arial,sans-serif;font-size:300px;font-weight:900;stroke-linecap:round;stroke-linejoin:round;opacity:0;animation:arrive .55s cubic-bezier(.2,.8,.2,1) forwards}
+    .o{stroke:#67b8b7;fill:none;stroke-width:48;animation-delay:0s}
+    .r{fill:#e76562;animation-delay:.65s}
+    .k{fill:#edbd43;animation-delay:1.3s}
+    .a{fill:#78bca9;animation-delay:1.95s}
+    .subtitle{font-family:'Trebuchet MS',Arial,sans-serif;font-size:66px;font-weight:800;fill:#70b8c8;opacity:0;animation:arrive .45s ease-out 2.55s forwards}
+    .decor{fill:#79bdcb;opacity:0;animation:arrive .3s ease-out .25s forwards}
+    @keyframes arrive{from{opacity:0;transform:translateX(170px)}to{opacity:1;transform:translateX(0)}}
+    @media(prefers-reduced-motion:reduce){.letter,.subtitle,.decor{animation:none!important;opacity:1!important;transform:none!important}}
   </style>
-  <g aria-hidden="true">
-    <text class="orka-letter orka-o" x="250" y="172" text-anchor="middle">O</text>
-    <text class="orka-letter orka-r" x="390" y="172" text-anchor="middle">R</text>
-    <text class="orka-letter orka-k" x="530" y="172" text-anchor="middle">K</text>
-    <text class="orka-letter orka-a" x="670" y="172" text-anchor="middle">A</text>
+  <g>
+    <text class="letter o" x="92" y="365">O</text>
+    <text class="letter r" x="310" y="365">R</text>
+    <text class="letter k" x="505" y="365">K</text>
+    <text class="letter a" x="710" y="365">A</text>
   </g>
-  <g aria-hidden="true" text-anchor="middle" transform="translate(500 0) scale(1.32 1) translate(-500 0)">
-    <text class="homewear-letter home-h" x="310" y="258">H</text>
-    <text class="homewear-letter home-o" x="364" y="258">O</text>
-    <text class="homewear-letter home-m" x="422" y="258">M</text>
-    <text class="homewear-letter home-e1" x="476" y="258">E</text>
-    <text class="homewear-letter home-w" x="534" y="258">W</text>
-    <text class="homewear-letter home-e2" x="591" y="258">E</text>
-    <text class="homewear-letter home-a" x="640" y="258">A</text>
-    <text class="homewear-letter home-r" x="694" y="258">R</text>
+  <g transform="translate(135 250)">
+    <path d="M-10 10 C20 -28 91 -34 126 0 C106 38 55 50 13 31 L-18 46 L-8 20 Z" fill="#15253d" stroke="#24364b" stroke-width="5"/>
+    <path d="M36 28 C58 38 78 32 92 16 C77 12 68 9 57 11 Z" fill="#fff"/>
+    <path d="M58 -9 C76 -22 92 -17 101 -7 C86 -1 75 1 62 0 Z" fill="#fff"/>
+    <ellipse cx="87" cy="-9" rx="5" ry="4" fill="#fff"/>
+    <path d="M8 4 L-25 -12 L-17 15 Z" fill="#15253d" stroke="#24364b" stroke-width="4"/>
   </g>
+  <g class="decor">
+    <path d="M265 85 C245 61 228 70 238 88 C245 100 258 106 265 113 C272 103 286 90 279 78 C273 67 263 75 265 85Z" fill="#67b8c7"/>
+    <ellipse cx="300" cy="115" rx="8" ry="18" transform="rotate(25 300 115)"/>
+    <ellipse cx="323" cy="81" rx="10" ry="20" transform="rotate(35 323 81)"/>
+    <ellipse cx="65" cy="400" rx="8" ry="18" transform="rotate(-45 65 400)"/>
+    <ellipse cx="83" cy="440" rx="10" ry="21" transform="rotate(-70 83 440)"/>
+    <path d="M106 455 C94 442 82 454 90 465 L106 481 L122 465 C130 454 118 442 106 455Z" fill="#67b8c7"/>
+  </g>
+  <text class="subtitle" x="310" y="485">kids homewear</text>
 </svg>
