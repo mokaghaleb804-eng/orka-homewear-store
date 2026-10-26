@@ -1,0 +1,20 @@
+{
+  "name": "ORKA Orders",
+  "short_name": "ORKA Orders",
+  "description": "إدارة طلبات ORKA HOMEWEAR",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "./orka-orders.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#f5f6f8",
+  "theme_color": "#10294a",
+  "icons": [
+    {
+      "src": "./orka-homewear-logo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ]
+}
