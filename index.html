@@ -1210,4 +1210,40 @@ window.orkaAuthReady=new Promise(resolve=>{
 })();
 </script>
 
+
+<style id="orka-brand-refresh">
+/* ORKA visual refresh: styling only; preserve the logo, layout order and store behavior */
+:root{
+  --orka-soft-cream:#fffaf5;
+  --orka-soft-rose:#fbf0f2;
+  --orka-burgundy:#a60f36;
+  --orka-navy:#10294a;
+}
+body{background:#fff;color:#233044}
+.topbar{background:linear-gradient(100deg,#10294a 0%,#183b60 58%,#10294a 100%);border-bottom:2px solid #a60f36}
+.topbar b{color:#f2c3cc}
+.header,.site-header,header.header{background:#fff!important;background-color:#fff!important;backdrop-filter:none!important;border-bottom:1px solid #eee5e6;box-shadow:0 5px 22px rgba(16,41,74,.045)}
+.hero:not(.hero-family){background:linear-gradient(135deg,#fffaf5 0%,#fff 55%,#fbf0f2 100%)}
+.eyebrow{color:#a60f36}
+.section-head{position:relative}
+.section-head h2{position:relative}
+.section-head h2:after{content:"";display:block;width:46px;height:3px;margin-top:11px;border-radius:3px;background:linear-gradient(90deg,#a60f36,#d9a5b1)}
+.product{border:1px solid #eee4e5;border-radius:13px;box-shadow:0 3px 14px rgba(16,41,74,.025);transition:transform .24s ease,box-shadow .24s ease,border-color .24s ease}
+.product:hover{transform:translateY(-5px);border-color:#e6c3cb;box-shadow:0 14px 32px rgba(16,41,74,.09)}
+.product-img-wrap{background:linear-gradient(145deg,#fffaf5,#f8eff0)}
+.btn{border-radius:9px;box-shadow:0 5px 14px rgba(16,41,74,.09);transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
+.btn:hover{box-shadow:0 8px 18px rgba(16,41,74,.15)}
+.btn-gold{background:#a60f36}
+.btn-gold:hover{background:#850c2b}
+.btn-outline{border-color:#d9c5ca;background:rgba(255,255,255,.72)}
+.footer{background:linear-gradient(135deg,#0e223d 0%,#10294a 72%,#251a2a 100%);border-top:3px solid #a60f36}
+@media(max-width:700px){
+  .section-head h2:after{width:36px;margin-top:8px}
+  .product{border-radius:11px}
+}
+@media(prefers-reduced-motion:reduce){
+  .product,.btn{transition:none}
+}
+</style>
+
 </body></html>
