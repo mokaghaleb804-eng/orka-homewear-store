@@ -27,8 +27,11 @@ This is a review/test plan only. No production deployment, Firestore rules deplo
 9. Verify the customer profile, points, and order status update consistently on the website.
 10. Verify app install prompt / Add to Home Screen on a supported mobile browser.
 
+## Preview hosting constraint
+- The repository already has GitHub Pages enabled for the live ORKA website. Deploying this draft as the repository's Pages site could replace the live site, so no Pages deployment was made. A separate preview requires a genuinely separate hosting target/repository or an approved deployment arrangement that preserves the current site.
+
 ## Important limits
-- This checklist has not yet been run; there is no runtime test result.
+- Static automated checks passed on 2026-10-26 (manifest JSON and referenced assets, app module syntax, and service-worker syntax). This is not a runtime test result.
 - The draft app currently depends on Firestore's existing order/customer schema.
 - The proposed rules allow a signed-in customer to submit a delivery contact number that is not Firebase-verified. The UID must still match the authenticated user. This is intentional for the agreed Google/Facebook sign-in flow, but it should be reviewed before production.
 - Do not deploy rules or merge this PR without explicit approval.
