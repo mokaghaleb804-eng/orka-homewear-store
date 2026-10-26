@@ -412,6 +412,25 @@ img,video,iframe{max-width:100%}
 }
 </style>
 
+
+<style id="orka-logo-horizontal-stretch">
+/* Stretch the visible logo horizontally only; preserve its header placement and vertical sizing. */
+.header .nav > .orka-new-header-logo .orka-header-full-logo{
+  width:100%!important;
+  max-width:100%!important;
+  height:auto!important;
+  max-height:150px!important;
+  object-fit:fill!important;
+}
+@media(max-width:620px){
+  .header .nav > .orka-new-header-logo .orka-header-full-logo{
+    width:100%!important;
+    max-height:110px!important;
+    object-fit:fill!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
