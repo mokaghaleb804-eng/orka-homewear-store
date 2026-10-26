@@ -46,7 +46,7 @@ jobs:
           html = (root / 'orka-orders.html').read_text(encoding='utf-8')
           manifest = json.loads((root / 'orka-orders.webmanifest').read_text(encoding='utf-8'))
 
-          match = re.search(r'<script\\s+type=["\\']module["\\']\\s*>(.*?)</script>', html, re.S)
+          match = re.search(r'<script type="module">(.*?)</script>', html, re.S)
           if not match:
               raise SystemExit('FAIL: Could not find the app module script in orka-orders.html')
           pathlib.Path('/tmp/orka-orders.mjs').write_text(match.group(1), encoding='utf-8')
