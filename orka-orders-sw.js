@@ -2,7 +2,7 @@
 const APP_FILES = [
   "./orka-orders.html",
   "./orka-orders.webmanifest",
-  "./orka-homewear-logo.svg"
+  "./orka-orders-icon.svg"
 ];
 
 self.addEventListener("install", event => {
