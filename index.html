@@ -434,9 +434,8 @@ section, .section, .products-section, .product-section, .shop-section{background
 .category-card,.feature-card,.faq-item,.account-card{
   background:var(--orka-white);
 }
-/* Header and navigation use the logo's water turquoise */
-.header,.site-header,header.header{background:var(--orka-turquoise)!important}
-.header .nav a,.header .nav button,.header .nav .brand:not(.brand-image){color:var(--orka-white)}
+/* Restore the previous header appearance */
+.header,.site-header,header.header{background:#ffffffed!important;backdrop-filter:blur(12px);border-bottom:1px solid var(--line)}
 /* Main actions: coral, with clear white text */
 button.primary,.btn-primary,.primary-button,.checkout-button,
 button[type="submit"],.add-to-cart,.buy-now,.checkout-btn{
