@@ -380,6 +380,38 @@ img,video,iframe{max-width:100%}
 .product-brand-mark,.detail-brand-mark{border:0!important;box-shadow:none!important;background:#fff!important}
 @media(max-width:620px){.orka-new-header-logo{width:230px;max-width:58vw;flex:0 1 230px}.orka-new-header-logo .orka-header-full-logo{max-height:62px}}
 </style>
+
+<style id="orka-logo-larger-display">
+/* Enlarge the logo's display area without stretching or cropping the original artwork. */
+.header .nav > .orka-new-header-logo{
+  display:flex!important;
+  flex:0 0 100%!important;
+  width:100%!important;
+  max-width:100%!important;
+  min-width:0!important;
+  justify-content:center!important;
+  align-items:center!important;
+  margin:0!important;
+  padding:0 10px!important;
+}
+.header .nav > .orka-new-header-logo .orka-header-full-logo{
+  display:block!important;
+  width:min(100%,1100px)!important;
+  max-width:100%!important;
+  height:auto!important;
+  max-height:clamp(120px,24vw,250px)!important;
+  object-fit:contain!important;
+  object-position:center!important;
+}
+@media(max-width:620px){
+  .header .nav > .orka-new-header-logo{padding:0 4px!important}
+  .header .nav > .orka-new-header-logo .orka-header-full-logo{
+    width:100%!important;
+    max-height:150px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
