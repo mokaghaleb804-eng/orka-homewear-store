@@ -1,0 +1,73 @@
+name: ORKA Orders static checks
+
+on:
+  push:
+    branches:
+      - feature/orka-orders-pwa-draft
+    paths:
+      - 'orka-orders.html'
+      - 'orka-orders.webmanifest'
+      - 'orka-orders-sw.js'
+      - 'orka-orders-icon.svg'
+      - '.github/workflows/orka-orders-check.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'orka-orders.html'
+      - 'orka-orders.webmanifest'
+      - 'orka-orders-sw.js'
+      - 'orka-orders-icon.svg'
+      - '.github/workflows/orka-orders-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out draft
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate manifest and app asset references
+        run: |
+          python - <<'PY'
+          import json
+          import pathlib
+          import re
+
+          root = pathlib.Path('.')
+          html = (root / 'orka-orders.html').read_text(encoding='utf-8')
+          manifest = json.loads((root / 'orka-orders.webmanifest').read_text(encoding='utf-8'))
+
+          match = re.search(r'<script type="module">(.*?)</script>', html, re.S)
+          if not match:
+              raise SystemExit('FAIL: Could not find the app module script in orka-orders.html')
+          pathlib.Path('/tmp/orka-orders.mjs').write_text(match.group(1), encoding='utf-8')
+
+          start_url = manifest.get('start_url')
+          if not start_url or not (root / start_url).is_file():
+              raise SystemExit(f'FAIL: manifest start_url does not point to a file: {start_url!r}')
+
+          for icon in manifest.get('icons', []):
+              src = icon.get('src')
+              if not src or not (root / src).is_file():
+                  raise SystemExit(f'FAIL: manifest icon file missing: {src!r}')
+
+          for asset in ('orka-orders-icon.svg', 'orka-orders-sw.js'):
+              if not (root / asset).is_file():
+                  raise SystemExit(f'FAIL: required app asset missing: {asset}')
+
+          print('PASS: manifest JSON, start_url, icon references, and required assets')
+          PY
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check /tmp/orka-orders.mjs
+          node --check orka-orders-sw.js
