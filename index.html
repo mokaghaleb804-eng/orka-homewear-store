@@ -939,7 +939,7 @@ window.loadOrkaCustomerOrders = async(uid) => {
     '<div style="display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap"><strong style="color:var(--navy)">طلب #'+escapeAdminText(o.id.slice(0,8))+'</strong><strong>'+status+'</strong></div>'+
     '<p style="margin:8px 0;font-size:11px;color:var(--muted)">المحافظة: '+escapeAdminText(o.gov||'')+'<br>'+items+'</p>'+
     '<div style="font-weight:900;color:var(--navy)">'+Number(o.payableTotal??o.total??0).toLocaleString('ar-EG')+' جنيه بعد الخصم</div>'+(Number(o.discount||0)>0?'<small style="display:block;color:var(--muted)">إجمالي الخصومات: '+Number(o.discount).toLocaleString('ar-EG')+' جنيه</small>':'')+
-    (o.pointsAwarded===true?'<p style="color:#16845b;font-size:11px;margin-bottom:0">تم احتساب نقاط الطلب بعد الاستلام.</p>':'<p style="font-size:11px;color:var(--muted);margin-bottom:0">تُضاف نقاط الولاء بعد تأكيد الاستلام.</p>')+
+    (o.pointsAwarded===true?'<p style="color:#16845b;font-size:11px;margin-bottom:0">تم تحديث مكافآت ORKA CLUB بعد الاستلام.</p>':'<p style="font-size:11px;color:var(--muted);margin-bottom:0">تُضاف مكافآت ORKA CLUB بعد تأكيد الاستلام.</p>')+
    '</article>';
   }).join('');
  }catch(err){
@@ -988,7 +988,7 @@ window.loadOrkaAdminOrders = async() => {
     '<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><strong>طلب #'+escapeAdminText(o.id)+'</strong><strong>'+escapeAdminText(o.status||'pending')+'</strong></div>'+
     '<p><b>العميل:</b> '+escapeAdminText(o.customer||'')+' · '+escapeAdminText(o.phone||'')+'<br><b>المحافظة:</b> '+escapeAdminText(o.gov||'')+'<br><b>العنوان:</b> '+escapeAdminText(o.address||'')+'</p>'+
     '<p><b>المنتجات:</b><br>'+items+'</p><p><b>قيمة المنتجات:</b> '+Number(o.productSubtotal??o.total??0).toLocaleString('ar-EG')+' جنيه<br><b>خصم العضوية:</b> '+Number(o.membershipDiscount||0).toLocaleString('ar-EG')+' جنيه<br><b>رصيد المكافآت المستخدم:</b> '+Number(o.rewardCreditUsed||0).toLocaleString('ar-EG')+' جنيه<br><b>خصم نقاط قديم:</b> '+(o.loyaltyVersion===2?0:Number(o.discount||0)).toLocaleString('ar-EG')+' جنيه<br><b>الإجمالي بعد الخصم وقبل الشحن:</b> '+Number(o.payableTotal??o.total??0).toLocaleString('ar-EG')+' جنيه</p>'+
-    (isDone?'<p style="color:#16845b;font-weight:800">تم تأكيد التسليم واحتساب النقاط.</p>':(o.status==='pending'?'<button class="btn" onclick="window.deliverOrkaOrder(\''+escapeAdminText(o.id)+'\')">تأكيد الاستلام وإضافة النقاط</button>':'<p>حالة الطلب: '+escapeAdminText(o.status||'')+'</p>'))+
+    (isDone?'<p style="color:#16845b;font-weight:800">تم تأكيد التسليم وتحديث مكافآت الولاء.</p>':(o.status==='pending'?'<button class="btn" onclick="window.deliverOrkaOrder(\''+escapeAdminText(o.id)+'\')">تأكيد الاستلام وتحديث المكافآت</button>':'<p>حالة الطلب: '+escapeAdminText(o.status||'')+'</p>'))+
    '</article>';
   }).join('');
  }catch(err){console.error('ORKA orders load failed:',err);host.innerHTML='<p style="color:#a60f36">تعذر تحميل الطلبات. تأكدي من نشر قواعد Firestore وأن حسابك الإداري صحيح.</p>';}
