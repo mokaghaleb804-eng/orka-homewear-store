@@ -574,7 +574,7 @@ a{ text-decoration-color:var(--orka-mint); }
 <a class="wa-float" href="https://wa.me/201021006006?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20ORKA%20HOMEWEAR%D8%8C%20%D8%B9%D8%A7%D9%8A%D8%B2%20%D8%A3%D8%B3%D8%AA%D9%81%D8%B3%D8%B1%20%D8%B9%D9%86%20%D8%A7%D9%84%D9%85%D9%86%D8%AA%D8%AC%D8%A7%D8%AA" target="_blank" rel="noopener" aria-label="تواصل مع ORKA عبر واتساب">☏ واتساب ORKA</a><div class="image-zoom" id="imageZoom" onclick="if(event.target===this)closeImageZoom()" aria-label="عارض تكبير صورة المنتج"><button class="zoom-close" onclick="closeImageZoom()" aria-label="إغلاق التكبير">×</button><div class="zoom-toolbar"><button onclick="changeZoom(-0.5)" aria-label="تصغير الصورة">−</button><span class="zoom-level" id="zoomLevel">100%</span><button onclick="changeZoom(0.5)" aria-label="تكبير الصورة">+</button><button onclick="resetZoom()" aria-label="إعادة ضبط الصورة" style="font-size:15px;border-radius:22px;width:auto;padding:0 13px">إعادة ضبط</button></div><div class="zoom-stage" id="zoomStage"><img class="zoom-image" id="zoomImage" src="" alt="صورة المنتج مكبرة"></div><div class="zoom-help">استخدمي + و− أو عجلة الماوس للتكبير، واسحبي الصورة لرؤية التفاصيل</div></div><div class="overlay" id="cartOverlay" onclick="if(event.target===this)closeCart()"><aside class="drawer"><div class="drawer-head"><h3>سلة مشترياتك</h3><button class="close" onclick="closeCart()">×</button></div><div id="cartItems"></div><div id="cartSummary"></div><div id="checkoutArea"></div></aside></div><div class="toast" id="toast"></div>
 <div class="product-modal" id="productModal" onclick="if(event.target===this)closeProductDetails()"><div class="product-modal-card"><button class="modal-close" onclick="closeProductDetails()" aria-label="إغلاق">×</button><div class="detail-image-wrap"><img class="product-modal-image" id="detailImage" src="" alt="تفاصيل المنتج" onclick="openImageZoom()" title="اضغطي لتكبير الصورة"><span class="detail-brand-mark" aria-label="علامة ORKA"><img src="" alt="لوجو ORKA"></span><p class="zoom-hint">اضغطي على الصورة لمشاهدة التفاصيل مكبّرة 🔍</p></div><div class="product-modal-info"><div class="eyebrow">ORKA WINTER EDIT</div><h3 id="detailName">اسم المنتج</h3><p id="detailDesc"></p><div class="product-modal-price" id="detailPrice"></div><label>اختاري اللون</label><div class="color-options" id="detailColors"></div><label for="detailSize">اختاري المقاس</label><select id="detailSize"><option value="">اختاري المقاس</option></select><button class="btn btn-gold" id="detailAdd" type="button" onclick="addDetailToCart()">أضف للسلة — سعر تجريبي</button><div class="detail-note">دي صورة إلهام مبدئية وليست منتجًا معروضًا للبيع. تفاصيل المنتج والمقاسات والألوان والسعر هتتحدد بعد اعتماد عينات ORKA.</div><a class="wa-contact" href="https://wa.me/201021006006?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20ORKA%D8%8C%20%D9%85%D8%AD%D8%AA%D8%A7%D8%AC%20%D8%A3%D8%B3%D8%AA%D9%81%D8%B3%D8%B1%20%D8%B9%D9%86%20%D9%85%D9%86%D8%AA%D8%AC" target="_blank" rel="noopener">اسألي عن المنتج على واتساب</a></div></div></div>
 <div class="account-modal" id="accountModal" onclick="if(event.target===this)closeAccount()"><div class="account-card"><button class="modal-close" onclick="closeAccount()" aria-label="إغلاق">×</button><div id="accountContent"></div></div></div>
-<div class="account-modal" id="orkaAdminModal" onclick="if(event.target===this)window.closeOrkaAdminPanel()"><div class="account-card" style="width:min(900px,100%);max-height:92vh"><button class="modal-close" onclick="window.closeOrkaAdminPanel()" aria-label="إغلاق">×</button><div class="eyebrow">ORKA ADMIN</div><h3>إدارة الطلبات</h3><p>اعتمدي التسليم بعد استلام العميل للطلب. تُضاف نقطة لكل 50 جنيهًا من قيمة المنتجات، مرة واحدة فقط.</p><div id="orkaAdminOrders"><p>جاري تحميل الطلبات...</p></div></div></div>
+<div class="account-modal" id="orkaAdminModal" onclick="if(event.target===this)window.closeOrkaAdminPanel()"><div class="account-card" style="width:min(900px,100%);max-height:92vh"><button class="modal-close" onclick="window.closeOrkaAdminPanel()" aria-label="إغلاق">×</button><div class="eyebrow">ORKA ADMIN</div><h3>إدارة الطلبات</h3><p>اعتمدي التسليم بعد استلام العميل للطلب. تُضاف مكافأة 2% من قيمة المنتجات بعد خصم العضوية، ويُحدّث رصيد المكافآت والمشتريات التراكمية مرة واحدة فقط.</p><div id="orkaAdminOrders"><p>جاري تحميل الطلبات...</p></div></div></div>
 <script>
 
 const ORKA_ACCOUNT_KEY='orka_loyalty_demo_v1';
@@ -583,6 +583,7 @@ let currentCustomerUid='';
 window.addEventListener('orka-firebase-auth-state',event=>{
  const user=event.detail&&event.detail.user;
  if(user&&user.uid){
+  if(currentCustomerUid&&currentCustomerUid!==user.uid)window.orkaRewardCreditEnabled=false;
   currentCustomerPhone=user.phoneNumber||('social:'+user.uid);
   currentCustomerUid=user.uid;
   window.orkaCurrentUid=currentCustomerUid;
@@ -592,11 +593,17 @@ window.addEventListener('orka-firebase-auth-state',event=>{
   saveOrkaAccounts(accounts);
   const modal=document.getElementById('accountModal');
   if(modal&&modal.classList.contains('show'))renderAccount();
+  if(window.loadOrkaCustomerPoints)window.loadOrkaCustomerPoints(currentCustomerUid);
  }else{
   currentCustomerPhone='';
   currentCustomerUid='';
   window.orkaCurrentUid='';
   window.orkaIsAdmin=false;
+  window.orkaRewardCreditEnabled=false;
+  window.orkaRewardCredit=0;
+  window.orkaReservedRewardCredit=0;
+  window.orkaLifetimeSpend=0;
+  window.orkaMemberDiscountRate=0;
  }
 });
 function readOrkaAccounts(){try{return JSON.parse(localStorage.getItem(ORKA_ACCOUNT_KEY)||'{}')}catch(e){return {}}}
