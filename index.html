@@ -741,7 +741,13 @@ window.loginOrkaSocial=async(providerName)=>{
   if(host)host.insertAdjacentHTML('beforeend','<p id="orkaLoginProgress" class="account-warning">جاري فتح تسجيل الدخول الآمن…</p>');
   const provider=providerName==='facebook'?new FacebookAuthProvider():new GoogleAuthProvider();
   if(providerName==='google')provider.setCustomParameters({prompt:'select_account'});
-  // Use a popup on mobile too so browser storage/redirect restrictions cannot silently return without a result.
+  // Mobile browsers and in-app webviews can close OAuth popups before Firebase returns.
+  // Use the redirect flow on mobile; keep the popup flow on desktop.
+  const isMobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+  if(isMobile){
+   await signInWithRedirect(auth,provider);
+   return;
+  }
   const credential=await signInWithPopup(auth,provider);
   await finishOrkaSocialLogin(credential.user);
  }catch(err){
