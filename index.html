@@ -371,6 +371,78 @@ img,video,iframe{max-width:100%}
 .topbar{padding:13px 16px;font-size:13px;line-height:1.6}
 @media(max-width:620px){.topbar{padding:10px 10px;font-size:11px;line-height:1.55}}
 
+
+/* ORKA Club — refined shipping address fields */
+.account-card .account-form label{
+ display:grid;
+ gap:8px;
+ color:var(--navy);
+ font-size:12px;
+ font-weight:800;
+ line-height:1.7;
+}
+.account-card .account-form select[name="gov"],
+.account-card .account-form textarea[name="address"]{
+ display:block;
+ width:100%;
+ margin-top:0;
+ border:1px solid #d9e0e8;
+ border-radius:12px;
+ background-color:#fbfcfe;
+ color:#233044;
+ padding:14px 15px;
+ font-size:14px;
+ line-height:1.7;
+ box-shadow:0 2px 8px #10294a08;
+ transition:border-color .2s ease,box-shadow .2s ease,background-color .2s ease;
+}
+.account-card .account-form select[name="gov"]{
+ min-height:52px;
+ padding-inline-end:44px;
+ appearance:none;
+ -webkit-appearance:none;
+ cursor:pointer;
+ background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='18' height='18' viewBox='0 0 24 24' fill='none' stroke='%2310294A' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+ background-repeat:no-repeat;
+ background-position:right 15px center;
+}
+.account-card .account-form textarea[name="address"]{
+ min-height:124px;
+ resize:vertical;
+ padding:14px 15px;
+}
+.account-card .account-form textarea[name="address"]::placeholder{
+ color:#8a96a5;
+ opacity:1;
+}
+.account-card .account-form select[name="gov"]:hover,
+.account-card .account-form textarea[name="address"]:hover{
+ border-color:#aebdce;
+ background-color:#fff;
+}
+.account-card .account-form select[name="gov"]:focus,
+.account-card .account-form textarea[name="address"]:focus{
+ outline:none;
+ border-color:var(--gold);
+ background-color:#fff;
+ box-shadow:0 0 0 4px #a60f3614,0 4px 14px #10294a0a;
+}
+.account-card .account-form select[name="gov"]:invalid{
+ color:#7f8b99;
+}
+.account-card .account-form select[name="gov"] option{
+ color:#233044;
+ background:#fff;
+}
+@media(max-width:620px){
+ .account-card .account-form select[name="gov"],
+ .account-card .account-form textarea[name="address"]{
+  font-size:14px;
+  border-radius:11px;
+ }
+ .account-card .account-form textarea[name="address"]{min-height:116px}
+}
+
 </style>
 
 <style id="orka-final-logo-style">
