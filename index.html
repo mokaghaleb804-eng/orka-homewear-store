@@ -530,7 +530,7 @@ a{ text-decoration-color:var(--orka-mint); }
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
 <header class="header"><nav class="nav">
-<a class="brand brand-image orka-new-header-logo" href="#home" aria-label="ORKA HOMEWEAR"><img class="orka-header-full-logo" src="1792320437989.jpg" alt="ORKA HOMEWEAR — black orca logo" fetchpriority="high"></a>
+<a class="brand brand-image orka-new-header-logo" href="#home" aria-label="ORKA"><img class="orka-header-full-logo" src="orka-mark.svg" alt="ORKA whale mark" fetchpriority="high"><span class="orka-header-wordmark">ORKA</span></a>
 <div class="links"><a href="#home">الرئيسية</a><a href="#shop">تسوقي الآن</a><a href="#story">حكاية ORKA</a><a href="#contact">تواصل معنا</a></div>
 <div class="nav-actions"><button class="iconbtn language-toggle" id="orkaLanguageToggle" type="button" onclick="toggleOrkaLanguage()" aria-label="Switch language">English</button><button class="iconbtn" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">⌕ بحث</button><button class="iconbtn" onclick="openAccount()" id="accountBtn">♙ حسابي</button><button class="iconbtn" onclick="openCart()">السلة <span class="cart-count" id="cartCount">0</span></button></div>
 </nav></header>
@@ -1397,6 +1397,19 @@ body{background:#fff;color:#233044}
 @media(prefers-reduced-motion:reduce){
   .product,.btn{transition:none}
 }
+</style>
+
+
+<style id="orka-compact-transparent-header-logo">
+/* Compact header mark: transparent whale SVG + ORKA word only */
+.header .nav{max-width:1180px!important;width:100%!important;padding:10px 22px!important;display:flex!important;flex-wrap:nowrap!important;justify-content:space-between!important;align-items:center!important;gap:18px!important}
+.header .nav>.orka-new-header-logo{order:0!important;display:flex!important;flex:0 0 auto!important;width:auto!important;max-width:none!important;min-width:0!important;justify-content:flex-start!important;align-items:center!important;gap:8px!important;margin:0!important;padding:0!important;text-decoration:none!important}
+.header .nav>.orka-new-header-logo .orka-header-full-logo{display:block!important;width:38px!important;height:38px!important;max-height:38px!important;flex:0 0 38px!important;object-fit:contain!important;object-position:center!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;padding:0!important;animation:none!important;transform:none!important;opacity:1!important}
+.header .nav>.orka-new-header-logo .orka-header-wordmark{display:block!important;color:#10294a!important;font-family:Arial,Helvetica,sans-serif!important;font-size:25px!important;font-weight:900!important;letter-spacing:.6px!important;line-height:1!important;white-space:nowrap!important}
+.header .nav>.links{order:1!important;flex:1 1 auto!important;justify-content:center!important}
+.header .nav>.nav-actions{order:2!important;flex:0 0 auto!important}
+@media(max-width:900px){.header .nav{padding:9px 12px!important;gap:10px!important}.header .nav>.orka-new-header-logo .orka-header-full-logo{width:34px!important;height:34px!important;max-height:34px!important;flex-basis:34px!important}.header .nav>.orka-new-header-logo .orka-header-wordmark{font-size:22px!important}.header .nav>.links{gap:10px!important}}
+@media(max-width:620px){.header .nav{padding:8px 10px!important;gap:6px!important}.header .nav>.orka-new-header-logo{gap:5px!important}.header .nav>.orka-new-header-logo .orka-header-full-logo{width:30px!important;height:30px!important;max-height:30px!important;flex-basis:30px!important}.header .nav>.orka-new-header-logo .orka-header-wordmark{font-size:19px!important;letter-spacing:.2px!important}.header .nav>.links{display:none!important}}
 </style>
 
 </body></html>
