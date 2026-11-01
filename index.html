@@ -569,25 +569,27 @@ a{ text-decoration-color:var(--orka-mint); }
 </style>
 
 <style id="orka-model-carousel-style">
-.orka-model-hero{padding:38px 18px 30px;background:linear-gradient(135deg,#fffaf5,#fbf0f2);overflow:hidden}
-.orka-model-hero-head{text-align:center;margin:0 auto 22px}
+.orka-model-hero{padding:34px 18px 28px;background:radial-gradient(ellipse at 50% 42%,#fff 0%,#fff8f5 48%,#f5e9ed 100%);overflow:hidden;position:relative}
+.orka-model-hero-head{text-align:center;margin:0 auto 8px;position:relative;z-index:2}
 .orka-model-hero-head>span{font-size:10px;letter-spacing:2px;font-weight:900;color:#a60f36}
 .orka-model-hero-head h2{margin:7px 0;color:#10294a;font-size:clamp(23px,3.2vw,36px);font-weight:900}
 .orka-model-hero-head p{margin:0;color:#788392;font-size:12px}
-.orka-model-carousel-shell{position:relative;max-width:1180px;margin:auto;padding:0 42px}
-.orka-model-carousel{display:grid;grid-auto-flow:column;grid-auto-columns:calc((100% - 42px)/4);gap:14px;overflow-x:auto;scroll-snap-type:x mandatory;scroll-behavior:smooth;scrollbar-width:none;padding:4px 2px 12px}
-.orka-model-carousel::-webkit-scrollbar{display:none}
-.orka-model-card{min-width:0;padding:0;border:1px solid #eee1e3;border-radius:13px;overflow:hidden;background:#fff;text-align:right;box-shadow:0 6px 22px #10294a0d;scroll-snap-align:center;cursor:pointer;transition:transform .2s,box-shadow .2s}
-.orka-model-card:hover{transform:translateY(-4px);box-shadow:0 13px 28px #10294a18}
-.orka-model-card-image{display:block;height:235px;background:#f6f0e9;overflow:hidden}
+.orka-model-carousel-shell{position:relative;max-width:940px;margin:0 auto;padding:0 48px}
+.orka-model-carousel{position:relative;height:430px;max-width:760px;margin:auto;perspective:1200px;overflow:visible;touch-action:pan-y}
+.orka-model-card{position:absolute;left:50%;top:14px;width:clamp(220px,27vw,286px);height:382px;padding:0;border:1px solid #eadde0;border-radius:22px;overflow:hidden;background:#fff;text-align:right;box-shadow:0 22px 55px #10294a25;cursor:pointer;transform-origin:50% 90%;transition:transform .65s cubic-bezier(.2,.75,.25,1),opacity .65s,z-index .65s;backface-visibility:hidden}
+.orka-model-card-image{display:block;height:300px;background:#f6f0e9;overflow:hidden}
 .orka-model-card-image img{width:100%;height:100%;display:block;object-fit:cover}
-.orka-model-card-copy{display:block;padding:12px 14px}
+.orka-model-card-copy{display:block;padding:13px 16px;background:linear-gradient(180deg,#fff,#fffafb)}
 .orka-model-card-copy b{display:block;color:#10294a;font-size:13px}
 .orka-model-card-copy small{display:block;margin-top:4px;color:#788392;font-size:10px}
-.orka-model-arrow{position:absolute;z-index:2;top:42%;transform:translateY(-50%);width:36px;height:36px;border:0;border-radius:50%;background:#10294a;color:#fff;font-size:25px;line-height:1;box-shadow:0 5px 15px #10294a30}
+.orka-model-card.is-center{z-index:5;opacity:1;transform:translateX(-50%) translateY(0) rotateY(0) rotateZ(0) scale(1)}
+.orka-model-card.is-left{z-index:3;opacity:.94;transform:translateX(-112%) translateY(22px) rotateY(13deg) rotateZ(-12deg) scale(.84)}
+.orka-model-card.is-right{z-index:4;opacity:.97;transform:translateX(12%) translateY(18px) rotateY(-13deg) rotateZ(11deg) scale(.86)}
+.orka-model-card.is-back{z-index:2;opacity:.78;transform:translateX(-50%) translateY(36px) rotateZ(4deg) scale(.72)}
+.orka-model-arrow{position:absolute;z-index:8;top:48%;transform:translateY(-50%);width:42px;height:42px;border:0;border-radius:50%;background:#10294a;color:#fff;font-size:27px;line-height:1;box-shadow:0 7px 20px #10294a35;cursor:pointer}
 .orka-model-prev{right:0}.orka-model-next{left:0}
-@media(max-width:800px){.orka-model-carousel{grid-auto-columns:calc((100% - 14px)/2)}.orka-model-card-image{height:220px}}
-@media(max-width:520px){.orka-model-hero{padding:28px 10px 22px}.orka-model-carousel-shell{padding:0 27px}.orka-model-carousel{grid-auto-columns:78%;gap:10px}.orka-model-card-image{height:245px}.orka-model-arrow{width:30px;height:30px;font-size:21px}.orka-model-hero-head p{font-size:11px}}
+@media(max-width:700px){.orka-model-hero{padding:27px 8px 20px}.orka-model-carousel-shell{padding:0 28px}.orka-model-carousel{height:390px}.orka-model-card{width:clamp(205px,65vw,258px);height:350px;top:12px}.orka-model-card-image{height:270px}.orka-model-card.is-left{transform:translateX(-103%) translateY(25px) rotateZ(-11deg) scale(.78)}.orka-model-card.is-right{transform:translateX(3%) translateY(22px) rotateZ(10deg) scale(.8)}.orka-model-card.is-back{transform:translateX(-50%) translateY(38px) rotateZ(4deg) scale(.68)}.orka-model-arrow{width:32px;height:32px;font-size:21px}.orka-model-hero-head p{font-size:11px}}
+@media(prefers-reduced-motion:reduce){.orka-model-card{transition:none}}
 </style>
 
 </head>
@@ -603,11 +605,11 @@ a{ text-decoration-color:var(--orka-mint); }
   <h1>حكاية كل بيت</h1>
 </section>
 <section class="orka-model-hero" id="home" aria-label="موديلات ORKA">
-  <div class="orka-model-hero-head"><span>ORKA WINTER COLLECTION</span><h2>اختاري حكايتك المفضلة ❤️</h2><p>لفّي بين موديلات ORKA وشوفي تفاصيل كل طقم</p></div>
+  <div class="orka-model-hero-head"><span>ORKA WINTER COLLECTION</span><h2>اختاري حكايتك المفضلة ❤️</h2><p>كروت متداخلة بتعرض أفكار وإلهام لمجموعة ORKA الشتوية</p></div>
   <div class="orka-model-carousel-shell">
     <button class="orka-model-arrow orka-model-prev" type="button" aria-label="الموديلات السابقة" onclick="orkaHeroMove(-1)">‹</button>
     <div class="orka-model-carousel" id="orkaModelCarousel">
-      <button class="orka-model-card" type="button" onclick="openProductDetails(1)"><span class="orka-model-card-image"><img src="/images/orka-winter-set-cream.svg" alt="طقم شتوي كحلي"></span><span class="orka-model-card-copy"><b>الطقم الشتوي الكحلي</b><small>شوفي التفاصيل والمقاسات</small></span></button>
+      <button class="orka-model-card" type="button" onclick="openProductDetails(1)"><span class="orka-model-card-image"><img src="https://images.unsplash.com/photo-1632232963236-9846f0503a90?auto=format&fit=crop&w=1000&q=85" alt="إلهام لتنسيق أطقم أطفال شتوية" loading="eager"></span><span class="orka-model-card-copy"><b>الطقم الشتوي الكحلي</b><small>شوفي التفاصيل والمقاسات</small></span></button>
       <button class="orka-model-card" type="button" onclick="openProductDetails(2)"><span class="orka-model-card-image"><img src="/images/orka-winter-set-navy.svg" alt="طقم بناتي وردي"></span><span class="orka-model-card-copy"><b>الطقم البناتي الهادي</b><small>شوفي التفاصيل والمقاسات</small></span></button>
       <button class="orka-model-card" type="button" onclick="openProductDetails(3)"><span class="orka-model-card-image"><img src="/images/orka-winter-set-burgundy.svg" alt="بيجامة شتوي"></span><span class="orka-model-card-copy"><b>بيجامة يوم دافي</b><small>شوفي التفاصيل والمقاسات</small></span></button>
       <button class="orka-model-card" type="button" onclick="openProductDetails(4)"><span class="orka-model-card-image"><img src="/images/orka-winter-set-cream.svg" alt="طقم أطفال بيج وكريمي"></span><span class="orka-model-card-copy"><b>الطقم البيج والكريمي</b><small>شوفي التفاصيل والمقاسات</small></span></button>
@@ -852,12 +854,15 @@ let heroIndex=0;const heroSlides=[...document.querySelectorAll('.hero-slideshow 
 </script>
 <script id="orka-model-carousel-script">
 (function(){
- const rail=document.getElementById('orkaModelCarousel'); if(!rail)return;
- window.orkaHeroMove=function(direction){const card=rail.querySelector('.orka-model-card');rail.scrollBy({left:-direction*(card?card.getBoundingClientRect().width+14:280),behavior:'smooth'});};
- let timer=setInterval(()=>window.orkaHeroMove(1),4500);
- rail.addEventListener('mouseenter',()=>clearInterval(timer));
- rail.addEventListener('mouseleave',()=>{clearInterval(timer);timer=setInterval(()=>window.orkaHeroMove(1),4500)});
- rail.addEventListener('touchstart',()=>clearInterval(timer),{passive:true});
+ const stage=document.getElementById('orkaModelCarousel'); if(!stage)return;
+ const cards=()=>Array.from(stage.querySelectorAll('.orka-model-card'));
+ function paint(){const c=cards();const names=['is-center','is-right','is-back','is-left'];c.forEach((el,i)=>{el.classList.remove('is-center','is-left','is-right','is-back');el.classList.add(names[i]||'is-back');});}
+ window.orkaHeroMove=function(direction){const c=cards();if(c.length<2)return;if(direction>0)stage.appendChild(c[0]);else stage.insertBefore(c[c.length-1],c[0]);paint();};
+ paint();
+ let timer=setInterval(()=>window.orkaHeroMove(1),4800);
+ const pause=()=>clearInterval(timer),resume=()=>{clearInterval(timer);timer=setInterval(()=>window.orkaHeroMove(1),4800)};
+ stage.addEventListener('mouseenter',pause);stage.addEventListener('mouseleave',resume);
+ stage.addEventListener('touchstart',pause,{passive:true});stage.addEventListener('touchend',resume,{passive:true});
 })();
 </script>
 
