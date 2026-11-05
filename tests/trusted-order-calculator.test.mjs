@@ -32,3 +32,7 @@ test('never grants loyalty credit at order creation',()=>{
  assert.equal(order.loyaltyAccrued,false);
  assert.equal(order.payableCents,170000);
 });
+
+test('duplicate lines cannot bypass per-size stock limits',()=>{
+ assert.throws(()=>make({items:[{productId:'model-1',size:'10',quantity:2},{productId:'model-1',size:'10',quantity:2}]}),{code:'OUT_OF_STOCK'});
+});
