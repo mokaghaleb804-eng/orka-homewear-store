@@ -8,7 +8,7 @@ export async function submitTrustedOrder({uid,requestKey,checkout,catalog,store,
  if(typeof requestKey!=='string'||!requestKeyPattern.test(requestKey))throw new CheckoutError('INVALID_REQUEST_KEY','Invalid idempotency key');
  if(!store||typeof store.createOnce!=='function')throw new CheckoutError('STORE_REQUIRED','Atomic store required');
  const order=calculateTrustedOrder({authUid:uid,checkout,catalog});
- const fingerprint=JSON.stringify({uid,checkout:order.items.map(x=>[x.productId,x.size,x.quantity]),shippingPhone:order.shippingPhone,gov:order.gov,address:order.address,subtotalCents:order.subtotalCents});
+ const fingerprint=JSON.stringify(order);
  return store.createOnce(uid,requestKey,()=>({
   ...order,
   requestKey,
