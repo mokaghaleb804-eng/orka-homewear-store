@@ -677,9 +677,28 @@ body.orka-menu-lock{overflow:hidden}
 .header .nav .main-nav,
 .header .nav > nav:not(.orka-side-menu-links){display:none!important}
 </style>
+
+<style id="orka-signature-v2-branch-only">
+/* Branch-only ORKA Signature V2 visual treatment. */
+.orka-signature-preview-label{background:#10294a;color:#fff;text-align:center;padding:8px 12px;font:700 11px Arial,sans-serif;letter-spacing:1.1px}
+.header{background:#fff!important;box-shadow:0 5px 24px #10294a0b}
+.header .nav-actions .iconbtn:not(.language-toggle){border:0!important;background:transparent!important;border-radius:12px!important;padding:10px!important;box-shadow:none!important}
+.orka-model-hero{background:#f6f4f1!important;padding-top:28px!important;padding-bottom:44px!important}
+.orka-model-hero-head h2{font-size:clamp(27px,4vw,48px)!important;letter-spacing:-.5px}
+.orka-model-card{border-radius:22px!important;box-shadow:0 20px 55px #10294a21!important;transition:transform .68s cubic-bezier(.22,.75,.24,1),opacity .68s!important}
+.orka-model-card-image img{transition:transform .6s ease}
+.orka-model-card:hover .orka-model-card-image img{transform:scale(1.045)}
+.orka-model-card-copy{background:#fff!important}
+.orka-model-arrow{display:none!important}
+.product{border-radius:18px!important;overflow:hidden!important;box-shadow:0 4px 22px #10294a0b!important}
+.product:hover{transform:translateY(-3px)}
+@media(max-width:620px){.orka-model-hero{padding-top:18px!important}.orka-model-card{border-radius:20px!important}}
+@media(prefers-reduced-motion:reduce){.orka-model-card,.orka-model-card-image img{transition:none!important}}
+</style>
 </head>
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
+<div class="orka-signature-preview-label" role="status">ORKA SIGNATURE V2 · TEST PREVIEW · NO REAL ORDERS</div>
 <header class="header"><nav class="nav">
 <button class="orka-menu-trigger" id="orkaMenuOpen" type="button" aria-label="فتح القائمة" aria-controls="orkaSideMenu" aria-expanded="false">☰</button>
 <a class="brand brand-image orka-new-header-logo" href="#home" aria-label="ORKA HOMEWEAR"><img class="orka-header-full-logo" src="orka_logo_transparent.png" alt="ORKA HOMEWEAR — logo with two children" fetchpriority="high"></a>
@@ -920,6 +939,7 @@ function updateCart(){
 }
 function changeQty(id,size,delta){const item=cart.find(x=>x.id===id&&x.size===size);if(!item)return;item.qty+=delta;if(item.qty<=0)removeItem(id,size);else updateCart()}function removeItem(id,size){cart=cart.filter(x=>!(x.id===id&&x.size===size));updateCart()}function openCart(){updateCart();if(cart.length){trackOrkaEvent('begin_checkout',{currency:'EGP',value:cart.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0),items:cart.map(x=>orkaAnalyticsItem(x,x.size,x.qty))})}if(window.prefillOrkaCheckout)window.prefillOrkaCheckout();document.getElementById('cartOverlay').classList.add('show');document.body.style.overflow='hidden'}function closeCart(){document.getElementById('cartOverlay').classList.remove('show');document.body.style.overflow=''}async function submitOrder(e){
  e.preventDefault();
+ toast('نسخة تجريبية فقط — إرسال الطلبات الحقيقية معطّل.'); return;
  if(ORKA_TEST_PRICES){toast('الأسعار تجريبية فقط؛ لن يتم إرسال طلب حقيقي.');return;}
  if(!cart.length){toast('السلة فارغة');return;}
  const data=new FormData(e.target);
@@ -953,8 +973,8 @@ let heroIndex=0;const heroSlides=[...document.querySelectorAll('.hero-slideshow 
  function paint(){const c=cards();const names=['is-center','is-right','is-back','is-left'];c.forEach((el,i)=>{el.classList.remove('is-center','is-left','is-right','is-back');el.classList.add(names[i]||'is-back');});}
  window.orkaHeroMove=function(direction){const c=cards();if(c.length<2)return;if(direction>0)stage.appendChild(c[0]);else stage.insertBefore(c[c.length-1],c[0]);paint();};
  paint();
- let timer=setInterval(()=>window.orkaHeroMove(1),4800);
- const pause=()=>clearInterval(timer),resume=()=>{clearInterval(timer);timer=setInterval(()=>window.orkaHeroMove(1),4800)};
+ let timer=setInterval(()=>window.orkaHeroMove(1),3200);
+ const pause=()=>clearInterval(timer),resume=()=>{clearInterval(timer);timer=setInterval(()=>window.orkaHeroMove(1),3200)};
  let startX=0,startY=0,dragging=false,moved=false;
  stage.addEventListener('pointerdown',e=>{
    if(e.pointerType==='mouse'&&e.button!==0)return;
