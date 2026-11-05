@@ -444,6 +444,8 @@ img,video,iframe{max-width:100%}
 }
 
 
+/* Hide account, favorites and cart buttons in header only; keep underlying functions intact */
+.header .nav-actions #accountBtn,.header .nav-actions .orka-favorites-nav,.header .nav-actions .orka-cart-nav{display:none!important}
 /* Approved ORKA transparent logo: header-only sizing; preserve navigation behavior */
 .header .nav > .orka-new-header-logo{flex:0 1 351px!important;min-width:0!important;max-width:351px!important;width:351px!important}
 .header .nav > .orka-new-header-logo .orka-header-full-logo{display:block!important;width:100%!important;height:auto!important;max-height:103px!important;object-fit:contain!important;mix-blend-mode:normal!important}
