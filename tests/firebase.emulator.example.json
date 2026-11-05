@@ -1,0 +1,21 @@
+# ORKA isolated emulator configuration (documentation example only)
+# Do not use the production project ID.
+# Run from a temporary test directory after copying the proposed rules:
+#   cp tests/firestore.rules.proposed /tmp/orka-emulator/firestore.rules
+#   cd /tmp/orka-emulator
+#   firebase emulators:start --project demo-orka-security --only firestore
+# No production credentials, deployed rules or customer data are required.
+{
+  "firestore": {
+    "rules": "firestore.rules"
+  },
+  "emulators": {
+    "firestore": {
+      "host": "127.0.0.1",
+      "port": 8085
+    },
+    "ui": {
+      "enabled": false
+    }
+  }
+}
