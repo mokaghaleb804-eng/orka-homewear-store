@@ -1,0 +1,52 @@
+// ORKA PROPOSED Firestore rules — REVIEW ONLY. NOT DEPLOYED.
+// Orders and loyalty writes must be performed by a trusted backend using Admin SDK.
+// Never deploy until backend, auth migration, and emulator tests are complete.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function own(uid) { return signedIn() && request.auth.uid == uid; }
+    function admin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'admin';
+    }
+    function validName(value) { return value is string && value.size() >= 2 && value.size() <= 80; }
+    function validOptionalText(data, key, maxSize) {
+      return !(key in data) || (data[key] is string && data[key].size() <= maxSize);
+    }
+    function validCustomerProfile(data) {
+      return data.keys().hasAll(['displayName', 'createdAt'])
+        && data.keys().hasOnly(['displayName','createdAt','email','phoneNumber','shippingGov','shippingAddress'])
+        && validName(data.displayName)
+        && data.createdAt == request.time
+        && validOptionalText(data,'email',254)
+        && validOptionalText(data,'phoneNumber',30)
+        && validOptionalText(data,'shippingGov',60)
+        && validOptionalText(data,'shippingAddress',500)
+        && (!('email' in data) || data.email == request.auth.token.email)
+        && (!('phoneNumber' in data) || data.phoneNumber == request.auth.token.phone_number);
+    }
+    match /admins/{uid} {
+      allow get: if own(uid);
+      allow list, create, update, delete: if false;
+    }
+    match /customers/{uid} {
+      allow get: if own(uid) || admin();
+      allow list: if admin();
+      allow create: if own(uid) && validCustomerProfile(request.resource.data);
+      allow update: if own(uid)
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName','shippingGov','shippingAddress'])
+        && validName(request.resource.data.displayName)
+        && validOptionalText(request.resource.data,'shippingGov',60)
+        && validOptionalText(request.resource.data,'shippingAddress',500);
+      allow delete: if false;
+    }
+    match /orders/{orderId} {
+      allow get, list: if admin() || (signedIn() && resource.data.uid == request.auth.uid);
+      // Never accept client-controlled prices, discounts, loyalty, ownership or statuses.
+      allow create, update, delete: if false;
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}
