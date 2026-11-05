@@ -23,6 +23,7 @@ export function calculateTrustedOrder({authUid=null,checkout,catalog}) {
  if(!Array.isArray(checkout.items)||checkout.items.length<1||checkout.items.length>30)fail('INVALID_ITEMS','Invalid cart');
  if(!catalog||typeof catalog!=='object')fail('CATALOG_UNAVAILABLE','Trusted catalog missing');
  let totalCents=0;
+ const requestedBySkuSize=new Map();
  const items=checkout.items.map(item=>{
   const id=str(item?.productId,120),size=str(item?.size,40),qty=item?.quantity;
   if(!id||!size||!Number.isInteger(qty)||qty<1||qty>20)fail('INVALID_ITEMS','Invalid item');
@@ -31,6 +32,11 @@ export function calculateTrustedOrder({authUid=null,checkout,catalog}) {
   if(!Array.isArray(product.sizes)||!product.sizes.includes(size))fail('INVALID_SIZE','Size unavailable');
   if(!Number.isSafeInteger(product.priceCents)||product.priceCents<=0)fail('UNPRICED_PRODUCT','Missing approved price');
   if(product.stockBySize&&(!Number.isSafeInteger(product.stockBySize[size])||product.stockBySize[size]<qty))fail('OUT_OF_STOCK','Insufficient stock');
+  const stockKey=JSON.stringify([id,size]);
+  const aggregateQty=(requestedBySkuSize.get(stockKey)||0)+qty;
+  if(aggregateQty>20)fail('INVALID_ITEMS','Combined quantity too large');
+  requestedBySkuSize.set(stockKey,aggregateQty);
+  if(product.stockBySize&&product.stockBySize[size]<aggregateQty)fail('OUT_OF_STOCK','Combined quantity exceeds stock');
   const lineCents=product.priceCents*qty;
   if(!Number.isSafeInteger(lineCents)||!Number.isSafeInteger(totalCents+lineCents))fail('TOTAL_OVERFLOW','Invalid total');
   totalCents+=lineCents;
