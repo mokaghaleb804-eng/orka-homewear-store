@@ -642,6 +642,33 @@ body.orka-menu-lock{overflow:hidden}
 </style>
 
 
+<style id="orka-header-utilities-layout">
+/* Logo at far left; utilities next to hamburger at far right. No feature removal. */
+.header .nav{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-between!important;gap:8px!important;direction:ltr!important}
+.header .nav > .orka-new-header-logo{order:0!important;flex:0 1 351px!important;width:351px!important;max-width:351px!important;min-width:0!important;margin-right:auto!important;padding:0!important;justify-content:flex-start!important}
+.header .nav > .orka-new-header-logo .orka-header-full-logo{width:100%!important;max-height:103px!important}
+.header .nav > .nav-actions{order:1!important;display:flex!important;flex:0 0 auto!important;width:auto!important;align-items:center!important;justify-content:flex-end!important;gap:5px!important;margin:0!important}
+.header .nav > .orka-menu-trigger{order:2!important;flex:0 0 38px!important}
+.header .nav-actions #accountBtn,.header .nav-actions .orka-favorites-nav,.header .nav-actions .orka-cart-nav{display:inline-flex!important;align-items:center!important;justify-content:center!important}
+@media(max-width:760px){
+ .header .nav{gap:5px!important;padding:8px!important}
+ .header .nav > .orka-new-header-logo{flex:0 1 196px!important;width:196px!important;max-width:196px!important}
+ .header .nav > .orka-new-header-logo .orka-header-full-logo{max-height:70px!important}
+ .header .nav > .nav-actions{gap:3px!important}
+ .header .nav > .nav-actions .iconbtn{padding:6px!important;min-width:29px!important}
+ .header .nav > .orka-menu-trigger{flex:0 0 34px!important}
+}
+@media(max-width:620px){
+ .header .nav > .orka-new-header-logo{flex:1 1 90px!important;width:auto!important;max-width:151px!important}
+ .header .nav > .orka-new-header-logo .orka-header-full-logo{max-height:59px!important}
+ .header .nav > .nav-actions #accountBtn,.header .nav > .nav-actions .orka-favorites-nav,.header .nav > .nav-actions .orka-cart-nav{font-size:0!important;gap:0!important}
+ .header .nav > .nav-actions #accountBtn::before{content:"♙";font-size:17px!important}
+ .header .nav > .nav-actions .orka-favorites-nav::before{content:"♡";font-size:18px!important}
+ .header .nav > .nav-actions .orka-cart-nav::before{content:"🛒";font-size:16px!important}
+ .header .nav > .nav-actions .cart-count{font-size:9px!important;width:15px!important;height:15px!important;margin:0!important}
+ .header .nav > .nav-actions .language-toggle{font-size:10px!important;min-width:48px!important;padding:5px!important}
+}
+</style>
 <style id="orka-hide-header-navigation">
 /* Keep the header focused on the menu trigger, logo and utility actions. */
 .header .nav .links,
