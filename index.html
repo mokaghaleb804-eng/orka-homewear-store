@@ -633,6 +633,15 @@ body.orka-menu-lock{overflow:hidden}
 @media(prefers-reduced-motion:reduce){.orka-menu-overlay,.orka-side-menu,.orka-menu-trigger,.orka-side-menu-links a{transition:none}}
 </style>
 
+
+<style id="orka-hide-header-navigation">
+/* Keep the header focused on the menu trigger, logo and utility actions. */
+.header .nav .links,
+.header .nav .nav-links,
+.header .nav .desktop-nav,
+.header .nav .main-nav,
+.header .nav > nav:not(.orka-side-menu-links){display:none!important}
+</style>
 </head>
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
