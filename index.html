@@ -615,14 +615,44 @@ a{ text-decoration-color:var(--orka-mint); }
  .header .nav > .nav-actions .iconbtn .cart-count{position:absolute;top:-6px;right:-5px;width:17px;height:17px;min-width:17px;flex:0 0 17px;font-size:9px!important;margin:0;border:2px solid #fff}
 }
 </style>
+
+<style id="orka-side-menu-preview">
+.orka-menu-trigger{display:inline-grid;place-items:center;flex:0 0 40px;width:40px;height:40px;border:1px solid #e8e4dc;border-radius:50%;background:#fff;color:#10294a;font-size:21px;line-height:1;cursor:pointer;transition:background .2s,border-color .2s}
+.orka-menu-trigger:hover{background:#fffaf5;border-color:#d9c5ca}
+.orka-menu-overlay{position:fixed;inset:0;z-index:10000;background:rgba(8,20,36,.52);opacity:0;visibility:hidden;pointer-events:none;transition:opacity .25s ease,visibility .25s ease;direction:rtl}
+.orka-menu-overlay.is-open{opacity:1;visibility:visible;pointer-events:auto}
+.orka-side-menu{position:absolute;top:0;right:0;width:min(360px,88vw);height:100%;padding:24px 22px;background:#fff;box-shadow:-16px 0 45px rgba(0,0,0,.16);transform:translateX(105%);transition:transform .28s ease;overflow-y:auto}
+.orka-menu-overlay.is-open .orka-side-menu{transform:translateX(0)}
+.orka-side-menu-head{display:flex;align-items:center;justify-content:space-between;padding-bottom:18px;border-bottom:1px solid #eee5e6;color:#10294a;font-size:16px;letter-spacing:.5px}
+.orka-menu-close{display:grid;place-items:center;width:36px;height:36px;border:0;border-radius:50%;background:#f7f1f2;color:#10294a;font-size:25px;line-height:1;cursor:pointer}
+.orka-side-menu-links{display:grid;gap:5px;padding-top:18px}
+.orka-side-menu-links a{display:block;padding:14px 12px;border-radius:8px;color:#233044;text-decoration:none;font-size:14px;font-weight:800;transition:background .2s,color .2s}
+.orka-side-menu-links a:hover,.orka-side-menu-links a:focus-visible{background:#fbf0f2;color:#a60f36;outline:none}
+body.orka-menu-lock{overflow:hidden}
+@media(max-width:620px){.orka-menu-trigger{width:34px;height:34px;flex-basis:34px;font-size:19px}.nav{gap:7px}}
+@media(prefers-reduced-motion:reduce){.orka-menu-overlay,.orka-side-menu,.orka-menu-trigger,.orka-side-menu-links a{transition:none}}
+</style>
+
 </head>
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
 <header class="header"><nav class="nav">
+<button class="orka-menu-trigger" id="orkaMenuOpen" type="button" aria-label="فتح القائمة" aria-controls="orkaSideMenu" aria-expanded="false">☰</button>
 <a class="brand brand-image orka-new-header-logo" href="#home" aria-label="ORKA HOMEWEAR"><img class="orka-header-full-logo" src="1793031975365.jpg" alt="ORKA HOMEWEAR — full original logo" fetchpriority="high"></a>
-<div class="links"><a href="#home">الرئيسية</a><a href="#shop">تسوقي الآن</a><a href="#story">حكاية ORKA</a><a href="#contact">تواصل معنا</a></div>
+
 <div class="nav-actions"><button class="iconbtn language-toggle" id="orkaLanguageToggle" type="button" onclick="toggleOrkaLanguage()" aria-label="Switch language">English</button><button class="iconbtn" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">⌕ بحث</button><button class="iconbtn" onclick="openAccount()" id="accountBtn">♙ حسابي</button><button class="iconbtn orka-favorites-nav" type="button" onclick="openFavorites()" aria-label="فتح المختارات">♡ المختارات <span class="cart-count" id="favoriteNavCount">0</span></button><button class="iconbtn orka-cart-nav" type="button" onclick="openCart()" aria-label="فتح السلة">السلة <span class="cart-count" id="cartCount">0</span></button></div>
 </nav></header>
+<div class="orka-menu-overlay" id="orkaMenuOverlay" aria-hidden="true">
+  <aside class="orka-side-menu" id="orkaSideMenu" role="dialog" aria-modal="true" aria-label="قائمة الموقع" dir="rtl">
+    <div class="orka-side-menu-head"><strong>ORKA HOMEWEAR</strong><button type="button" class="orka-menu-close" id="orkaMenuClose" aria-label="إغلاق القائمة">×</button></div>
+    <nav class="orka-side-menu-links" aria-label="روابط الموقع">
+      <a href="#home">الرئيسية</a>
+      <a href="#shop">تسوقي الآن</a>
+      <a href="#story">حكاية ORKA</a>
+      <a href="#contact">تواصل معنا</a>
+    </nav>
+  </aside>
+</div>
 <main>
 <section class="orka-model-hero" id="home" aria-label="موديلات ORKA">
   <div class="orka-model-hero-head"><span>ORKA WINTER COLLECTION</span><h2>اختاري حكايتك المفضلة ❤️</h2><p>كروت متداخلة بتعرض أفكار وإلهام لمجموعة ORKA الشتوية</p></div>
@@ -1602,4 +1632,32 @@ window.orkaPresenceStop = () => {
 };
 window.addEventListener("pagehide", () => window.orkaPresenceStop());
 </script>
+
+<script id="orka-side-menu-preview-script">
+(()=> {
+ const overlay=document.getElementById('orkaMenuOverlay');
+ const openButton=document.getElementById('orkaMenuOpen');
+ const closeButton=document.getElementById('orkaMenuClose');
+ if(!overlay||!openButton||!closeButton)return;
+ const close=()=>{
+   overlay.classList.remove('is-open');
+   overlay.setAttribute('aria-hidden','true');
+   openButton.setAttribute('aria-expanded','false');
+   document.body.classList.remove('orka-menu-lock');
+ };
+ const open=()=>{
+   overlay.classList.add('is-open');
+   overlay.setAttribute('aria-hidden','false');
+   openButton.setAttribute('aria-expanded','true');
+   document.body.classList.add('orka-menu-lock');
+   closeButton.focus();
+ };
+ openButton.addEventListener('click',open);
+ closeButton.addEventListener('click',close);
+ overlay.addEventListener('click',event=>{if(event.target===overlay)close()});
+ overlay.querySelectorAll('a').forEach(link=>link.addEventListener('click',close));
+ document.addEventListener('keydown',event=>{if(event.key==='Escape'&&overlay.classList.contains('is-open')){close();openButton.focus()}});
+})();
+</script>
+
 </body></html>
