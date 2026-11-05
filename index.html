@@ -443,6 +443,12 @@ img,video,iframe{max-width:100%}
  .account-card .account-form textarea[name="address"]{min-height:116px}
 }
 
+
+/* Approved ORKA transparent logo: header-only sizing; preserve navigation behavior */
+.orka-new-header-logo{flex:0 1 260px!important;min-width:0!important;max-width:260px!important;width:260px!important}
+.orka-new-header-logo .orka-header-full-logo{display:block!important;width:100%!important;height:auto!important;max-height:76px!important;object-fit:contain!important;mix-blend-mode:normal!important}
+@media(max-width:760px){.orka-new-header-logo{flex:0 1 145px!important;width:145px!important;max-width:145px!important}.orka-new-header-logo .orka-header-full-logo{max-height:52px!important}}
+@media(max-width:420px){.orka-new-header-logo{flex:0 1 112px!important;width:112px!important;max-width:112px!important}.orka-new-header-logo .orka-header-full-logo{max-height:44px!important}}
 </style>
 
 <style id="orka-final-logo-style">
@@ -647,7 +653,7 @@ body.orka-menu-lock{overflow:hidden}
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
 <header class="header"><nav class="nav">
 <button class="orka-menu-trigger" id="orkaMenuOpen" type="button" aria-label="فتح القائمة" aria-controls="orkaSideMenu" aria-expanded="false">☰</button>
-<a class="brand brand-image orka-new-header-logo" href="#home" aria-label="ORKA HOMEWEAR"><img class="orka-header-full-logo" src="1793031975365.jpg" alt="ORKA HOMEWEAR — full original logo" fetchpriority="high"></a>
+<a class="brand brand-image orka-new-header-logo" href="#home" aria-label="ORKA HOMEWEAR"><img class="orka-header-full-logo" src="orka_logo_transparent.png" alt="ORKA HOMEWEAR — logo with two children" fetchpriority="high"></a>
 
 <div class="nav-actions"><button class="iconbtn language-toggle" id="orkaLanguageToggle" type="button" onclick="toggleOrkaLanguage()" aria-label="Switch language">English</button><button class="iconbtn" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})">⌕ بحث</button><button class="iconbtn" onclick="openAccount()" id="accountBtn">♙ حسابي</button><button class="iconbtn orka-favorites-nav" type="button" onclick="openFavorites()" aria-label="فتح المختارات">♡ المختارات <span class="cart-count" id="favoriteNavCount">0</span></button><button class="iconbtn orka-cart-nav" type="button" onclick="openCart()" aria-label="فتح السلة">السلة <span class="cart-count" id="cartCount">0</span></button></div>
 </nav></header>
