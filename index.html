@@ -827,8 +827,8 @@ window.addEventListener('orka-firebase-auth-state',event=>{
 });
 function readOrkaAccounts(){try{return JSON.parse(localStorage.getItem(ORKA_ACCOUNT_KEY)||'{}')}catch(e){return {}}}
 function saveOrkaAccounts(accounts){try{localStorage.setItem(ORKA_ACCOUNT_KEY,JSON.stringify(accounts))}catch(e){toast('تعذر حفظ بيانات الحساب على هذا الجهاز')}}
-function currentCustomer(){if(!currentCustomerPhone)return null;return readOrkaAccounts()[currentCustomerPhone]||null}
-async function openAccount(){try{if(window.orkaAuthReady)await window.orkaAuthReady;}catch(e){console.warn("ORKA auth initialization:",e)}renderAccount();if(currentCustomerUid&&window.loadOrkaCustomerPoints)window.loadOrkaCustomerPoints(currentCustomerUid);document.getElementById('accountModal').classList.add('show');document.body.style.overflow='hidden'}
+function currentCustomer(){const firebaseUser=window.orkaCurrentUser;if(!firebaseUser?.uid)return null;const key=firebaseUser.phoneNumber||('social:'+firebaseUser.uid);const saved=readOrkaAccounts()[key]||{};return {...saved,name:saved.name||firebaseUser.displayName||'عميل ORKA',email:firebaseUser.email||saved.email||'',phone:firebaseUser.phoneNumber||saved.phone||''};}
+async function openAccount(){try{if(window.orkaAuthReady)await window.orkaAuthReady;}catch(e){console.warn("ORKA auth initialization:",e)}renderAccount();if(window.orkaCurrentUser?.uid&&window.loadOrkaCustomerPoints)window.loadOrkaCustomerPoints(window.orkaCurrentUser.uid);document.getElementById('accountModal').classList.add('show');document.body.style.overflow='hidden'}
 function closeAccount(){document.getElementById('accountModal').classList.remove('show');document.body.style.overflow=''}
 function renderAccount(){
  const host=document.getElementById('accountContent');
