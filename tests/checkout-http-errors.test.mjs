@@ -17,3 +17,31 @@ test('unknown server errors never leak exception text',async()=>{
  assert.equal(result.status,500);
  assert.deepEqual(JSON.parse(result.body),{error:'INTERNAL_ERROR'});
 });
+
+test('HTTP rejects wrong method before invoking trusted checkout',async()=>{
+ let called=false;
+ const handler=createCheckoutHttpHandler({submitOrder:async()=>{called=true;}});
+ const result=await handler({...request,method:'GET'});
+ assert.equal(result.status,405);
+ assert.equal(called,false);
+});
+test('HTTP rejects missing authentication without calling checkout',async()=>{
+ let called=false;
+ const handler=createCheckoutHttpHandler({submitOrder:async()=>{called=true;}});
+ const result=await handler({...request,headers:{'content-type':'application/json'}});
+ assert.equal(result.status,401);
+ assert.equal(called,false);
+});
+test('HTTP rejects invalid JSON before invoking checkout',async()=>{
+ let called=false;
+ const handler=createCheckoutHttpHandler({submitOrder:async()=>{called=true;}});
+ const result=await handler({...request,body:'not json'});
+ assert.equal(result.status,400);
+ assert.equal(called,false);
+});
+test('HTTP returns only minimal order fields on success',async()=>{
+ const handler=createCheckoutHttpHandler({submitOrder:async()=>({created:true,orderId:'demo-order-1',order:{status:'pending',shippingPhone:'private',payableCents:85000}})});
+ const result=await handler(request);
+ assert.equal(result.status,201);
+ assert.deepEqual(JSON.parse(result.body),{orderId:'demo-order-1',created:true,status:'pending'});
+});
