@@ -20,3 +20,16 @@ test('verified admin identity authorizes transition and ignores spoofed role',as
  assert.deepEqual(passed,{orderId:'o1',nextStatus:'confirmed',actorRole:'admin'});
  assert.equal(result.status,'confirmed');
 });
+
+test('malformed verified admin UID never reaches role lookup',async()=>{
+ for(const uid of ['', 'bad uid', '../admin', 'x'.repeat(129)]){
+  let checked=false;
+  const handle=createAuthorizedFulfillment({
+   verifyIdToken:async()=>({uid}),
+   hasAdminRole:async()=>{checked=true;return true},
+   changeOrderStatus:async()=>{throw Error('must not run')}
+  });
+  await assert.rejects(()=>handle(request),{code:'AUTH_INVALID'});
+  assert.equal(checked,false);
+ }
+});
