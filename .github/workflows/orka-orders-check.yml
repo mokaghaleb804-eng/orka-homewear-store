@@ -115,3 +115,15 @@ jobs:
           assert 'async function deliver(id,button){if(!ENABLE_LIVE_DELIVERY)' in app, 'Delivery handler must reject live writes'
           print('PASS: preview live delivery and loyalty mutations gated off')
           PY
+
+      - name: Verify stale auth responses cannot show orders
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          app=Path('orka-orders.html').read_text(encoding='utf-8')
+          assert 'authGeneration=0' in app
+          assert 'const generation=++authGeneration;currentUser=user' in app
+          assert 'if(generation!==authGeneration||currentUser?.uid!==user.uid)return;' in app
+          assert 'if(generation!==authGeneration||currentUser?.uid!==uid)return;cloudOrders=' in app
+          print('PASS: auth generation checks gate stale admin and order responses')
+          PY
