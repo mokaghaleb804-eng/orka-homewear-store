@@ -52,3 +52,18 @@ test('invalid trusted catalog does not write an order',async()=>{
  await assert.rejects(()=>handle(request),{code:'UNAVAILABLE_PRODUCT'});
  assert.equal(store.count(),0);
 });
+
+test('malformed verified customer identity cannot create an order',async()=>{
+ for(const uid of ['', 'bad uid', '../customer', 'x'.repeat(129)]){
+  let catalogLoaded=false;
+  const store=createMemoryOrderStore();
+  const handle=createAuthorizedCheckout({
+   verifyIdToken:async()=>({uid}),
+   loadCatalog:async()=>{catalogLoaded=true;return catalog},
+   store
+  });
+  await assert.rejects(()=>handle(request),{code:'AUTH_INVALID'});
+  assert.equal(catalogLoaded,false);
+  assert.equal(store.count(),0);
+ }
+});
