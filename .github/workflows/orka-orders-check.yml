@@ -84,7 +84,7 @@ jobs:
               'TEST delivery guard': "if(isTestOrder(o))throw Error",
               'TEST filter': "f==='test'&&o.localOnly===true",
               'real counts exclude local TEST': "$('countAll').textContent=cloudOrders.length",
-              'auth reset': 'currentUser=user;cloudOrders=[];allOrders=[]',
+              'auth reset': 'currentUser=user;clearMessage();cloudOrders=[];allOrders=[]',
           }
           for name, fragment in checks.items():
               if fragment not in html:
