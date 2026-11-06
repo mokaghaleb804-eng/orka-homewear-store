@@ -35,7 +35,8 @@ document.getElementById('inspect-payload').addEventListener('click',()=>{
   const request=buildCheckoutRequest({cart,delivery,requestKey:'preview_only_request_key_123456'});
   status.textContent='Offline payload ready: '+request.checkout.items.length+' item line(s). No network request, payment or Firebase connection.';
  }catch(err){
-  status.textContent='Offline check: '+(err.message==='INVALID_ITEMS'?'Add looks and choose valid sizes/quantities.':'Unable to prepare a demo checkout payload.');
+  const messages={INVALID_ITEMS:'Add looks and choose valid sizes/quantities.',INVALID_NAME:'Enter a full name (2–80 characters).',INVALID_PHONE:'Enter a valid Egyptian mobile number.',INVALID_GOVERNORATE:'Select a governorate.',INVALID_ADDRESS:'Enter a delivery address (at least 8 characters).',INVALID_REQUEST_KEY:'Unable to create a valid request key.'};
+  status.textContent='Offline check: '+(messages[err.message]||'Unable to prepare a demo checkout payload.');
  }
 });
 </script></body></html>
