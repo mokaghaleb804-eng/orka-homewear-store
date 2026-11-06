@@ -83,7 +83,7 @@ jobs:
               'local TEST storage': 'localStorage.setItem(key',
               'TEST delivery guard': "if(isTestOrder(o))throw Error",
               'TEST filter': "f==='test'&&o.localOnly===true",
-              'real counts exclude local TEST': "$('countAll').textContent=cloudOrders.length",
+              'real counts exclude all TEST': "const realOrders=cloudOrders.filter(o=>!isTestOrder(o))",
               'auth reset': 'currentUser=user;clearMessage();cloudOrders=[];allOrders=[]',
           }
           for name, fragment in checks.items():
@@ -148,4 +148,16 @@ jobs:
           assert 'loadId=++loadGeneration' in app
           assert 'loadId!==loadGeneration' in app
           print('PASS: older refresh responses cannot replace newer results')
+          PY
+
+      - name: Verify real counters exclude flagged Firebase test orders
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          app=Path('orka-orders.html').read_text(encoding='utf-8')
+          assert 'const realOrders=cloudOrders.filter(o=>!isTestOrder(o))' in app
+          assert "countAll').textContent=realOrders.length" in app
+          assert "countPending').textContent=realOrders.filter" in app
+          assert "countDone').textContent=realOrders.filter" in app
+          print('PASS: all real counters exclude TEST-tagged records')
           PY
