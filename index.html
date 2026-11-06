@@ -827,8 +827,8 @@ window.addEventListener('orka-firebase-auth-state',event=>{
 });
 function readOrkaAccounts(){try{return JSON.parse(localStorage.getItem(ORKA_ACCOUNT_KEY)||'{}')}catch(e){return {}}}
 function saveOrkaAccounts(accounts){try{localStorage.setItem(ORKA_ACCOUNT_KEY,JSON.stringify(accounts))}catch(e){toast('تعذر حفظ بيانات الحساب على هذا الجهاز')}}
-function currentCustomer(){if(!currentCustomerPhone)return null;return readOrkaAccounts()[currentCustomerPhone]||null}
-async function openAccount(){try{if(window.orkaAuthReady)await window.orkaAuthReady;}catch(e){console.warn("ORKA auth initialization:",e)}renderAccount();if(currentCustomerUid&&window.loadOrkaCustomerPoints)window.loadOrkaCustomerPoints(currentCustomerUid);document.getElementById('accountModal').classList.add('show');document.body.style.overflow='hidden'}
+function currentCustomer(){const firebaseUser=window.orkaCurrentUser;if(!firebaseUser?.uid)return null;const key=firebaseUser.phoneNumber||('social:'+firebaseUser.uid);const saved=readOrkaAccounts()[key]||{};return {...saved,name:saved.name||firebaseUser.displayName||'عميل ORKA',email:firebaseUser.email||saved.email||'',phone:firebaseUser.phoneNumber||saved.phone||''};}
+async function openAccount(){try{if(window.orkaAuthReady)await window.orkaAuthReady;}catch(e){console.warn("ORKA auth initialization:",e)}renderAccount();if(window.orkaCurrentUser?.uid&&window.loadOrkaCustomerPoints)window.loadOrkaCustomerPoints(window.orkaCurrentUser.uid);document.getElementById('accountModal').classList.add('show');document.body.style.overflow='hidden'}
 function closeAccount(){document.getElementById('accountModal').classList.remove('show');document.body.style.overflow=''}
 function renderAccount(){
  const host=document.getElementById('accountContent');
@@ -1104,13 +1104,9 @@ window.loginOrkaSocial=async(providerName)=>{
   if(host)host.insertAdjacentHTML('beforeend','<p id="orkaLoginProgress" class="account-warning">جاري فتح تسجيل الدخول الآمن…</p>');
   const provider=providerName==='facebook'?new FacebookAuthProvider():new GoogleAuthProvider();
   if(providerName==='google')provider.setCustomParameters({prompt:'select_account'});
-  // Mobile browsers and in-app webviews can close OAuth popups before Firebase returns.
-  // Use the redirect flow on mobile; keep the popup flow on desktop.
-  const isMobile=/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-  if(isMobile){
-   await signInWithRedirect(auth,provider);
-   return;
-  }
+  // Preview experiment: use a direct user-initiated popup instead of a cross-origin
+  // redirect on Vercel-hosted mobile browsers. Keep the redirect result handler
+  // below for older pending sessions; production remains unchanged.
   const credential=await signInWithPopup(auth,provider);
   await finishOrkaSocialLogin(credential.user);
  }catch(err){
