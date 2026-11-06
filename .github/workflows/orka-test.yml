@@ -4,6 +4,7 @@ on:
     branches: [orka-signature-v2]
     paths:
       - 'tests/**'
+      - 'catalog/**'
       - 'checkout-preview.html'
       - 'orders-admin-preview.html'
       - 'isolated-preview.html'
