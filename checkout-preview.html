@@ -33,6 +33,8 @@ document.getElementById('inspect-payload').addEventListener('click',()=>{
    address:getDemoAddress().address
   };
   // Only check the payload shape; never display or persist personal details.
+  const parts=getDemoAddress();
+  if(parts.area.length<2||parts.street.length<3||!parts.building)throw Error('INVALID_ADDRESS');
   const request=buildCheckoutRequest({cart,delivery,requestKey:'preview_only_request_key_123456'});
   status.textContent='Offline payload ready: '+request.checkout.items.length+' item line(s). No network request, payment or Firebase connection.';
  }catch(err){
