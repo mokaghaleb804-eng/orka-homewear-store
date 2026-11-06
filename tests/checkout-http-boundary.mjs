@@ -2,7 +2,7 @@
 // The caller must supply verified server-side checkout; never expose test adapters publicly.
 const MAX_BYTES=16*1024;
 const response=(status,body)=>({status,headers:{'content-type':'application/json; charset=utf-8','cache-control':'no-store'},body:JSON.stringify(body)});
-const allowed=new Set(['AUTH_REQUIRED','AUTH_INVALID','INVALID_REQUEST_KEY','KEY_REUSED','INVALID_CHECKOUT','INVALID_ITEMS','INVALID_PHONE','INVALID_ADDRESS','INVALID_NAME','INVALID_SIZE','INVALID_QUANTITY','PRODUCT_UNAVAILABLE','INVALID_PRODUCT','OUT_OF_STOCK']);
+const allowed=new Set(['AUTH_REQUIRED','AUTH_INVALID','INVALID_REQUEST_KEY','KEY_REUSED','INVALID_CHECKOUT','INVALID_ITEMS','INVALID_PHONE','INVALID_ADDRESS','INVALID_NAME','INVALID_SIZE','INVALID_QUANTITY','PRODUCT_UNAVAILABLE','UNAVAILABLE_PRODUCT','INVALID_PRODUCT','UNPRICED_PRODUCT','CATALOG_UNAVAILABLE','TOTAL_OVERFLOW','INVALID_IDENTITY','OUT_OF_STOCK']);
 export function createCheckoutHttpHandler({submitOrder}){
  if(typeof submitOrder!=='function')throw Error('Trusted submitOrder required');
  return async function handle({method,headers={},body}={}){
@@ -23,7 +23,7 @@ export function createCheckoutHttpHandler({submitOrder}){
    return response(result.created?201:200,{orderId:result.orderId,created:result.created,status:result.order?.status??'pending'});
   }catch(err){
    const code=allowed.has(err?.code)?err.code:'INTERNAL_ERROR';
-   const status=code==='AUTH_REQUIRED'||code==='AUTH_INVALID'?401:code==='KEY_REUSED'?409:code==='INTERNAL_ERROR'?500:400;
+   const status=code==='AUTH_REQUIRED'||code==='AUTH_INVALID'?401:code==='KEY_REUSED'?409:code==='CATALOG_UNAVAILABLE'||code==='TOTAL_OVERFLOW'||code==='INTERNAL_ERROR'?500:400;
    return response(status,{error:code});
   }
  };
