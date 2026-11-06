@@ -90,3 +90,26 @@ test('verified admin can list customer profiles while non-admin cannot',async()=
  assert.ok(result.size>=1);
  await assertFails(getDocs(collection(other.firestore(),'customers')));
 });
+
+test('verified email claim cannot be forged',async()=>{
+ const ctx=env.authenticatedContext('email-claim-user',{email:'verified@example.com'});
+ await assertFails(setDoc(doc(ctx.firestore(),'customers','email-claim-user'),{
+  displayName:'Test User',email:'wrong@example.com',createdAt:serverTimestamp()
+ }));
+ await assertSucceeds(setDoc(doc(ctx.firestore(),'customers','email-claim-user'),{
+  displayName:'Test User',email:'verified@example.com',createdAt:serverTimestamp()
+ }));
+});
+test('verified phone claim cannot be forged',async()=>{
+ const ctx=env.authenticatedContext('phone-claim-user',{phone_number:'+201012345678'});
+ await assertFails(setDoc(doc(ctx.firestore(),'customers','phone-claim-user'),{
+  displayName:'Test User',phoneNumber:'+201099999999',createdAt:serverTimestamp()
+ }));
+ await assertSucceeds(setDoc(doc(ctx.firestore(),'customers','phone-claim-user'),{
+  displayName:'Test User',phoneNumber:'+201012345678',createdAt:serverTimestamp()
+ }));
+});
+test('even an admin cannot grant admin rights using browser Firestore',async()=>{
+ await assertFails(setDoc(doc(admin.firestore(),'admins','new-admin'),{role:'admin'}));
+ await assertFails(updateDoc(doc(admin.firestore(),'admins','admin1'),{role:'owner'}));
+});
