@@ -39,3 +39,11 @@ test('demo admin can copy an order ID without sending it to a server',()=>{
  assert.match(admin,/navigator\.clipboard\.writeText\(order\.id\)/);
  assert.match(admin,/Copy order ID/);
 });
+
+test('simulated submission enforces bounded names, quantities and valid sizes',()=>{
+ assert.match(checkout,/values\.name\.length<=80/);
+ assert.match(checkout,/bag\.length<=30/);
+ assert.match(checkout,/sizes\.includes\(x\.size\)/);
+ assert.match(checkout,/x\.qty<=20/);
+ assert.match(checkout,/values\.address\.length<=500/);
+});
