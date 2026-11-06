@@ -161,3 +161,15 @@ jobs:
           assert "countDone').textContent=realOrders.filter" in app
           print('PASS: all real counters exclude TEST-tagged records')
           PY
+
+      - name: Verify test filter includes flagged cloud orders
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          app=Path('orka-orders.html').read_text(encoding='utf-8')
+          assert "f==='test'&&isTestOrder(o)" in app
+          assert "f==='pending'&&!isTestOrder(o)" in app
+          assert "f==='delivered'&&!isTestOrder(o)" in app
+          assert "f==='other'&&!isTestOrder(o)" in app
+          print('PASS: TEST and real status filters remain separate')
+          PY
