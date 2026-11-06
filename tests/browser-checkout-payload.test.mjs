@@ -25,3 +25,15 @@ test('browser adapter ignores client-supplied prices, points and uid',()=>{
  const payload=buildCheckoutRequest({cart:[{...cart[0],price:1,points:999,uid:'admin'}],delivery:{...delivery,points:999},requestKey:'browser_contract_key_123'});
  assert.doesNotMatch(JSON.stringify(payload),/points|price|admin/);
 });
+
+test('offline checkout refuses missing or invalid delivery details',()=>{
+ const cases=[
+  [{...delivery,name:''},'INVALID_NAME'],
+  [{...delivery,phone:'123'},'INVALID_PHONE'],
+  [{...delivery,gov:''},'INVALID_GOVERNORATE'],
+  [{...delivery,address:''},'INVALID_ADDRESS'],
+  [{...delivery,address:'short'},'INVALID_ADDRESS']
+ ];
+ for(const [invalid,code] of cases)
+  assert.throws(()=>buildCheckoutRequest({cart,delivery:invalid,requestKey:'browser_contract_key_123'}),new RegExp(code));
+});
