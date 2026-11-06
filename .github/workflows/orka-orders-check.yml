@@ -121,10 +121,10 @@ jobs:
           python - <<'PY'
           from pathlib import Path
           app=Path('orka-orders.html').read_text(encoding='utf-8')
-          assert 'authGeneration=0' in app
-          assert 'const generation=++authGeneration;currentUser=user' in app
+          assert 'authGeneration=0,loadGeneration=0' in app
+          assert 'const generation=++authGeneration;++loadGeneration;currentUser=user' in app
           assert 'if(generation!==authGeneration||currentUser?.uid!==user.uid)return;' in app
-          assert 'if(generation!==authGeneration||currentUser?.uid!==uid)return;cloudOrders=' in app
+          assert 'if(generation!==authGeneration||loadId!==loadGeneration||currentUser?.uid!==uid)return;cloudOrders=' in app
           print('PASS: auth generation checks gate stale admin and order responses')
           PY
 
