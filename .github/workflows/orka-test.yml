@@ -4,6 +4,9 @@ on:
     branches: [orka-signature-v2]
     paths:
       - 'tests/**'
+      - 'checkout-preview.html'
+      - 'orders-admin-preview.html'
+      - 'isolated-preview.html'
       - '.github/workflows/orka-test.yml'
   workflow_dispatch:
 permissions:
