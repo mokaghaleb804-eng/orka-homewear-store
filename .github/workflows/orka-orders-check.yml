@@ -91,3 +91,16 @@ jobs:
                   raise SystemExit('FAIL: ' + name)
               print('PASS: ' + name)
           PY
+
+      - name: Verify checkout stays disabled and guest points are blocked
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          site=Path('index.html').read_text(encoding='utf-8')
+          app=Path('orka-orders.html').read_text(encoding='utf-8')
+          assert 'نسخة تجريبية فقط — إرسال الطلبات الحقيقية معطّل.' in site, 'Production checkout unexpectedly enabled'
+          assert "o.status==='pending'&&!o.uid?" in app, 'Guest points action not disabled'
+          assert "if(typeof o.uid!=='string'||!o.uid)throw Error" in app, 'Missing guest transaction guard'
+          assert 'cloudOrders=[];updateVisibleOrders();' in app, 'Missing safe Firebase error fallback'
+          print('PASS: production checkout disabled, guest loyalty blocked, local simulator fallback')
+          PY
