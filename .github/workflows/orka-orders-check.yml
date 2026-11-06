@@ -104,3 +104,14 @@ jobs:
           assert 'cloudOrders=[];updateVisibleOrders();' in app, 'Missing safe Firebase error fallback'
           print('PASS: production checkout disabled, guest loyalty blocked, local simulator fallback')
           PY
+
+      - name: Enforce preview read-only delivery gate
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          app=Path('orka-orders.html').read_text(encoding='utf-8')
+          assert 'const ENABLE_LIVE_DELIVERY=false;' in app, 'Live delivery must be disabled in preview'
+          assert "o.status==='pending'&&!ENABLE_LIVE_DELIVERY?" in app, 'Pending orders must hide live delivery action'
+          assert 'async function deliver(id,button){if(!ENABLE_LIVE_DELIVERY)' in app, 'Delivery handler must reject live writes'
+          print('PASS: preview live delivery and loyalty mutations gated off')
+          PY
