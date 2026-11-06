@@ -29,3 +29,8 @@ test('demo admin provides lifecycle and history',()=>{
  assert.match(admin,/order\.history\.push/);
  assert.match(admin,/View demo admin dashboard|Create a demo order/);
 });
+
+test('demo admin shows model lines and total pieces per order',()=>{
+ assert.match(admin,/order\.items\.length\+' model line\(s\) · '\+totalQty/);
+ assert.match(admin,/totalQty=order\.items\.reduce/);
+});
