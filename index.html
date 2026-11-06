@@ -1513,6 +1513,7 @@ window.orkaAuthReady=new Promise(resolve=>{
  const englishAttrToArabic=Object.fromEntries(Object.entries(attrTranslations).map(([ar,en])=>[en,ar]));
  const textOriginals = new WeakMap(), attrOriginals = new WeakMap();
  function translateTextNode(node, lang){
+   if(node.parentElement && node.parentElement.closest('.signature-hero-copy'))return;
    if(!textOriginals.has(node)) textOriginals.set(node,node.nodeValue);
    const original=textOriginals.get(node);
    const key=original.trim();
@@ -1536,6 +1537,7 @@ window.orkaAuthReady=new Promise(resolve=>{
  function walk(root,lang){
    if(root.nodeType===Node.TEXT_NODE){translateTextNode(root,lang);return}
    if(root.nodeType!==Node.ELEMENT_NODE && root.nodeType!==Node.DOCUMENT_NODE)return;
+   if(root.nodeType===Node.ELEMENT_NODE && root.closest && root.closest('.signature-hero-copy'))return;
    if(root.nodeType===Node.ELEMENT_NODE)translateAttributes(root,lang);
    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
    let node;while((node=walker.nextNode()))translateTextNode(node,lang);
