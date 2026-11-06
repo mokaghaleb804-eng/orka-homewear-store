@@ -1,4 +1,4 @@
-import test from 'node:test';
+import test, {after} from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {initializeTestEnvironment,assertSucceeds,assertFails} from '@firebase/rules-unit-testing';
@@ -12,7 +12,7 @@ const env=await initializeTestEnvironment({
  projectId,
  firestore:{host:emulatorHost,port:Number(portText),rules:fs.readFileSync('tests/firestore.rules.proposed','utf8')}
 });
-try{
+after(async()=>{await env.cleanup()});
  await env.withSecurityRulesDisabled(async ctx=>{
   await setDoc(doc(ctx.firestore(),'admins','admin1'),{role:'admin'});
   await setDoc(doc(ctx.firestore(),'orders','order1'),{uid:'user1',status:'pending',payableCents:85000});
@@ -54,6 +54,3 @@ try{
  test('client cannot create admin role',async()=>{
   await assertFails(setDoc(doc(user.firestore(),'admins','user1'),{role:'admin'}));
  });
-}finally{
- await env.cleanup();
-}
