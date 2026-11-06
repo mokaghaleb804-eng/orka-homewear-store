@@ -46,3 +46,11 @@ This is a review/test plan only. No production deployment, Firestore rules deplo
 - Before merging: run static checks, test on a real browser with an authorized admin and a non-admin, verify local TEST create/filter/delete and refresh persistence, verify live customer checkout remains disabled, and separately review Firestore rules/schema mismatches.
 - **Known blocker:** `firestore.rules` restricts `orders` creates to an exact set of fields and requires a Firebase phone claim for signed-in users, whereas current Google checkout code uses extra fields and a contact phone. The proposed rules file is not deployed and must not be published without full review.
 - Do not merge or publish this draft until runtime verification and production-safety review are complete.
+
+## Release blockers verified in source (2026-11-06)
+- The latest PR workflow run #20 passed, including the new checkout-disabled/guest-loyalty regression checks. A separate push run #19 failed; inspect that run's logs before treating push checks as consistently green.
+- **Do not deploy `firestore.rules.proposed` as written:** `orders.create` accepts browser-supplied `total` and `items` without a trusted price/catalog calculation. A client could submit an arbitrary total; delivery currently awards `floor(total/50)` points. This is a loyalty fraud risk, not merely a schema mismatch.
+- **Do not enable real checkout yet:** production checkout is intentionally disabled, and browser-based TEST orders do not exercise Firestore writes.
+- Before real checkout: enforce trusted server-side pricing and product availability, verify order ownership and payment/delivery conditions, and award points only from a trusted verified order amount using a single idempotent server-side workflow. Firestore rules alone cannot establish trusted prices from arbitrary browser-supplied cart contents.
+- Current admin UI can mutate live order/customer documents when an authorized admin confirms delivery. Keep that action restricted to verified real deliveries; preview TEST orders are local-only.
+- Release requires browser tests for admin/non-admin, Google auth domain, Firestore permissions, local TEST persistence, and a safe separate preview origin. None of those are covered by the static workflow.
