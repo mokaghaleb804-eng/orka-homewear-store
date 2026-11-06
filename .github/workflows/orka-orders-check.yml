@@ -127,3 +127,13 @@ jobs:
           assert 'if(generation!==authGeneration||currentUser?.uid!==uid)return;cloudOrders=' in app
           print('PASS: auth generation checks gate stale admin and order responses')
           PY
+
+      - name: Verify safe order amount and quantity rendering
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          app=Path('orka-orders.html').read_text(encoding='utf-8')
+          assert "safe(i.qty??1)" in app, 'Quantity must be HTML escaped'
+          assert "Number.isFinite(n)&&n>=0" in app, 'Invalid totals must not render as valid money'
+          print('PASS: quantities escaped and invalid totals flagged')
+          PY
