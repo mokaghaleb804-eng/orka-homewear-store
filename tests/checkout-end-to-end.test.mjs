@@ -125,3 +125,39 @@ test('multiple line items cannot exceed approved aggregate size quantity',async(
  assert.deepEqual(JSON.parse(response.body),{error:'INVALID_ITEMS'});
  assert.equal(store.count(),0);
 });
+
+test('out-of-stock model and size never create an order',async()=>{
+ const store=createMemoryOrderStore();
+ const handle=createCheckoutHttpHandler({submitOrder:createAuthorizedCheckout({
+  verifyIdToken:async()=>({uid:'customer-one'}),
+  loadCatalog:async()=>({'look-01':{...catalog['look-01'],stockBySize:{'7-8Y':1}}}),
+  store
+ })});
+ const response=await handle({
+  method:'POST',headers:{'content-type':'application/json',authorization:'Bearer customer-one'},
+  body:JSON.stringify({requestKey:'stock_limit_test_0001',checkout})
+ });
+ assert.equal(response.status,400);
+ assert.deepEqual(JSON.parse(response.body),{error:'OUT_OF_STOCK'});
+ assert.equal(store.count(),0);
+});
+test('two lines of the same size cannot bypass available stock',async()=>{
+ const store=createMemoryOrderStore();
+ const handle=createCheckoutHttpHandler({submitOrder:createAuthorizedCheckout({
+  verifyIdToken:async()=>({uid:'customer-one'}),
+  loadCatalog:async()=>({'look-01':{...catalog['look-01'],stockBySize:{'7-8Y':3}}}),
+  store
+ })});
+ const response=await handle({
+  method:'POST',headers:{'content-type':'application/json',authorization:'Bearer customer-one'},
+  body:JSON.stringify({requestKey:'stock_aggregate_test_0001',checkout:{
+   ...checkout,items:[
+    {productId:'look-01',size:'7-8Y',quantity:2},
+    {productId:'look-01',size:'7-8Y',quantity:2}
+   ]
+  }})
+ });
+ assert.equal(response.status,400);
+ assert.deepEqual(JSON.parse(response.body),{error:'OUT_OF_STOCK'});
+ assert.equal(store.count(),0);
+});
