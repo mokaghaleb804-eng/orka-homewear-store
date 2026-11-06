@@ -54,3 +54,8 @@ This is a review/test plan only. No production deployment, Firestore rules deplo
 - Before real checkout: enforce trusted server-side pricing and product availability, verify order ownership and payment/delivery conditions, and award points only from a trusted verified order amount using a single idempotent server-side workflow. Firestore rules alone cannot establish trusted prices from arbitrary browser-supplied cart contents.
 - Current admin UI can mutate live order/customer documents when an authorized admin confirms delivery. Keep that action restricted to verified real deliveries; preview TEST orders are local-only.
 - Release requires browser tests for admin/non-admin, Google auth domain, Firestore permissions, local TEST persistence, and a safe separate preview origin. None of those are covered by the static workflow.
+
+## CI fix and preview release status
+- The workflow originally matched only one literal checkout-disabled notice. The current branch instead uses `const ORKA_TEST_PRICES = true` and returns early from `submitOrder`; workflow now accepts either verified gate pattern. PR check #27 passed after this change.
+- `ENABLE_LIVE_DELIVERY=false` additionally blocks the admin preview's delivery/loyalty action; this is a UI/client safeguard, not an authorization boundary. Do not rely on it to secure Firestore.
+- **Status: REVIEW ONLY**. PR is draft, no verified mobile browser/Firebase auth test, and no production rules deployment. Do not label ready to launch based on CI alone.
