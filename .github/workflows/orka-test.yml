@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '22'
       - name: Run Firebase-free checkout tests
-        run: node --test tests/*.test.mjs
+        run: find tests -maxdepth 1 -name '*.test.mjs' ! -name '*.emulator.test.mjs' -print0 | xargs -0 node --test
   firestore-emulator:
     runs-on: ubuntu-latest
     timeout-minutes: 15
