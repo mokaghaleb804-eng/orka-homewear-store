@@ -1754,6 +1754,18 @@ main,.section,.signature-collection-intro,#shop{min-width:0}
  .orka-signature-header .nav-actions .orka-header-language{min-width:60px!important;height:36px!important;min-height:36px!important;padding:0 7px!important;font-size:11px!important}
 }
 @media(max-width:360px){.orka-signature-header .nav-actions{gap:2px!important}.orka-signature-header .nav-actions .iconbtn,.orka-signature-header .nav-actions .orka-menu-trigger{width:34px!important;height:36px!important;min-width:34px!important;flex-basis:34px!important;padding:6px!important}.orka-signature-header .nav-actions .orka-header-language{min-width:54px!important;padding:0 4px!important}}
+
+/* Repair legacy mobile pseudo-icons duplicating the new SVG navigation icons */
+.header .nav > .nav-actions .iconbtn::before,.header .nav > .nav-actions .language-toggle::before,.header .nav > .nav-actions button[onclick*="scrollIntoView"]::before,.header .nav > .nav-actions #accountBtn::before,.header .nav > .nav-actions .orka-favorites-nav::before,.header .nav > .nav-actions .orka-cart-nav::before{content:none!important;display:none!important}
+@media(max-width:620px){
+ .orka-signature-header.header .nav{display:flex!important;flex-wrap:wrap!important;align-items:center!important;justify-content:center!important;gap:7px!important}
+ .orka-signature-header.header .nav > .orka-new-header-logo{flex:0 0 100%!important;width:100%!important;max-width:100%!important;justify-content:center!important}
+ .orka-signature-header.header .nav > .orka-new-header-logo .orka-header-full-logo{width:210px!important;height:96px!important;max-width:80vw!important;max-height:96px!important;object-fit:contain!important}
+ .orka-signature-header.header .nav > .nav-actions{display:flex!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:space-evenly!important;width:100%!important;max-width:420px!important;gap:5px!important;margin:0 auto!important}
+ .orka-signature-header.header .nav > .nav-actions .iconbtn,.orka-signature-header.header .nav > .nav-actions .orka-menu-trigger{display:inline-flex!important;flex:0 0 38px!important;width:38px!important;min-width:38px!important;max-width:38px!important;height:40px!important;min-height:40px!important;padding:8px!important;border-radius:11px!important}
+ .orka-signature-header.header .nav > .nav-actions .orka-header-language{flex:0 0 auto!important;width:auto!important;min-width:63px!important;max-width:76px!important;height:40px!important;font-size:12px!important}
+}
+@media(max-width:370px){.orka-signature-header.header .nav > .nav-actions{gap:2px!important}.orka-signature-header.header .nav > .nav-actions .iconbtn,.orka-signature-header.header .nav > .nav-actions .orka-menu-trigger{flex-basis:34px!important;width:34px!important;min-width:34px!important;padding:6px!important}.orka-signature-header.header .nav > .orka-new-header-logo .orka-header-full-logo{width:190px!important}}
 </style>
 
 
