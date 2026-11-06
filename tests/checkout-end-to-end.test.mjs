@@ -79,3 +79,49 @@ test('simultaneous HTTP retries are idempotent',async()=>{
  assert.equal(new Set(results.map(r=>JSON.parse(r.body).orderId)).size,1);
  assert.equal(store.count(),1);
 });
+
+test('untrusted browser totals and discounts cannot override trusted catalog',async()=>{
+ const store=createMemoryOrderStore();
+ let saved;
+ const baseStore={
+  createOnce:async(uid,key,build,fingerprint)=>{
+   saved=build();
+   return store.createOnce(uid,key,()=>saved,fingerprint);
+  }
+ };
+ const submitOrder=createAuthorizedCheckout({
+  verifyIdToken:async()=>({uid:'customer-one'}),
+  loadCatalog:async()=>catalog,
+  store:baseStore
+ });
+ const handle=createCheckoutHttpHandler({submitOrder});
+ const response=await handle({
+  method:'POST',
+  headers:{'content-type':'application/json',authorization:'Bearer customer-one'},
+  body:JSON.stringify({requestKey:'trusted_price_test_0001',checkout:{
+   ...checkout,uid:'another-customer',subtotalCents:1,payableCents:1,
+   discountCents:999999,loyaltyPoints:50000,
+   items:[{...checkout.items[0],unitPriceCents:1,lineTotalCents:2}]
+  }})
+ });
+ assert.equal(response.status,201);
+ assert.equal(saved.uid,'customer-one');
+ assert.equal(saved.subtotalCents,170000);
+ assert.equal(saved.payableCents,170000);
+ assert.equal(saved.discountCents,0);
+ assert.equal(saved.loyaltyAccrued,false);
+ assert.equal(saved.items[0].unitPriceCents,85000);
+});
+test('multiple line items cannot exceed approved aggregate size quantity',async()=>{
+ const {store,send}=harness();
+ const response=await send('customer-one','aggregate_qty_test_0001',{
+  ...checkout,
+  items:[
+   {productId:'look-01',size:'7-8Y',quantity:15},
+   {productId:'look-01',size:'7-8Y',quantity:10}
+  ]
+ });
+ assert.equal(response.status,400);
+ assert.deepEqual(JSON.parse(response.body),{error:'INVALID_ITEMS'});
+ assert.equal(store.count(),0);
+});
