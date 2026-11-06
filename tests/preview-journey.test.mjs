@@ -47,3 +47,15 @@ test('simulated submission enforces bounded names, quantities and valid sizes',(
  assert.match(checkout,/x\.qty<=20/);
  assert.match(checkout,/values\.address\.length<=500/);
 });
+
+test('checkout does not save personal delivery fields to demo order storage',()=>{
+ const saved=checkout.match(/orders\.unshift\(\{[\s\S]*?\}\);try\{localStorage\.setItem\(orderKey/);
+ assert.ok(saved,'demo order storage call must be present');
+ for(const field of ['name:values.name','phone:values.phone','address:values.address','gov:values.gov']){
+  assert.ok(!saved[0].includes(field),'delivery details must not be persisted');
+ }
+});
+test('demo admin protects final statuses from further changes',()=>{
+ assert.match(admin,/delivered:\[\],cancelled:\[\]/);
+ assert.match(admin,/This final status cannot be reversed/);
+});
