@@ -22,3 +22,33 @@ test('same authenticated request cannot create duplicate order',async()=>{
  assert.equal(a.orderId,b.orderId);
  assert.equal(b.created,false);
 });
+
+test('simultaneous retry of same verified request creates only one order',async()=>{
+ const store=createMemoryOrderStore();
+ const handle=createAuthorizedCheckout({verifyIdToken:async()=>({uid:'verified-uid'}),loadCatalog:async()=>catalog,store});
+ const results=await Promise.all(Array.from({length:8},()=>handle(request)));
+ assert.equal(results.filter(r=>r.created).length,1);
+ assert.equal(new Set(results.map(r=>r.orderId)).size,1);
+ assert.equal(store.count(),1);
+});
+test('a different authenticated customer cannot read or reuse another customer order via key',async()=>{
+ const store=createMemoryOrderStore();
+ const handle=createAuthorizedCheckout({verifyIdToken:async(token)=>({uid:token==='customer-two'?'customer-two':'customer-one'}),loadCatalog:async()=>catalog,store});
+ const first=await handle(request);
+ const second=await handle({...request,idToken:'customer-two'});
+ assert.notEqual(first.orderId,second.orderId);
+ assert.equal(store.count(),2);
+});
+test('a reused key with modified delivery details is rejected',async()=>{
+ const store=createMemoryOrderStore();
+ const handle=createAuthorizedCheckout({verifyIdToken:async()=>({uid:'verified-uid'}),loadCatalog:async()=>catalog,store});
+ await handle(request);
+ await assert.rejects(()=>handle({...request,checkout:{...checkout,address:'Other street building 10'}}),{code:'KEY_REUSED'});
+ assert.equal(store.count(),1);
+});
+test('invalid trusted catalog does not write an order',async()=>{
+ const store=createMemoryOrderStore();
+ const handle=createAuthorizedCheckout({verifyIdToken:async()=>({uid:'verified-uid'}),loadCatalog:async()=>({}),store});
+ await assert.rejects(()=>handle(request),{code:'UNAVAILABLE_PRODUCT'});
+ assert.equal(store.count(),0);
+});
