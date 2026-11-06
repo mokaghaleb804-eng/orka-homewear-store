@@ -98,7 +98,7 @@ jobs:
           from pathlib import Path
           site=Path('index.html').read_text(encoding='utf-8')
           app=Path('orka-orders.html').read_text(encoding='utf-8')
-          assert 'نسخة تجريبية فقط — إرسال الطلبات الحقيقية معطّل.' in site, 'Production checkout unexpectedly enabled'
+          assert ('نسخة تجريبية فقط — إرسال الطلبات الحقيقية معطّل.' in site or ('const ORKA_TEST_PRICES = true;' in site and "if(ORKA_TEST_PRICES){toast('الأسعار تجريبية فقط؛ لن يتم إرسال طلب حقيقي.');return}" in site)), 'Checkout safety gate missing'
           assert "o.status==='pending'&&!o.uid?" in app, 'Guest points action not disabled'
           assert "if(typeof o.uid!=='string'||!o.uid)throw Error" in app, 'Missing guest transaction guard'
           assert 'cloudOrders=[];updateVisibleOrders();' in app, 'Missing safe Firebase error fallback'
