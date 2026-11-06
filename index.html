@@ -1494,16 +1494,33 @@ window.orkaAuthReady=new Promise(resolve=>{
  "إعادة ضبط الصورة":"Reset image","زيارة صفحة ORKA HOMEWEAR على فيسبوك":"Visit ORKA HOMEWEAR on Facebook",
  "تواصل مع ORKA عبر واتساب":"Contact ORKA on WhatsApp","عارض تكبير صورة المنتج":"Product image zoom viewer"
  };
+
+ // Translate the new English-first Signature storefront as well as legacy Arabic-first content.
+ const signatureArabic={
+  'New In':'الجديد','Boys':'الأولاد','Girls':'البنات','Our Story':'حكايتنا',
+  'ORKA KIDS / WINTER EDITION':'أوركا كيدز / المجموعة الشتوية',
+  'Little':'إطلالات','Looks.':'صغيرة.','Big Stories.':'وحكايات كبيرة.',
+  'Bold enough to stand out. Comfortable enough to be themselves.':'ستايل مميز وراحة تخلي كل طفل على طبيعته.',
+  'EXPLORE THE COLLECTION':'اكتشفي المجموعة',
+  'For Boys':'للأولاد','For Girls':'للبنات','The ORKA Edit.':'تشكيلة أوركا.',
+  'DRAG TO EXPLORE':'اسحبي لاستكشاف الموديلات',
+  'Swipe to explore':'اسحبي لاستكشاف الموديلات',
+  'Winter Edition':'المجموعة الشتوية','View Collection':'شاهدي المجموعة',
+  'Shop Now':'تسوقي الآن','Discover More':'اكتشفي المزيد',
+  'New Collection':'المجموعة الجديدة','Coming Soon':'قريبًا'
+ };
+ const englishToArabic=Object.fromEntries(Object.entries(translations).map(([ar,en])=>[en,ar]));
+ const englishAttrToArabic=Object.fromEntries(Object.entries(attrTranslations).map(([ar,en])=>[en,ar]));
  const textOriginals = new WeakMap(), attrOriginals = new WeakMap();
  function translateTextNode(node, lang){
    if(!textOriginals.has(node)) textOriginals.set(node,node.nodeValue);
    const original=textOriginals.get(node);
    const key=original.trim();
    if(!key)return;
-   const translated=lang==='en'?(translations[key]||translations[key.replace(/\s+$/,'')]||null):original;
+   const translated=lang==='en'?(translations[key]||translations[key.replace(/\s+$/,'')]||null):(signatureArabic[key]||englishToArabic[key]||original);
    if(translated!==null && translated!==undefined){
      const leading=(original.match(/^\s*/)||[''])[0], trailing=(original.match(/\s*$/)||[''])[0];
-     const value=lang==='en'?leading+translated+trailing:original;
+     const value=leading+translated+trailing;
      if(node.nodeValue!==value)node.nodeValue=value;
    }
  }
@@ -1512,7 +1529,7 @@ window.orkaAuthReady=new Promise(resolve=>{
      if(!el.hasAttribute(attr))return;
      let map=attrOriginals.get(el);if(!map){map={};attrOriginals.set(el,map)}
      if(!(attr in map))map[attr]=el.getAttribute(attr);
-     const original=map[attr];const value=lang==='en'?(attrTranslations[original]||translations[original]||original):original;
+     const original=map[attr];const value=lang==='en'?(attrTranslations[original]||translations[original]||original):(englishAttrToArabic[original]||englishToArabic[original]||original);
      if(el.getAttribute(attr)!==value)el.setAttribute(attr,value);
    });
  }
