@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="104" fill="#10294a"/>
+  <path d="M72 346 C145 390 255 390 354 335 C389 316 414 285 431 250 C398 274 366 282 337 276 C310 270 290 248 281 222 C261 259 230 285 192 301 C152 317 111 321 72 312 Z" fill="#a60f36"/>
+  <text x="256" y="245" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="116" font-weight="900" letter-spacing="-5" fill="#fffaf1">ORKA</text>
+  <path d="M135 280 H377" stroke="#fffaf1" stroke-width="8" stroke-linecap="round" opacity=".92"/>
+  <text x="256" y="420" text-anchor="middle" font-family="Arial,Helvetica,sans-serif" font-size="37" font-weight="700" letter-spacing="8" fill="#fffaf1">ORDERS</text>
+</svg>

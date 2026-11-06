@@ -1,0 +1,175 @@
+name: ORKA Orders static checks
+
+on:
+  push:
+    branches:
+      - feature/orka-orders-pwa-draft
+    paths:
+      - 'orka-orders.html'
+      - 'orka-orders.webmanifest'
+      - 'orka-orders-sw.js'
+      - 'orka-orders-icon.svg'
+      - '.github/workflows/orka-orders-check.yml'
+  pull_request:
+    branches:
+      - main
+    paths:
+      - 'orka-orders.html'
+      - 'orka-orders.webmanifest'
+      - 'orka-orders-sw.js'
+      - 'orka-orders-icon.svg'
+      - '.github/workflows/orka-orders-check.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  static-checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out draft
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Validate manifest and app asset references
+        run: |
+          python - <<'PY'
+          import json
+          import pathlib
+          import re
+
+          root = pathlib.Path('.')
+          html = (root / 'orka-orders.html').read_text(encoding='utf-8')
+          manifest = json.loads((root / 'orka-orders.webmanifest').read_text(encoding='utf-8'))
+
+          match = re.search(r'<script type="module">(.*?)</script>', html, re.S)
+          if not match:
+              raise SystemExit('FAIL: Could not find the app module script in orka-orders.html')
+          pathlib.Path('/tmp/orka-orders.mjs').write_text(match.group(1), encoding='utf-8')
+
+          start_url = manifest.get('start_url')
+          if not start_url or not (root / start_url).is_file():
+              raise SystemExit(f'FAIL: manifest start_url does not point to a file: {start_url!r}')
+
+          for icon in manifest.get('icons', []):
+              src = icon.get('src')
+              if not src or not (root / src).is_file():
+                  raise SystemExit(f'FAIL: manifest icon file missing: {src!r}')
+
+          for asset in ('orka-orders-icon.svg', 'orka-orders-sw.js'):
+              if not (root / asset).is_file():
+                  raise SystemExit(f'FAIL: required app asset missing: {asset}')
+
+          print('PASS: manifest JSON, start_url, icon references, and required assets')
+          PY
+
+      - name: Check JavaScript syntax
+        run: |
+          node --check /tmp/orka-orders.mjs
+          node --check orka-orders-sw.js
+
+      - name: Verify TEST isolation and admin guard source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          html = Path('orka-orders.html').read_text(encoding='utf-8')
+          checks = {
+              'admin role gate': "a.data().role!=='admin'",
+              'local-only TEST records': 'localOnly:true',
+              'local TEST storage': 'localStorage.setItem(key',
+              'TEST delivery guard': "if(isTestOrder(o))throw Error",
+              'TEST filter': "f==='test'&&isTestOrder(o)",
+              'real counts exclude all TEST': "const realOrders=cloudOrders.filter(o=>!isTestOrder(o))",
+              'auth reset': 'currentUser=user;clearMessage();cloudOrders=[];allOrders=[]',
+          }
+          for name, fragment in checks.items():
+              if fragment not in html:
+                  raise SystemExit('FAIL: ' + name)
+              print('PASS: ' + name)
+          PY
+
+      - name: Verify checkout stays disabled and guest points are blocked
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          site=Path('index.html').read_text(encoding='utf-8')
+          app=Path('orka-orders.html').read_text(encoding='utf-8')
+          assert ('نسخة تجريبية فقط — إرسال الطلبات الحقيقية معطّل.' in site or ('const ORKA_TEST_PRICES = true;' in site and "if(ORKA_TEST_PRICES){toast('الأسعار تجريبية فقط؛ لن يتم إرسال طلب حقيقي.');return}" in site)), 'Checkout safety gate missing'
+          assert "o.status==='pending'&&!o.uid?" in app, 'Guest points action not disabled'
+          assert "if(typeof o.uid!=='string'||!o.uid)throw Error" in app, 'Missing guest transaction guard'
+          assert 'cloudOrders=[];updateVisibleOrders();' in app, 'Missing safe Firebase error fallback'
+          print('PASS: production checkout disabled, guest loyalty blocked, local simulator fallback')
+          PY
+
+      - name: Enforce preview read-only delivery gate
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          app=Path('orka-orders.html').read_text(encoding='utf-8')
+          assert 'const ENABLE_LIVE_DELIVERY=false;' in app, 'Live delivery must be disabled in preview'
+          assert "o.status==='pending'&&!ENABLE_LIVE_DELIVERY?" in app, 'Pending orders must hide live delivery action'
+          assert 'async function deliver(id,button){if(!ENABLE_LIVE_DELIVERY)' in app, 'Delivery handler must reject live writes'
+          print('PASS: preview live delivery and loyalty mutations gated off')
+          PY
+
+      - name: Verify stale auth responses cannot show orders
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          app=Path('orka-orders.html').read_text(encoding='utf-8')
+          assert 'authGeneration=0,loadGeneration=0' in app
+          assert 'const generation=++authGeneration;++loadGeneration;currentUser=user' in app
+          assert 'if(generation!==authGeneration||currentUser?.uid!==user.uid)return;' in app
+          assert 'if(generation!==authGeneration||loadId!==loadGeneration||currentUser?.uid!==uid)return;cloudOrders=' in app
+          print('PASS: auth generation checks gate stale admin and order responses')
+          PY
+
+      - name: Verify safe order amount and quantity rendering
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          app=Path('orka-orders.html').read_text(encoding='utf-8')
+          assert "safe(i.qty??1)" in app, 'Quantity must be HTML escaped'
+          assert "Number.isFinite(n)&&n>=0" in app, 'Invalid totals must not render as valid money'
+          print('PASS: quantities escaped and invalid totals flagged')
+          PY
+
+      - name: Verify newest refresh wins
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          app=Path('orka-orders.html').read_text(encoding='utf-8')
+          assert 'authGeneration=0,loadGeneration=0' in app
+          assert 'const generation=++authGeneration;++loadGeneration;' in app
+          assert 'loadId=++loadGeneration' in app
+          assert 'loadId!==loadGeneration' in app
+          print('PASS: older refresh responses cannot replace newer results')
+          PY
+
+      - name: Verify real counters exclude flagged Firebase test orders
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          app=Path('orka-orders.html').read_text(encoding='utf-8')
+          assert 'const realOrders=cloudOrders.filter(o=>!isTestOrder(o))' in app
+          assert "countAll').textContent=realOrders.length" in app
+          assert "countPending').textContent=realOrders.filter" in app
+          assert "countDone').textContent=realOrders.filter" in app
+          print('PASS: all real counters exclude TEST-tagged records')
+          PY
+
+      - name: Verify test filter includes flagged cloud orders
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          app=Path('orka-orders.html').read_text(encoding='utf-8')
+          assert "f==='test'&&isTestOrder(o)" in app
+          assert "f==='pending'&&!isTestOrder(o)" in app
+          assert "f==='delivered'&&!isTestOrder(o)" in app
+          assert "f==='other'&&!isTestOrder(o)" in app
+          print('PASS: TEST and real status filters remain separate')
+          PY
