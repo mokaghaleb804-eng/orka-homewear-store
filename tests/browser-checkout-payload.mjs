@@ -9,11 +9,11 @@ export function buildCheckoutRequest({cart,delivery,requestKey}={}){
   return {productId:'look-'+String(id).padStart(2,'0'),size,quantity};
  });
  const name=String(delivery?.name??'').trim();
- const shippingPhone=String(delivery?.phone??'').replace(/[\\s()-]/g,'');
+ const shippingPhone=String(delivery?.phone??'').replace(/[\s()-]/g,'');
  const governorate=String(delivery?.gov??'').trim();
  const address=String(delivery?.address??'').trim();
  if(name.length<2||name.length>80)throw Error('INVALID_NAME');
- if(!/^(?:\\+?20|0)?1[0125]\\d{8}$/.test(shippingPhone))throw Error('INVALID_PHONE');
+ if(!/^(?:\+?20|0)?1[0125]\d{8}$/.test(shippingPhone))throw Error('INVALID_PHONE');
  if(!governorate||governorate.length>60)throw Error('INVALID_GOVERNORATE');
  if(address.length<8||address.length>500)throw Error('INVALID_ADDRESS');
  if(typeof requestKey!=='string'||!/^[A-Za-z0-9_-]{16,128}$/.test(requestKey))throw Error('INVALID_REQUEST_KEY');
