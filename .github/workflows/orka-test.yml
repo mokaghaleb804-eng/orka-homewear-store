@@ -32,6 +32,8 @@ jobs:
           distribution: temurin
           java-version: '21'
       - name: Install disposable test dependencies
-        run: npm install --no-save --no-package-lock firebase@11 @firebase/rules-unit-testing@4 firebase-tools@14
+        run: npm install --no-save --no-package-lock firebase@11 @firebase/rules-unit-testing@4 firebase-tools@14 firebase-admin@13
       - name: Run isolated Firestore rules emulator tests
-        run: npx firebase emulators:exec --project demo-orka-security --only firestore --config tests/firebase.emulator.ci.json "node --test tests/firestore-rules.emulator.test.mjs"
+        env:
+          GCLOUD_PROJECT: demo-orka-security
+        run: npx firebase emulators:exec --project demo-orka-security --only firestore --config tests/firebase.emulator.ci.json "node --test tests/firestore-rules.emulator.test.mjs tests/firestore-admin.integration.emulator.test.mjs"
