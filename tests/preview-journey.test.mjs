@@ -49,7 +49,7 @@ test('simulated submission enforces bounded names, quantities and valid sizes',(
 });
 
 test('checkout does not save personal delivery fields to demo order storage',()=>{
- const saved=checkout.match(/orders\.unshift\(\{[\s\S]*?\}\);try\{localStorage\.setItem\(orderKey/);
+ const saved=checkout.match(/orders\.unshift\(\{id,createdAt,status:'pending',[\s\S]*?\}\);try\{localStorage\.setItem\(orderKey/);
  assert.ok(saved,'demo order storage call must be present');
  for(const field of ['name:values.name','phone:values.phone','address:values.address','gov:values.gov']){
   assert.ok(!saved[0].includes(field),'delivery details must not be persisted');
