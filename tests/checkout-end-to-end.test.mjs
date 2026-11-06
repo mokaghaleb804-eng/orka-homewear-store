@@ -161,3 +161,34 @@ test('two lines of the same size cannot bypass available stock',async()=>{
  assert.deepEqual(JSON.parse(response.body),{error:'OUT_OF_STOCK'});
  assert.equal(store.count(),0);
 });
+
+test('unapproved product price blocks checkout without saving an order',async()=>{
+ const store=createMemoryOrderStore();
+ const handle=createCheckoutHttpHandler({submitOrder:createAuthorizedCheckout({
+  verifyIdToken:async()=>({uid:'customer-one'}),
+  loadCatalog:async()=>({'look-01':{...catalog['look-01'],priceCents:null}}),
+  store
+ })});
+ const response=await handle({
+  method:'POST',headers:{'content-type':'application/json',authorization:'Bearer customer-one'},
+  body:JSON.stringify({requestKey:'unpriced_model_test_0001',checkout})
+ });
+ assert.equal(response.status,400);
+ assert.deepEqual(JSON.parse(response.body),{error:'UNPRICED_PRODUCT'});
+ assert.equal(store.count(),0);
+});
+test('inactive product cannot be ordered even with a valid price',async()=>{
+ const store=createMemoryOrderStore();
+ const handle=createCheckoutHttpHandler({submitOrder:createAuthorizedCheckout({
+  verifyIdToken:async()=>({uid:'customer-one'}),
+  loadCatalog:async()=>({'look-01':{...catalog['look-01'],active:false}}),
+  store
+ })});
+ const response=await handle({
+  method:'POST',headers:{'content-type':'application/json',authorization:'Bearer customer-one'},
+  body:JSON.stringify({requestKey:'inactive_model_test_0001',checkout})
+ });
+ assert.equal(response.status,400);
+ assert.deepEqual(JSON.parse(response.body),{error:'UNAVAILABLE_PRODUCT'});
+ assert.equal(store.count(),0);
+});
