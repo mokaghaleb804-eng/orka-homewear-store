@@ -54,3 +54,18 @@ after(async()=>{await env.cleanup()});
  test('client cannot create admin role',async()=>{
   await assertFails(setDoc(doc(user.firestore(),'admins','user1'),{role:'admin'}));
  });
+
+test('anonymous guest cannot list orders or customers',async()=>{
+ await assertFails(getDocs(collection(guest.firestore(),'orders')));
+ await assertFails(getDocs(collection(guest.firestore(),'customers')));
+});
+test('ordinary customer cannot list all orders or customers',async()=>{
+ await assertFails(getDocs(collection(user.firestore(),'orders')));
+ await assertFails(getDocs(collection(user.firestore(),'customers')));
+});
+test('ordinary customer cannot change an existing order status',async()=>{
+ await assertFails(updateDoc(doc(user.firestore(),'orders','order1'),{status:'delivered'}));
+});
+test('non-admin cannot read admin role records',async()=>{
+ await assertFails(getDoc(doc(user.firestore(),'admins','admin1')));
+});
