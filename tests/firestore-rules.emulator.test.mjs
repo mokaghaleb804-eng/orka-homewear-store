@@ -2,7 +2,7 @@ import test, {after} from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import {initializeTestEnvironment,assertSucceeds,assertFails} from '@firebase/rules-unit-testing';
-import {doc,setDoc,getDoc,updateDoc,collection,getDocs,serverTimestamp} from 'firebase/firestore';
+import {doc,setDoc,getDoc,updateDoc,collection,getDocs,query,where,serverTimestamp} from 'firebase/firestore';
 
 const projectId='demo-orka-security';
 const host=process.env.FIRESTORE_EMULATOR_HOST;
@@ -68,4 +68,23 @@ test('ordinary customer cannot change an existing order status',async()=>{
 });
 test('non-admin cannot read admin role records',async()=>{
  await assertFails(getDoc(doc(user.firestore(),'admins','admin1')));
+});
+
+test('customer can list only own orders with an ownership filter',async()=>{
+ const result=await assertSucceeds(getDocs(query(collection(user.firestore(),'orders'),where('uid','==','user1'))));
+ assert.equal(result.size,1);
+ assert.equal(result.docs[0].id,'order1');
+});
+test('customer cannot query another customer orders even with an explicit filter',async()=>{
+ await assertFails(getDocs(query(collection(other.firestore(),'orders'),where('uid','==','user1'))));
+});
+test('verified admin can list orders but not change them from the browser',async()=>{
+ const result=await assertSucceeds(getDocs(collection(admin.firestore(),'orders')));
+ assert.equal(result.size,1);
+ await assertFails(updateDoc(doc(admin.firestore(),'orders','order1'),{status:'cancelled'}));
+});
+test('verified admin can list customer profiles while non-admin cannot',async()=>{
+ const result=await assertSucceeds(getDocs(collection(admin.firestore(),'customers')));
+ assert.ok(result.size>=1);
+ await assertFails(getDocs(collection(other.firestore(),'customers')));
 });
