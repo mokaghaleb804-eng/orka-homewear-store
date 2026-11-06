@@ -45,3 +45,23 @@ test('HTTP returns only minimal order fields on success',async()=>{
  assert.equal(result.status,201);
  assert.deepEqual(JSON.parse(result.body),{orderId:'demo-order-1',created:true,status:'pending'});
 });
+
+test('malformed headers return a controlled error',async()=>{
+ const handler=createCheckoutHttpHandler({submitOrder:async()=>{throw Error('should not run');}});
+ const result=await handler({...request,headers:null});
+ assert.equal(result.status,400);
+ assert.deepEqual(JSON.parse(result.body),{error:'INVALID_HEADERS'});
+});
+test('missing request body is rejected safely',async()=>{
+ const handler=createCheckoutHttpHandler({submitOrder:async()=>{throw Error('should not run');}});
+ const result=await handler({...request,body:undefined});
+ assert.equal(result.status,400);
+});
+test('extra top-level client fields are rejected before checkout',async()=>{
+ let called=false;
+ const handler=createCheckoutHttpHandler({submitOrder:async()=>{called=true;}});
+ const data=JSON.parse(request.body);
+ const result=await handler({...request,body:JSON.stringify({...data,uid:'spoofed-user',role:'admin',priceCents:1})});
+ assert.equal(result.status,400);
+ assert.equal(called,false);
+});
