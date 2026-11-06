@@ -71,3 +71,23 @@ jobs:
         run: |
           node --check /tmp/orka-orders.mjs
           node --check orka-orders-sw.js
+
+      - name: Verify TEST isolation and admin guard source
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          html = Path('orka-orders.html').read_text(encoding='utf-8')
+          checks = {
+              'admin role gate': "a.data().role!=='admin'",
+              'local-only TEST records': 'localOnly:true',
+              'local TEST storage': 'localStorage.setItem(key',
+              'TEST delivery guard': "if(isTestOrder(o))throw Error",
+              'TEST filter': "f==='test'&&o.localOnly===true",
+              'real counts exclude local TEST': "$('countAll').textContent=cloudOrders.length",
+              'auth reset': 'currentUser=user;cloudOrders=[];allOrders=[]',
+          }
+          for name, fragment in checks.items():
+              if fragment not in html:
+                  raise SystemExit('FAIL: ' + name)
+              print('PASS: ' + name)
+          PY
