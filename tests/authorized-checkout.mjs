@@ -11,7 +11,7 @@ export function createAuthorizedCheckout({verifyIdToken,loadCatalog,store,clock}
   let identity;
   try{identity=await verifyIdToken(idToken,true);}
   catch{throw new CheckoutError('AUTH_INVALID','Invalid or revoked sign-in token');}
-  if(!identity||typeof identity.uid!=='string'||!identity.uid.trim())
+  if(!identity||typeof identity.uid!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(identity.uid))
    throw new CheckoutError('AUTH_INVALID','Invalid verified identity');
   const catalog=await loadCatalog();
   return submitTrustedOrder({uid:identity.uid,requestKey,checkout,catalog,store,clock});
