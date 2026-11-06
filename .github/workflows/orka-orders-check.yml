@@ -82,7 +82,7 @@ jobs:
               'local-only TEST records': 'localOnly:true',
               'local TEST storage': 'localStorage.setItem(key',
               'TEST delivery guard': "if(isTestOrder(o))throw Error",
-              'TEST filter': "f==='test'&&o.localOnly===true",
+              'TEST filter': "f==='test'&&isTestOrder(o)",
               'real counts exclude all TEST': "const realOrders=cloudOrders.filter(o=>!isTestOrder(o))",
               'auth reset': 'currentUser=user;clearMessage();cloudOrders=[];allOrders=[]',
           }
