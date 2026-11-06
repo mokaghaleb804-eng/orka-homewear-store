@@ -192,3 +192,31 @@ test('inactive product cannot be ordered even with a valid price',async()=>{
  assert.deepEqual(JSON.parse(response.body),{error:'UNAVAILABLE_PRODUCT'});
  assert.equal(store.count(),0);
 });
+
+test('unapproved size is rejected without storing a request',async()=>{
+ const {store,send}=harness();
+ const response=await send('customer-one','invalid_size_test_0001',{
+  ...checkout,items:[{productId:'look-01',size:'13-14Y',quantity:1}]
+ });
+ assert.equal(response.status,400);
+ assert.deepEqual(JSON.parse(response.body),{error:'INVALID_SIZE'});
+ assert.equal(store.count(),0);
+});
+test('invalid Egyptian shipping phone is rejected before order creation',async()=>{
+ const {store,send}=harness();
+ const response=await send('customer-one','invalid_phone_test_0001',{
+  ...checkout,shippingPhone:'123456'
+ });
+ assert.equal(response.status,400);
+ assert.deepEqual(JSON.parse(response.body),{error:'INVALID_PHONE'});
+ assert.equal(store.count(),0);
+});
+test('missing delivery address cannot create an order',async()=>{
+ const {store,send}=harness();
+ const response=await send('customer-one','invalid_address_test_0001',{
+  ...checkout,address:''
+ });
+ assert.equal(response.status,400);
+ assert.deepEqual(JSON.parse(response.body),{error:'INVALID_ADDRESS'});
+ assert.equal(store.count(),0);
+});
