@@ -80,7 +80,9 @@ test('customer cannot query another customer orders even with an explicit filter
 });
 test('verified admin can list orders but not change them from the browser',async()=>{
  const result=await assertSucceeds(getDocs(collection(admin.firestore(),'orders')));
- assert.equal(result.size,1);
+ // Other integration tests share the emulator and may create additional orders.
+ // Assert access to the seeded order, not an exclusive global document count.
+ assert.ok(result.docs.some(snapshot=>snapshot.id==='order1'));
  await assertFails(updateDoc(doc(admin.firestore(),'orders','order1'),{status:'cancelled'}));
 });
 test('verified admin can list customer profiles while non-admin cannot',async()=>{
