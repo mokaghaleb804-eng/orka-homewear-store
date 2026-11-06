@@ -34,3 +34,8 @@ test('demo admin shows model lines and total pieces per order',()=>{
  assert.match(admin,/order\.items\.length\+' model line\(s\) · '\+totalQty/);
  assert.match(admin,/totalQty=order\.items\.reduce/);
 });
+
+test('demo admin can copy an order ID without sending it to a server',()=>{
+ assert.match(admin,/navigator\.clipboard\.writeText\(order\.id\)/);
+ assert.match(admin,/Copy order ID/);
+});
