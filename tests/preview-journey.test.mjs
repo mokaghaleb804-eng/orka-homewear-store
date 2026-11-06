@@ -59,3 +59,16 @@ test('demo admin protects final statuses from further changes',()=>{
  assert.match(admin,/delivered:\[\],cancelled:\[\]/);
  assert.match(admin,/This final status cannot be reversed/);
 });
+
+test('demo pages are excluded from search indexing',()=>{
+ for(const html of [checkout,admin])assert.match(html,/<meta name="robots" content="noindex,nofollow">/);
+});
+test('demo admin escapes spreadsheet formulas in exported CSV',()=>{
+ assert.match(admin,/function csvCell\(value\)/);
+ assert.match(admin,/text="'"+text/);
+ assert.match(admin,/replace\(\/"\/g,'""'\)/);
+});
+test('demo admin renders user-controlled fields as text rather than HTML',()=>{
+ assert.doesNotMatch(admin,/\.innerHTML\s*=/);
+ assert.match(admin,/\.textContent\s*=/);
+});
