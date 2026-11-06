@@ -10,7 +10,7 @@ export function createAuthorizedFulfillment({verifyIdToken,hasAdminRole,changeOr
   let identity;
   try{identity=await verifyIdToken(idToken,true);}
   catch{throw new CheckoutError('AUTH_INVALID','Invalid or revoked token');}
-  if(!identity||typeof identity.uid!=='string')throw new CheckoutError('AUTH_INVALID','Invalid identity');
+  if(!identity||typeof identity.uid!=='string'||!/^[A-Za-z0-9_-]{1,128}$/.test(identity.uid))throw new CheckoutError('AUTH_INVALID','Invalid identity');
   if(await hasAdminRole(identity.uid)!==true)
    throw new CheckoutError('FORBIDDEN','Verified admin required');
   return changeOrderStatus({orderId,nextStatus,actorRole:'admin'});
