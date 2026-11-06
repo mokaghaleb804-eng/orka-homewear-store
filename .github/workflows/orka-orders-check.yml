@@ -137,3 +137,15 @@ jobs:
           assert "Number.isFinite(n)&&n>=0" in app, 'Invalid totals must not render as valid money'
           print('PASS: quantities escaped and invalid totals flagged')
           PY
+
+      - name: Verify newest refresh wins
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          app=Path('orka-orders.html').read_text(encoding='utf-8')
+          assert 'authGeneration=0,loadGeneration=0' in app
+          assert 'const generation=++authGeneration;++loadGeneration;' in app
+          assert 'loadId=++loadGeneration' in app
+          assert 'loadId!==loadGeneration' in app
+          print('PASS: older refresh responses cannot replace newer results')
+          PY
