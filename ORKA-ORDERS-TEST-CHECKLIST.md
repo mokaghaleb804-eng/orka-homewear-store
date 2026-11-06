@@ -35,3 +35,14 @@ This is a review/test plan only. No production deployment, Firestore rules deplo
 - The draft app currently depends on Firestore's existing order/customer schema.
 - The proposed rules allow a signed-in customer to submit a delivery contact number that is not Firebase-verified. The UID must still match the authenticated user. This is intentional for the agreed Google/Facebook sign-in flow, but it should be reviewed before production.
 - Do not deploy rules or merge this PR without explicit approval.
+
+
+## Internal TEST simulator (2026-11-06)
+- Admin sign-in is checked against Firestore `admins/{uid}` with `role: admin` before the simulator UI is shown.
+- TEST simulator orders are local browser data, scoped to the signed-in admin UID; they do **not** create Firestore documents and are not shared between admins or devices.
+- Real order counts exclude local TEST orders. Filter `TEST محلي فقط` shows local test records.
+- Local TEST records are clearly marked and have no delivery/points action. The delivery transaction also refuses any Firestore order marked `isTest: true`, `test: true`, `orderType: 'test'`, or `environment: 'test'`.
+- TEST simulator is **not** an end-to-end Firebase checkout test. Do not report it as such.
+- Before merging: run static checks, test on a real browser with an authorized admin and a non-admin, verify local TEST create/filter/delete and refresh persistence, verify live customer checkout remains disabled, and separately review Firestore rules/schema mismatches.
+- **Known blocker:** `firestore.rules` restricts `orders` creates to an exact set of fields and requires a Firebase phone claim for signed-in users, whereas current Google checkout code uses extra fields and a contact phone. The proposed rules file is not deployed and must not be published without full review.
+- Do not merge or publish this draft until runtime verification and production-safety review are complete.
