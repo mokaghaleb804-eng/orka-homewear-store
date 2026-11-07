@@ -1,0 +1,41 @@
+// DRAFT ONLY. DO NOT DEPLOY without emulator tests and migration review.
+// Intended to replace existing rules only after callable checkout backend is deployed.
+// Server Admin SDK bypasses these rules.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function admin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'admin';
+    }
+    match /admins/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow list, create, update, delete: if false;
+    }
+    match /catalog/{productId} {
+      // Public read of available product details only; no client-side price writes.
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+    match /orders/{orderId} {
+      allow get, list: if admin()
+        || (signedIn() && resource.data.uid == request.auth.uid
+            && resource.data.checkoutMode == 'registered'
+            && request.auth.token.firebase.sign_in_provider != 'anonymous');
+      allow create, update, delete: if false;
+    }
+    match /customers/{uid} {
+      allow get: if admin() || (signedIn() && request.auth.uid == uid);
+      allow list: if admin();
+      // Profile creation/updates require a separately reviewed, trusted profile flow.
+      // No client write to points, rewardCredit or lifetimeSpend.
+      allow create, update, delete: if false;
+    }
+    match /checkoutRateLimits/{uid} {
+      allow read, write: if false;
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}
