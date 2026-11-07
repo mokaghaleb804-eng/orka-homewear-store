@@ -54,6 +54,7 @@ exports.createOrkaOrder = onCall({
   const orderId=crypto.createHash("sha256").update(uid+":"+input.requestId).digest("hex").slice(0,40);
   const orderRef=db.collection("orders").doc(orderId);
   const throttleRef=db.collection("checkoutRateLimits").doc(uid);
+  const launchRef=db.collection("storeSettings").doc("checkout");
   const catalogRefs=input.items.map(x=>db.collection("catalog").doc(x.productId));
   const result=await db.runTransaction(async tx=>{
     // All reads precede writes, as required by Firestore transactions.
@@ -63,6 +64,14 @@ exports.createOrkaOrder = onCall({
       if (old.requestFingerprint!==fingerprint || old.uid!==uid) throw new HttpsError("already-exists","تم استخدام معرّف الطلب ببيانات مختلفة");
       return {orderId,totalEGP:old.totalEGP,reused:true};
     }
+    const launch=await tx.get(launchRef);
+    const policy=launch.exists?launch.data():{};
+    if (policy.enabled!==true || policy.paymentMethod!=="cod" || policy.catalogApproved!==true || policy.shippingApproved!==true) {
+      throw new HttpsError("failed-precondition","الطلبات الحقيقية غير متاحة حتى اعتماد الأسعار والشحن");
+    }
+    if (!policy.shippingEGPByGovernorate || typeof policy.shippingEGPByGovernorate!=="object") reject("سياسة الشحن غير مكتملة");
+    const shippingEGP=policy.shippingEGPByGovernorate[input.gov];
+    if (!Number.isInteger(shippingEGP) || shippingEGP<0 || shippingEGP>10000) reject("لم يتم اعتماد تكلفة الشحن لهذه المحافظة");
     const throttle=await tx.get(throttleRef);
     const products=await Promise.all(catalogRefs.map(ref=>tx.get(ref)));
     const now=Date.now();
@@ -82,8 +91,10 @@ exports.createOrkaOrder = onCall({
       return {productId:x.productId,name:String(p.name||"").slice(0,100),size:x.size,qty:x.qty,unitPriceEGP:p.priceEGP,lineEGP};
     });
     if (!Number.isSafeInteger(totalEGP) || totalEGP<=0 || totalEGP>1000000) reject("إجمالي الطلب غير صالح");
-    // Shipping and discounts deliberately disabled pending trusted policy configuration.
-    const order={uid,checkoutMode:input.checkoutMode,customer:input.customer,phone:input.phone,gov:input.gov,address:input.address,notes:input.notes,items,totalEGP,shippingEGP:0,discountEGP:0,status:"pending",loyaltyEligible:false,pointsAwarded:false,requestFingerprint:fingerprint,createdAt:FieldValue.serverTimestamp()};
+    // COD only; all prices and shipping amounts are server-authoritative.
+    const subtotalEGP=totalEGP;
+    totalEGP+=shippingEGP;
+    const order={uid,checkoutMode:input.checkoutMode,paymentMethod:"cod",customer:input.customer,phone:input.phone,gov:input.gov,address:input.address,notes:input.notes,items,subtotalEGP,totalEGP,total:totalEGP,shippingEGP,discountEGP:0,status:"pending",loyaltyEligible:false,pointsAwarded:false,requestFingerprint:fingerprint,createdAt:FieldValue.serverTimestamp()};
     tx.create(orderRef,order);
     tx.set(throttleRef,{lastAtMs:now},{merge:true});
     return {orderId,totalEGP,reused:false};
