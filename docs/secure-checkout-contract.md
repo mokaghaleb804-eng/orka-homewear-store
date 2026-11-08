@@ -4,20 +4,21 @@ This document defines the minimum safe backend before enabling checkout in `inde
 
 ## Server-authoritative catalog
 
-Maintain a trusted catalog in Firestore `catalog/{productId}`, writable only by trusted administrators via a separate privileged workflow, with `active`, `priceEGP` (integer minor units preferred), `sizes`, `name`, `inventoryMode`, `maxPerOrder`. Do not derive price or discount from client cart data. Freeze price, product title, size and quantity in the order snapshot.
+Maintain a trusted catalog in Firestore `catalog/{productId}`, writable only by trusted administrators via a separate privileged workflow, with `active`, `priceEGP` (whole-EGP safe integer in this candidate), `sizes`, `name`, `inventoryMode`, `maxPerOrder`. Do not derive price or discount from client cart data. Freeze price, product title, size and quantity in the order snapshot.
 
 ## Checkout API contract
 
-Use an authenticated Firebase callable Cloud Function `createOrkaOrder` with enforced App Check and server-side rate limiting. Support both registered checkout (Google/Firebase Auth) and guest checkout. Guest must not require a visible sign-in step. Use Firebase anonymous auth under the hood only if approved and enabled, with App Check and abuse controls; alternatively use a server-issued guest session with equivalent safeguards. Never trust a guest-provided UID, phone, or claimed account ownership. Guest orders must not grant loyalty credit until a verified, consented account-linking flow is completed.
+Use authenticated Firebase callable Cloud Functions `quoteOrkaOrder` and `createOrkaOrder` with enforced App Check and server-side rate limiting. Support both registered checkout (Google/Firebase Auth) and guest checkout. Guest must not require a visible sign-in step. Use Firebase anonymous auth under the hood only if approved and enabled, with App Check and abuse controls; alternatively use a server-issued guest session with equivalent safeguards. Never trust a guest-provided UID, phone, or claimed account ownership. Guest orders must not grant loyalty credit until a verified, consented account-linking flow is completed.
 
-Client submits only:
+Client submits the following to create an order. First call `quoteOrkaOrder` with the same data without `quoteId`, display the returned total and obtain explicit customer confirmation. Quotes expire in five minutes:
 ```json
 {
   "requestId": "random-uuid-v4-generated-once-per-checkout-attempt",
   "checkoutMode": "registered",
+  "quoteId": "server-issued-quote-uuid",
   "customer": "Customer name",
   "phone": "01XXXXXXXXX",
-  "gov": "Cairo",
+  "gov": "القاهرة",
   "address": "Delivery address",
   "notes": "",
   "items": [{"productId":"sku-001","size":"6","qty":1}]
@@ -37,7 +38,7 @@ Backend:
 
 - Replace direct `orders` create permission with `allow create: if false` only when the callable function is ready; Admin SDK bypasses Firestore rules.
 - Keep customer read restricted to `resource.data.uid == request.auth.uid`, admin read via `admins/{uid}.role == 'admin'`; preserve no client deletes.
-- Update customer profile create/update rules to support Google sign-in safely, while prohibiting client edits to points, reward credit, and lifetime spend.
+- The secure draft permits bounded registered-user contact profile creation and updates, initializes financial fields at zero only, and forbids edits to financial fields. Review migration against deployed profiles before any rules deployment.
 - Test with Firebase emulator: modified price, unknown SKU, invalid size, negative qty, repeated requestId, mismatched payload, concurrent requests, Google account, guest anonymous/session, guest impersonation, rate limits, App Check failure, admin read, customer cross-read, delivery retry, loyalty double-award.
 - Guest orders must be accessible to admin only; a guest must not retrieve other guest orders by phone or order number alone. Provide confirmation receipt ID, and optionally secure order tracking with a short-lived server-issued token. Explicitly separate guest orders from registered customer account/loyalty records.
 - Confirm deployed Firestore rules (not just repository rules), indexes, Cloud Functions region, billing plan and secrets.
@@ -47,4 +48,5 @@ Backend:
 
 ORKA Orders local TEST lab is functional; it must remain isolated from real sales. `ENABLE_LIVE_DELIVERY=false` is a deliberate safety gate.
 
-**Status:** design only; no production settings, rules, or checkout behavior changed.
+**Status:** implementation candidate with local emulator evidence; NOT DEPLOYED. Production settings, active rules and checkout behavior were not changed by this work. See `secure-checkout-test-evidence.md`.
+

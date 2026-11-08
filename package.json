@@ -1,0 +1,16 @@
+{
+  "name": "orka-checkout-isolated-tests",
+  "private": true,
+  "scripts": {
+    "test": "firebase emulators:exec --config firebase.emulator.json --project demo-orka-checkout --only firestore,auth 'node --test --test-concurrency=1 tests/emulator.test.cjs tests/attempt-store.test.mjs'",
+    "dev": "node tests/preview-server.cjs"
+  },
+  "devDependencies": {
+    "@firebase/rules-unit-testing": "4.0.1",
+    "esbuild": "0.25.5",
+    "express": "4.22.3",
+    "firebase": "11.10.0",
+    "firebase-tools": "14.22.0"
+  },
+  "type": "module"
+}

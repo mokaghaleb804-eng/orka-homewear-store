@@ -1,32 +1,29 @@
-# ORKA launch inventory and catalog mapping — NOT APPROVED FOR SALES
+# ORKA catalog — NOT APPROVED FOR SALES
 
-Inspection of `index.html` on 2026-11-07 confirmed:
-- `ORKA_TEST_PRICES = true` and checkout deliberately returns early.
-- Storefront `products` use numeric IDs `1...` with placeholder names and prices; cart is populated by `cart.push({...p,size,qty:1})`.
-- The draft secure checkout client expects `cart[].productId`, which does **not** currently exist in storefront cart entries.
-- The secure server function reads `catalog/{productId}` and expects `active=true`, integer `priceEGP`, valid `sizes`, and `name`. No production catalog was verified.
+## Confirmed launch decisions
 
-## Release gate
+- COD only; Google registered checkout and secure guest checkout.
+- All Egyptian governorates are intended coverage, subject to approved fees/service.
+- Preparation takes 3–5 days BEFORE carrier transit.
+- Final product prices, carrier agreement and shipping fees remain unresolved.
+- Real product photographs and the official customer-service contact require approval.
 
-Do not auto-import placeholder prices or activate catalog records from the current HTML. Confirm final product IDs, names, sizes, availability and selling prices for each of the ten winter models with the ORKA owner. Then create authoritative catalog via privileged server/admin provisioning workflow (never through public browser writes).
+## Catalog contract
 
-Map numeric storefront `id` to stable catalog `productId` explicitly, and make the checkout UI display the server-confirmed total (not its untrusted local estimate) before final submission. The customer must approve that final total. Shipping is not yet defined; the current draft backend sets `shippingEGP: 0`, which must not be treated as an approved free-shipping policy.
+The first candidate supports `inventoryMode: "made-to-order"` only. It does not reserve stock or integrate a carrier. Each authoritative `catalog/{productId}` record requires `active`, a nonempty `name` (max 100 characters), positive safe integer `priceEGP`, valid `sizes`, and integer `maxPerOrder` (1–30). The quantity limit applies across sizes of the same product. Monetary values in this candidate are whole Egyptian pounds; fractional pricing requires a reviewed contract change before provisioning.
 
-## Additional blockers
+Production `index.html` still uses placeholder numeric IDs, prices and size labels. Do not copy these to the authoritative catalog. Approve explicit mappings to stable `productId` and exact size codes for every real model. Real cart / product-page migration is a release blocker, separate from the synthetic demo mapping.
 
-- The guest client requires Firebase Anonymous Auth to be enabled; verify project configuration and App Check for web.
-- The draft rules intentionally deny profile writes and will break existing customer onboarding; migrate to server-managed profiles or write tightly validated rules before deploy.
-- The draft callable's per-UID throttle does not protect against many fresh anonymous identities; add App Check and network abuse controls.
-- The draft callable's order data shape (`totalEGP`, `checkoutMode`) needs to be reconciled with ORKA Orders PWA, which may read `total` and `status`.
-- Configure a real delivery and payment policy; loyalty remains off until server-side idempotent fulfillment.
-- No emulator/browser tests have been run. No Firebase or production deployment authorized by this document.
+## Amount confirmation
 
-## Acceptance tests
+`quoteOrkaOrder` produces a five-minute server-owned quote bound to authenticated UID and canonical input, including the attempt ID, address and items. The browser must display merchandise, shipping and total, then submit the same `quoteId` after explicit confirmation. `createOrkaOrder` rechecks the current catalog, availability, policy, quantities and amount in its Firestore transaction. Changed terms or expired quotes require another confirmation. Successful retries return the original order even after a quote expires or new-order intake is disabled.
 
-1. Registered Google customer creates a canonical order at server-confirmed price; it appears in admin.
-2. Guest customer creates an order without Google login; order appears in admin, guest cannot list other orders.
-3. Tampered price/discount/points ignored or rejected; unknown SKU/size rejected.
-4. Duplicate requestId returns same order, different payload rejected.
-5. Admin read works; customer cannot read another customer's order; guest cannot enumerate orders.
-6. No loyalty points or live delivery writes in this release.
-7. Checkout retry and browser refresh preserve the attempt ID, and error messages do not expose PII.
+## No activation yet
+
+Do not create or enable production `storeSettings/checkout`. New quotes/orders require `enabled`, `catalogApproved`, `shippingApproved`, `abuseControlsApproved` all explicitly true, `paymentMethod: "cod"`, and a valid approved fee for the selected governorate. The abuse approval flag is a gate, NOT an implementation of IP/device limits. Per-UID throttling alone is insufficient for public guest checkout.
+
+## Tests and release blockers
+
+Local Firestore/Auth emulator and loopback callable tests cover pricing, shipping, stale quotes, canonical idempotency, simultaneous retries, identity, ownership, profile protection, admin state transitions and zero loyalty mutations. See `secure-checkout-test-evidence.md` for exact evidence and limitations.
+
+Before release: approve the real catalog/fees, map the real storefront, review deployed rules and legacy data, verify real Google OAuth/Anonymous Auth/App Check, implement and verify network/device abuse controls, run real mobile/browser staging tests, and approve a controlled production rollout. The emulator demo cannot authorize or enable any live service.

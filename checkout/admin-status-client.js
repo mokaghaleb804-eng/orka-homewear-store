@@ -12,11 +12,26 @@ export function allowedOrkaOrderActions(status) {
   return nextStatuses[status] || [];
 }
 export async function updateOrkaOrderStatus(app, order, nextStatus, reason="") {
+  if(app.options.projectId!=="demo-orka-checkout" || app.name!=="orka-emulator-preview") throw Error("المحاكي التجريبي فقط");
   if (!order || order.isTest || order.localOnly) throw Error("الطلبات التجريبية محلية فقط");
   if (!allowedOrkaOrderActions(order.status).includes(nextStatus)) throw Error("انتقال الحالة غير مسموح");
   const user=getAuth(app).currentUser;
   if (!user || user.isAnonymous) throw Error("سجل دخول المدير أولًا");
-  const fn=httpsCallable(getFunctions(app,"me-central1"),"updateOrkaOrderStatus");
-  const result=await fn({orderId:order.id,nextStatus,reason:nextStatus==="cancelled"?reason:""});
+  const payload={orderId:order.id,nextStatus,reason:nextStatus==="cancelled"?reason.trim():""};
+  const key='orka.status.attempt.'+user.uid+'.'+order.id;
+  let attempt=JSON.parse(sessionStorage.getItem(key)||'null');
+  const fn=httpsCallable(getFunctions(app,location.origin+'/__functions'),"updateOrkaOrderStatus");
+  if(attempt?.pending && JSON.stringify(attempt.payload)!==JSON.stringify(payload)) {
+    const previous=await fn({...attempt.payload,requestId:attempt.requestId});
+    attempt.pending=false;sessionStorage.setItem(key,JSON.stringify(attempt));
+    return previous.data; // Resolve the uncertain action, refresh, then allow a new choice.
+  }
+  if(!attempt?.pending) attempt={requestId:crypto.randomUUID(),payload,pending:true};
+  sessionStorage.setItem(key,JSON.stringify(attempt));
+  let result;
+  try {result=await fn({...payload,requestId:attempt.requestId});}
+  catch(error){if(['functions/failed-precondition','functions/invalid-argument','functions/permission-denied','functions/not-found'].includes(error.code)){attempt.pending=false;sessionStorage.setItem(key,JSON.stringify(attempt));}throw error;}
+  attempt.pending=false;sessionStorage.setItem(key,JSON.stringify(attempt));
   return result.data;
 }
+
