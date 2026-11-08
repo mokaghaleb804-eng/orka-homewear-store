@@ -760,6 +760,27 @@ html{scroll-behavior:smooth}body{background:#fff!important}
 .orka-contact-compact .orka-contact-icon:focus-visible,.orka-contact-compact .orka-contact-email:focus-visible{outline:2px solid #a60f36;outline-offset:5px;border-radius:8px}
 @media(max-width:480px){.orka-contact-compact .orka-contact-icons{gap:12px;justify-content:space-around}.orka-contact-compact .orka-contact-icon{min-width:78px;font-size:12px}.orka-contact-compact .orka-contact-icon svg{width:58px;height:58px;padding:14px}}
 </style>
+<style id="orka-story-legibility-fix">
+/* Scope visual correction to the story section; do not alter brand-wide typography. */
+#story.story{background:linear-gradient(135deg,#fffaf1 0%,#fff 58%,#f9eff1 100%)!important;color:#10294a!important}
+#story .story-inner{max-width:1120px;gap:clamp(20px,4vw,48px);padding:clamp(36px,5vw,68px) 22px;align-items:center}
+#story .story-inner>div:first-child{min-width:0}
+#story .eyebrow{color:#a60f36!important;font-weight:800;letter-spacing:.09em}
+#story h2{color:#10294a!important;font-size:clamp(28px,3.5vw,44px);line-height:1.35;margin:12px 0 16px;text-shadow:none!important}
+#story p{color:#45566a!important;font-size:clamp(14px,1.3vw,16px);line-height:1.9;max-width:560px}
+#story .story-art{gap:14px;align-items:stretch}
+#story .story-art img{display:block;width:100%;height:clamp(180px,24vw,290px);object-fit:contain;background:#fff7f1;border:1px solid #eee3dc;border-radius:16px;padding:8px}
+#story .story-art img:last-child{margin-top:0}
+#story .btn{display:inline-flex;align-items:center;justify-content:center;min-height:46px;margin-top:12px;background:#a60f36!important;color:#fff!important;border-color:#a60f36!important;text-decoration:none}
+@media(max-width:760px){
+#story .story-inner{grid-template-columns:minmax(0,1fr);gap:24px;padding:38px 20px}
+#story .story-inner>div:first-child{text-align:right}
+#story h2{font-size:32px}
+#story p{font-size:15px;line-height:1.85}
+#story .story-art{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#story .story-art img{height:clamp(170px,43vw,260px);padding:5px}
+}
+</style>
 </head>
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
@@ -797,7 +818,7 @@ html{scroll-behavior:smooth}body{background:#fff!important}
 </section>
 <div class="benefits"><div class="benefit"><div class="symbol">☁</div><strong>راحة طول اليوم</strong><small>تصميمات مناسبة للعب والنوم</small></div><div class="benefit"><div class="symbol">✿</div><strong>ألوان مبهجة</strong><small>اختيارات تناسب كل شخصية</small></div><div class="benefit"><div class="symbol">♡</div><strong>تفاصيل بحب</strong><small>اهتمام بالتفاصيل الصغيرة</small></div><div class="benefit"><div class="symbol">⌂</div><strong>توصيل لحد البيت</strong><small>خيارات شحن داخل مصر</small></div></div>
 <section class="orka-sample-launch" id="first-collection" aria-label="تجهيز أول مجموعة ORKA"><div class="orka-sample-inner"><div class="orka-sample-mark"><img class="orka-sample-logo" src="orka_logo_transparent.png" alt="لوجو ORKA الأصلي"></div><div class="orka-sample-copy"><span class="orka-sample-kicker">THE FIRST ORKA COLLECTION</span><h2>أول مجموعة ORKA بتتجهّز بحب.</h2><p>بنطوّر عينات ملابس بيت أطفال بعناية. الصور والألوان المعروضة هنا إلهام مبدئي فقط؛ الأسعار والخامات والمقاسات النهائية هتتحدد بعد مراجعة العينات.</p><div class="orka-sample-tags"><span>للأطفال فقط</span><span>اختيار الموديل والمقاس</span><span>الحوت علامة ORKA</span></div></div><a class="btn btn-gold" href="#shop">استكشفي الأفكار</a></div></section>
-<section class="story" id="story"><div class="story-inner"><div><div class="eyebrow">A LITTLE MORE COMFORT</div><h2>البيت أحلى<br>بضحكتهم.</h2><p>ORKA HOMEWEAR اتعملت علشان كل طفل يحس بالراحة وهو بيلعب، بيتعلم، أو بيستعد لنوم هادي. بنختار تصميمات بسيطة وعملية، ونؤمن إن أجمل التفاصيل هي اللي بتخلّي يومهم أسهل وأحلى.</p><a href="#shop" class="btn btn-gold">اختاري طقم لطفلك</a></div><div class="story-art"><img src="/images/orka-winter-set-navy.svg" alt="تصور ألوان ORKA" onerror="this.style.background='#e8dcc8';this.removeAttribute('src')"><img src="/images/orka-winter-set-burgundy.svg" alt="تصور طقم شتوي" onerror="this.style.background='#ead5cf';this.removeAttribute('src')"></div></div></section>
+<section class="story" id="story"><div class="story-inner"><div><div class="eyebrow">A LITTLE MORE COMFORT</div><h2>البيت أحلى<br>بضحكتهم.</h2><p>ORKA HOMEWEAR اتعملت علشان كل طفل يحس بالراحة وهو بيلعب، بيتعلم، أو بيستعد لنوم هادي. بنركز على الراحة والتفاصيل العملية علشان كل لحظة في البيت تبقى أحلى.</p><a href="#shop" class="btn btn-gold">اكتشف المجموعة</a></div><div class="story-art"><img src="/images/orka-winter-set-navy.svg" alt="تصور ألوان ORKA" onerror="this.style.background='#e8dcc8';this.removeAttribute('src')"><img src="/images/orka-winter-set-burgundy.svg" alt="تصور طقم شتوي" onerror="this.style.background='#ead5cf';this.removeAttribute('src')"></div></div></section>
 <section class="section orka-contact-compact" id="contact">
 <div class="section-head"><div><div class="eyebrow">WE'RE HERE FOR YOU</div><h2>تواصل معنا</h2></div><p>تابع ORKA أو تواصل مع خدمة العملاء.</p></div>
 <nav class="orka-contact-icons" aria-label="حسابات ORKA ووسائل التواصل">
