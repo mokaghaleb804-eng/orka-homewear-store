@@ -106,9 +106,10 @@ main>.benefits small{font-size:11px;line-height:1.7}
 .orka-sample-tags{gap:7px;flex-wrap:wrap}
 .orka-sample-tags span{font-size:10px;line-height:1.6;padding:5px 9px;border-radius:20px}
 .btn{min-height:44px;padding:12px 18px;line-height:1.6;box-shadow:none;border-radius:9px;font-size:12px}
-.story{background:#f7f5f1}
+.story{background:#f7f5f1;color:var(--layout-navy)}
+.story .eyebrow{color:var(--layout-burgundy)}
 .story-inner{max-width:var(--layout-width);padding:64px var(--layout-gutter);gap:60px;grid-template-columns:1fr 1fr}
-.story h2{font-size:clamp(30px,3.8vw,46px);line-height:1.45;letter-spacing:-.8px}
+.story h2{font-size:clamp(30px,3.8vw,46px);line-height:1.45;letter-spacing:-.8px;color:var(--layout-navy)}
 .story p{font-size:14px;line-height:2;max-width:480px;color:var(--layout-muted)}
 .story-art{gap:18px;padding:10px 0}
 .story-art img{aspect-ratio:3/4;height:auto;border-radius:18px;box-shadow:none;border:1px solid #e8e1da;background:#fff}
