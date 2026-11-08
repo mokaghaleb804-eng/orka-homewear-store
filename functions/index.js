@@ -101,3 +101,62 @@ exports.createOrkaOrder = onCall({
   });
   return result;
 });
+
+
+// DRAFT ONLY: server-authoritative admin order status transitions.
+// This does not award loyalty points or trigger shipping provider actions.
+const NEXT_ORDER_STATUS = Object.freeze({
+  pending: ["preparing", "cancelled"],
+  preparing: ["shipped", "cancelled"],
+  shipped: ["delivered", "cancelled"],
+  delivered: [],
+  cancelled: []
+});
+exports.updateOrkaOrderStatus = onCall({
+  region: "me-central1",
+  enforceAppCheck: true,
+  maxInstances: 10,
+  timeoutSeconds: 30
+}, async request => {
+  const uid=request.auth?.uid;
+  if (!uid || request.auth.token.firebase?.sign_in_provider==="anonymous") {
+    throw new HttpsError("permission-denied","صلاحية المدير مطلوبة");
+  }
+  const data=request.data;
+  if (!data || typeof data!=="object" || Array.isArray(data) ||
+      Object.keys(data).some(k=>!["orderId","nextStatus","reason"].includes(k)) ||
+      !/^[a-f0-9]{40}$/.test(data.orderId||"") ||
+      !["preparing","shipped","delivered","cancelled"].includes(data.nextStatus)) {
+    reject("بيانات تحديث الطلب غير صحيحة");
+  }
+  const reason=typeof data.reason==="string"?data.reason.trim():"";
+  if (data.nextStatus==="cancelled" && (reason.length<5||reason.length>200)) reject("سبب الإلغاء مطلوب من 5 إلى 200 حرف");
+  if (data.nextStatus!=="cancelled" && reason) reject("سبب الإلغاء مخصص للطلبات الملغاة فقط");
+  const adminRef=db.collection("admins").doc(uid);
+  const orderRef=db.collection("orders").doc(data.orderId);
+  const result=await db.runTransaction(async tx=>{
+    const [adminSnap,orderSnap]=await Promise.all([tx.get(adminRef),tx.get(orderRef)]);
+    if (!adminSnap.exists || adminSnap.data().role!=="admin") throw new HttpsError("permission-denied","غير مصرح لك بتعديل الطلبات");
+    if (!orderSnap.exists) throw new HttpsError("not-found","الطلب غير موجود");
+    const order=orderSnap.data();
+    if (order.isTest===true || order.localOnly===true) reject("الطلبات التجريبية تُدار محليًا فقط");
+    if (!Object.prototype.hasOwnProperty.call(NEXT_ORDER_STATUS,order.status) ||
+        !NEXT_ORDER_STATUS[order.status].includes(data.nextStatus)) {
+      throw new HttpsError("failed-precondition","انتقال حالة الطلب غير مسموح");
+    }
+    const auditRef=orderRef.collection("statusHistory").doc();
+    tx.update(orderRef,{
+      status:data.nextStatus,
+      statusUpdatedAt:FieldValue.serverTimestamp(),
+      statusUpdatedBy:uid,
+      ...(data.nextStatus==="cancelled"?{cancelReason:reason}:{})
+    });
+    tx.create(auditRef,{
+      from:order.status,to:data.nextStatus,by:uid,
+      reason:data.nextStatus==="cancelled"?reason:null,
+      createdAt:FieldValue.serverTimestamp()
+    });
+    return {orderId:data.orderId,status:data.nextStatus};
+  });
+  return result;
+});
