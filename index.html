@@ -805,6 +805,47 @@ html{scroll-behavior:smooth}body{background:#fff!important}
 .product-actions .add:disabled::before,#detailAdd:disabled::before{opacity:.45;filter:brightness(.4)}
 @media(prefers-reduced-motion:reduce){.product-actions .add,#detailAdd{transition:none;transform:none!important}}
 </style>
+
+<style id="orka-product-grid-style">
+.orka-grid-toolbar{display:none}
+@media(max-width:900px){
+ .orka-grid-toolbar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:0 0 18px;color:#10294a;font-size:12px;font-weight:800}
+ .orka-grid-options{display:flex;gap:4px;padding:4px;border:1px solid #e5e1db;background:#fffaf1;border-radius:14px}
+ .orka-grid-option{display:inline-flex;align-items:center;justify-content:center;gap:7px;min-height:44px;min-width:94px;padding:9px 12px;border:1px solid transparent;border-radius:10px;background:transparent;color:#526174;font-size:12px;font-weight:800;touch-action:manipulation}
+ .orka-grid-option svg{flex-shrink:0}
+ .orka-grid-option[aria-pressed="true"]{background:#10294a;color:#fff;border-color:#10294a;box-shadow:0 3px 9px #10294a20}
+ .orka-grid-option:focus-visible{outline:3px solid #a60f36;outline-offset:3px}
+ html[data-product-columns="1"] #shop #products.products{grid-template-columns:minmax(0,1fr)}
+ html[data-product-columns="2"] #shop #products.products{grid-template-columns:repeat(2,minmax(0,1fr))}
+ html[data-product-columns="1"] #products .product-img{height:auto;aspect-ratio:4/5;object-fit:cover}
+ html[data-product-columns="1"] #products .product-info{padding:16px}
+ html[data-product-columns="1"] #products .product-info h3{font-size:16px;line-height:1.6}
+ html[data-product-columns="1"] #products .product-info p{font-size:13px}
+ html[data-product-columns="1"] #products .product-actions{grid-template-columns:1fr 1fr;gap:10px}
+ html[data-product-columns="1"] #products .product-actions .details-btn{font-size:12px}
+}
+</style>
+<script id="orka-product-grid-script">
+(()=>{
+ const root=document.documentElement;
+ let columns='2';
+ try{if(localStorage.getItem('orka-product-columns')==='1')columns='1'}catch(_){}
+ root.setAttribute('data-product-columns',columns);
+ document.addEventListener('DOMContentLoaded',()=>{
+  const buttons=[...document.querySelectorAll('.orka-grid-option')];
+  const select=value=>{
+   columns=value==='1'?'1':'2';
+   root.setAttribute('data-product-columns',columns);
+   buttons.forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.productColumns===columns)));
+  };
+  select(columns);
+  buttons.forEach(button=>button.addEventListener('click',()=>{
+   select(button.dataset.productColumns);
+   try{localStorage.setItem('orka-product-columns',columns)}catch(_){}
+  }));
+ });
+})();
+</script>
 </head>
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
@@ -829,6 +870,10 @@ html{scroll-behavior:smooth}body{background:#fff!important}
       <button class="orka-model-card" type="button" onclick="openProductDetails(4)"><span class="orka-model-card-image"><img src="https://images.pexels.com/photos/29555366/pexels-photo-29555366.jpeg?auto=compress&cs=tinysrgb&w=900" alt="طفلان بإطلالات كاجوال شتوية – صورة إلهام"></span><span class="orka-model-card-copy"><b>الطقم البيج والكريمي</b><small>شوفي التفاصيل والمقاسات</small></span></button>
     </div></div><div class="signature-drag-caption">DRAG / SWIPE TO EXPLORE</div></div></section><section class="signature-collection-intro"><div class="signature-eyebrow">THE COLLECTION</div><h2>Made to move.</h2><div class="signature-categories"><a href="#shop" onclick="document.querySelector('[data-filter=boys]')?.click()"><strong>For Boys ↗</strong><small>EXPLORE THE EDIT</small></a><a href="#shop" onclick="document.querySelector('[data-filter=girls]')?.click()"><strong>For Girls ↗</strong><small>EXPLORE THE EDIT</small></a></div></section><section class="section" id="shop"><div class="section-head"><div><div class="eyebrow">CURATED FOR LITTLE ADVENTURES</div><h2>The ORKA Edit.</h2></div><p>بنحضّر أول مجموعة ORKA للأطفال. المعروض هنا أفكار إلهام فقط، وليست منتجات للبيع؛ الصور والأسعار والمقاسات النهائية هتتحدد بعد تجهيز العينات.</p></div>
 <div class="filters"><button class="filter active" data-filter="all">كل المنتجات</button><button class="filter" data-filter="boys">أولاد</button><button class="filter" data-filter="girls">بنات</button><button class="filter" data-filter="sets">أطقم شتوي</button><button class="filter" data-filter="favorites">❤️ المختارات <span id="favoriteCount">0</span></button></div>
+<div class="orka-grid-toolbar"><span id="orkaGridLabel">طريقة العرض</span><div class="orka-grid-options" role="group" aria-labelledby="orkaGridLabel">
+<button type="button" class="orka-grid-option" data-product-columns="1" aria-controls="products" aria-pressed="false" aria-label="منتج واحد في الصف"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"/></svg><span>منتج واحد</span></button>
+<button type="button" class="orka-grid-option" data-product-columns="2" aria-controls="products" aria-pressed="true" aria-label="منتجين في الصف"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="2" y="3" width="8" height="18" rx="2"/><rect x="14" y="3" width="8" height="18" rx="2"/></svg><span>منتجين</span></button>
+</div></div>
 <details class="size-guide"><summary>دليل المقاسات حسب العمر　＋</summary><div class="guide-body"><table><thead><tr><th>العمر</th><th>المقاس المعروض</th><th>ملاحظة</th></tr></thead><tbody><tr><td>2–3 سنوات</td><td>2-3 سنوات</td><td>للأطفال الأصغر</td></tr><tr><td>4–5 سنوات</td><td>4-5 سنوات</td><td>اختار حسب بنية الطفل</td></tr><tr><td>6–7 سنوات</td><td>6-7 سنوات</td><td>راجع وصف المنتج</td></tr><tr><td>8–9 سنوات</td><td>8-9 سنوات</td><td>تأكد من القياسات قبل الطلب</td></tr></tbody></table><p class="guide-note">دليل مبدئي حسب الفئات العمرية فقط، وليس جدول قياسات بالسنتيمتر. هنضيف قياسات الصدر والطول وطول البنطلون بعد اعتماد عينات ORKA الفعلية. لو محتار في المقاس، اسأل خدمة العملاء على واتساب قبل الطلب.</p><a class="wa-contact" href="https://wa.me/201021006006?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D9%8B%20ORKA%D8%8C%20%D9%85%D8%AD%D8%AA%D8%A7%D8%AC%20%D9%85%D8%B3%D8%A7%D8%B9%D8%AF%D8%A9%20%D9%81%D9%8A%20%D8%A7%D8%AE%D8%AA%D9%8A%D8%A7%D8%B1%20%D8%A7%D9%84%D9%85%D9%82%D8%A7%D8%B3" target="_blank" rel="noopener">اسأل عن المقاس على واتساب</a></div></details><div class="products" id="products">
 <article class="product"><div class="product-img-wrap"><img class="product-img" src="/images/orka-winter-set-navy.svg" alt="تصميم طقم شتوي كحلي" loading="lazy"><button type="button" class="heart" onclick="event.preventDefault();event.stopPropagation();toggleFavorite(1)" aria-label="أضف للمختارات" aria-pressed="false">♡</button></div><div class="product-info"><h3>طقم شتوي دافي — كحلي</h3><p>تصور مبدئي للتصميم — السعر النهائي بعد اعتماد العينات</p><label for="fallback-size-0" style="display:block;font-size:11px;font-weight:900;color:var(--navy);margin:10px 0 6px">المقاس</label><select id="fallback-size-0" aria-label="اختار المقاس" style="width:100%;border:1px solid #e8e4dc;background:white;padding:9px;border-radius:6px;font-size:12px;color:#455266"><option value="">اختار المقاس</option><option>2-3 سنوات</option><option>4-5 سنوات</option><option>6-7 سنوات</option><option>8-9 سنوات</option></select><div class="price-row"><div class="price">السعر قريبًا</div></div><div class="product-actions"><button class="details-btn" type="button" onclick="openProductDetails(1)">عرض فكرة التصميم</button><button class="add" type="button" disabled aria-disabled="true">قريبًا</button></div></div></article>
 <article class="product"><div class="product-img-wrap"><img class="product-img" src="/images/orka-winter-set-burgundy.svg" alt="تصميم طقم بناتي وردي" loading="lazy"><button type="button" class="heart" onclick="event.preventDefault();event.stopPropagation();toggleFavorite(2)" aria-label="أضف للمختارات" aria-pressed="false">♡</button></div><div class="product-info"><h3>طقم بناتي — وردي هادي</h3><p>تصور مبدئي للتصميم — السعر النهائي بعد اعتماد العينات</p><label for="fallback-size-1" style="display:block;font-size:11px;font-weight:900;color:var(--navy);margin:10px 0 6px">المقاس</label><select id="fallback-size-1" aria-label="اختار المقاس" style="width:100%;border:1px solid #e8e4dc;background:white;padding:9px;border-radius:6px;font-size:12px;color:#455266"><option value="">اختار المقاس</option><option>2-3 سنوات</option><option>4-5 سنوات</option><option>6-7 سنوات</option><option>8-9 سنوات</option></select><div class="price-row"><div class="price">السعر قريبًا</div></div><div class="product-actions"><button class="details-btn" type="button" onclick="openProductDetails(2)">عرض فكرة التصميم</button><button class="add" type="button" disabled aria-disabled="true">قريبًا</button></div></div></article>
@@ -1485,6 +1530,7 @@ window.orkaAuthReady=new Promise(resolve=>{
 <script>
 (function(){
  const translations = {
+ "طريقة العرض":"View layout","منتج واحد":"One product","منتجين":"Two products",
  "ORKA HOMEWEAR للأطفال 🐳 —":"ORKA HOMEWEAR for kids 🐳 —",
  "بنجهّز أول مجموعة شتوية":"Our first winter collection is in the works",
  "قريبًا":"Coming soon",
@@ -1545,6 +1591,7 @@ window.orkaAuthReady=new Promise(resolve=>{
  "طريقة الدخول: ":"Sign-in method: ","رقم الموبايل: ":"Mobile number: "
  };
  const attrTranslations = {
+ "منتج واحد في الصف":"One product per row","منتجين في الصف":"Two products per row",
  "اختار المقاس":"Choose a size","بريدك الإلكتروني":"Your email address","اسم العميل":"Customer name",
  "01xxxxxxxxx":"01xxxxxxxxx","المنطقة، الشارع، رقم العقار، علامة مميزة":"Area, street, building number, nearby landmark",
  "أي تفاصيل إضافية":"Any additional details","علامة الحوت من شعار ORKA":"The whale mark from the ORKA logo",
