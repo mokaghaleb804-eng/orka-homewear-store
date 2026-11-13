@@ -1,0 +1,23 @@
+{
+  "schemaVersion": 1,
+  "environment": "preview-only",
+  "paymentsEnabled": false,
+  "orderSubmissionEnabled": false,
+  "currency": "EGP",
+  "paymentMethods": [
+    {"id":"cod","labelAr":"الدفع عند الاستلام","display":true,"enabled":false},
+    {"id":"card","labelAr":"بطاقات بنكية","display":true,"enabled":false},
+    {"id":"wallet","labelAr":"محافظ إلكترونية","display":true,"enabled":false}
+  ],
+  "shipping": {"status":"awaiting-approved-rates","rates":[]},
+  "prices": {"status":"awaiting-approval"},
+  "serverRequirements": {
+    "authoritativeCatalog": true,
+    "serverCalculatedShipping": true,
+    "serverValidatedDiscounts": true,
+    "idempotencyKey": true,
+    "authenticatedOrGuestOwnership": true,
+    "signedPaymentWebhook": true,
+    "noClientTrustedTotals": true
+  }
+}
