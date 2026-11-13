@@ -16,15 +16,38 @@
 </form></main>
 <script>
 const dict={en:{checkoutTitle:"Checkout",checkoutSub:"Delivery details ← Payment method ← Review order",onlineMethods:"Online payment options (currently disabled)",wallet:"E-wallet",methodNotice:"Payment icons are illustrative only. No provider is activated. Card details will never be entered on this preview.",preview:"Design preview only — no orders, payments, or data transmission.",contact:"Contact",mobile:"Mobile number",email:"Email (optional)",marketing:"I agree to receive marketing offers",delivery:"Delivery address",first:"First name",last:"Last name",governorate:"Governorate",choose:"Select governorate",city:"City / area",address:"Street and building",apartment:"Apartment / floor (optional)",shipping:"Shipping",shippingNote:"Shipping fees and delivery times are not approved yet. No estimated fees are charged.",payment:"Payment method",cod:"Cash on delivery — once shipping and order details are approved",online:"Cards / wallets — coming soon after integration and testing",summary:"Order summary",subtotal:"Items subtotal",pending:"Not approved yet",total:"Final total",coupon:"Discount code (when enabled)",status:"Real orders cannot be placed from this preview.",submit:"Place order (disabled in preview)"},ar:{}};document.querySelectorAll('[data-i18n]').forEach(e=>dict.ar[e.dataset.i18n]??=e.textContent);let locale='ar';document.getElementById('lang').addEventListener('click',()=>{locale=locale==='ar'?'en':'ar';document.documentElement.lang=locale;document.documentElement.dir=locale==='ar'?'rtl':'ltr';document.querySelectorAll('[data-i18n]').forEach(e=>e.textContent=dict[locale][e.dataset.i18n]);document.getElementById('lang').textContent=locale==='ar'?'English':'العربية'});document.getElementById('checkout').addEventListener('submit',e=>e.preventDefault());
-/* Read-only cart preview. Local cart is untrusted; NEVER use it to charge or persist orders. */
+/* Preview only: reads the existing ORKA cart on the same origin, never submits orders. */
 (function previewCart(){
  const target=document.getElementById('cartPreview');
+ const showMessage=message=>{target.textContent=message;};
  try {
   const raw=JSON.parse(localStorage.getItem('orka-cart')||'[]');
-  if(!Array.isArray(raw)||!raw.length){target.textContent='سلة المعاينة فارغة — لا توجد عملية شراء فعلية.';return;}
-  const safe=raw.filter(x=>x&&Number.isFinite(Number(x.qty))&&Number(x.qty)>0&&Number(x.qty)<=99).slice(0,30);
-  const heading=document.createElement('p');heading.textContent='عناصر السلة المحلية (للمعاينة فقط — الأسعار غير معتمدة):';target.appendChild(heading);
-  safe.forEach(x=>{const p=document.createElement('p');const label=String(x.name||x.title||x.id||'منتج').slice(0,100);p.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eee';const imageUrl=String(x.img||'');if(imageUrl&&(/^(\\.\\/|\\/|https:\\/\\/)/.test(imageUrl))){try{const u=new URL(imageUrl,location.href);if(u.origin===location.origin){const img=document.createElement('img');img.src=u.href;img.alt='';img.loading='lazy';img.style.cssText='width:56px;height:65px;object-fit:cover;border-radius:6px';p.appendChild(img)}}catch(e){}}const detail=document.createElement('span');detail.textContent=label+' — المقاس '+String(x.size||'')+' × '+Number(x.qty);p.appendChild(detail);target.appendChild(p);});
- }catch(e){target.textContent='تعذر قراءة السلة المحلية في المعاينة.';}
+  if(!Array.isArray(raw)){showMessage('تعذر قراءة بيانات السلة.');return;}
+  const items=raw.filter(x=>x&&x.id!==undefined&&x.size&&Number.isInteger(Number(x.qty))&&Number(x.qty)>0&&Number(x.qty)<=99).slice(0,30);
+  if(!items.length){showMessage('السلة فارغة — أضف منتجًا من متجر ORKA ثم افتح المعاينة من السلة.');return;}
+  const heading=document.createElement('p');
+  heading.textContent='محتويات السلة: '+items.reduce((sum,x)=>sum+Number(x.qty),0)+' قطعة — الأسعار والشحن لم يتم اعتمادهما.';
+  target.appendChild(heading);
+  items.forEach(x=>{
+   const line=document.createElement('div');
+   line.style.cssText='display:flex;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid #e6e6e6';
+   const imageUrl=typeof x.img==='string'?x.img:'';
+   if(imageUrl){
+    try{
+     const url=new URL(imageUrl,location.href);
+     if((url.protocol==='https:'||url.protocol==='http:')&&url.origin===location.origin){
+      const img=document.createElement('img');
+      img.src=url.href;img.alt='صورة المنتج';img.loading='lazy';
+      img.style.cssText='width:58px;height:68px;object-fit:cover;border-radius:7px;flex-shrink:0';
+      line.appendChild(img);
+     }
+    }catch(e){}
+   }
+   const detail=document.createElement('div');
+   const name=document.createElement('strong');name.textContent=String(x.name||'منتج ORKA').slice(0,100);
+   const variant=document.createElement('div');variant.textContent='المقاس: '+String(x.size).slice(0,20)+' | الكمية: '+Number(x.qty);
+   detail.append(name,variant);line.appendChild(detail);target.appendChild(line);
+  });
+ }catch(e){showMessage('تعذر قراءة السلة المحلية في المعاينة.');}
 })();
 </script></body></html>
