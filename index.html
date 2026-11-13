@@ -846,6 +846,22 @@ html{scroll-behavior:smooth}body{background:#fff!important}
  html[data-product-columns="1"] #products .product-actions{grid-template-columns:1fr 1fr;gap:10px}
  html[data-product-columns="1"] #products .product-actions .details-btn{font-size:12px}
 }
+
+/* ORKA catalog: consistent card proportions in one- and two-column views. */
+#shop #products .product{display:flex!important;flex-direction:column!important;min-width:0;height:100%}
+#shop #products .product-img-wrap,
+#shop #products .product-img-wrap:has(img[src*="babyblue-01-front-pose"]),
+#shop #products .product-img-wrap:has(img[src*="file_000000005b5c81f480b3d464273952b7"]){box-sizing:border-box!important;width:100%!important;height:auto!important;aspect-ratio:3/4!important;min-height:0!important;padding:8px!important;display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 auto!important;overflow:hidden!important}
+#shop #products .product-img-wrap .product-img,
+html[data-product-columns="1"] #shop #products .product-img-wrap .product-img{box-sizing:border-box!important;display:block!important;width:100%!important;height:100%!important;max-height:100%!important;aspect-ratio:auto!important;object-fit:contain!important;object-position:center center!important;transform:none!important}
+#shop #products .product:hover .product-img{transform:none!important}
+#shop #products .product-info{display:flex!important;flex-direction:column!important;flex:1!important;min-width:0}
+#shop #products .product-info h3{min-height:2.8em;line-height:1.4!important;overflow-wrap:anywhere}
+#shop #products .product-info p{min-height:5.8em;line-height:1.45!important;overflow-wrap:anywhere}
+#shop #products .product-info .price-row{margin-top:auto!important;min-height:30px}
+#shop #products .product-info .product-actions{margin-top:12px!important;grid-template-columns:1fr!important}
+#shop #products .product-info .product-actions button{width:100%;min-height:44px;white-space:normal}
+@media(max-width:600px){#shop #products .product-img-wrap{aspect-ratio:3/4!important}#shop #products .product-info{padding:10px!important}#shop #products .product-info h3{font-size:12px!important}#shop #products .product-info p{font-size:11px!important}}
 </style>
 <script id="orka-product-grid-script">
 (()=>{
