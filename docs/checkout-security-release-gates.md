@@ -28,3 +28,10 @@ No production changes authorized by this draft.
 - `firestore.rules` permits `customers/{uid}` updates to selected profile fields and admin updates to points; no secure loyalty accrual pipeline is proven.
 - Privacy draft now explicitly describes local account records, favorites, membership/loyalty display, and Firebase processing. Legal and deployed-service review remains required.
 - Do not publish the draft privacy text or enable loyalty until accuracy is verified against live Firebase/RTDB behavior.
+
+## Deployment evidence (user-confirmed, 2026-11-13)
+- Owner pasted the full then-current Firestore rules from Firebase console, matching the earlier repository rules allowing client order creation.
+- Owner pasted the revised rules into Firebase console and pressed Publish; subsequently confirmed `allow create: if false;` was still displayed in Rules after publishing.
+- This is **visual owner confirmation**, not an independently executed SDK write-denial test or retrieved deployed ruleset version.
+- Main branch privacy disclosure was separately updated (commit a08ad1d0f1d119b8ab8addc40b41030c7fc28ddb).
+- CI static security gates completed successfully on the draft branch. The actual Firebase Emulator Suite and live unauthorized access tests remain unexecuted.
