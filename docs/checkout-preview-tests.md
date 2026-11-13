@@ -42,3 +42,19 @@ Read-only checks against `index.html` and `checkout-preview.html` on `feature/or
 - PASS: storefront cart links to the new checkout preview.
 
 **Not yet verified:** deployed Vercel preview URL, browser runtime behavior, actual guest/registered flows, cross-page localStorage on the preview domain, or real images loading. Do not merge or deploy until these are tested and shipping/pricing are approved.
+
+
+## Automated safety gate — 2026-11-13
+
+Added `scripts/checkout-preview-smoke.cjs` with **16** fail-closed source assertions, plus `.github/workflows/checkout-preview-smoke.yml` to run them on pull requests. This is a non-deploying test workflow; it does not change production or Firebase. The GitHub/Vercel commit status was **pending** when checked, so no CI pass is claimed.
+
+### Release gates still blocked
+
+1. **Real browser**: inspect the actual Vercel preview URL (not the Vercel dashboard URL); test mobile viewport, bilingual labels, header logo and image loading.
+2. **Guest and signed-in journeys**: add an item on the *same preview origin*, verify image/name/size/quantity, change quantities, empty cart, and check localStorage isolation.
+3. **Backend**: implement and test authoritative server-side product prices, shipping, discounts, idempotent order creation, access controls and stock constraints in a separate approved task. Client-side preview validation is not sufficient.
+4. **Business approval**: product prices, governorate-specific shipping charges, customer service contact, payment provider and delivery policy must be finalized.
+5. **Payment**: sandbox test webhook signature, duplicates, failure, refund/cancellation and amount/currency before considering any live activation.
+6. **Approval**: no merge, production deploy, Firebase change or live payment/order activation without explicit user approval.
+
+The standalone downloadable HTML demonstrates visuals only; it cannot validate a same-origin store cart.
