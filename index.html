@@ -1148,8 +1148,8 @@ let heroIndex=0;const heroSlides=[...document.querySelectorAll('.hero-slideshow 
  function paint(){const c=cards();const names=['is-center','is-right','is-back','is-left'];c.forEach((el,i)=>{el.classList.remove('is-center','is-left','is-right','is-back');el.classList.add(names[i]||'is-back');});syncVideo();}
  window.orkaHeroMove=function(direction){const c=cards();if(c.length<2)return;if(direction>0)stage.appendChild(c[0]);else stage.insertBefore(c[c.length-1],c[0]);paint();};
  paint();
- let timer=setInterval(()=>window.orkaHeroMove(1),3200);
- const pause=()=>clearInterval(timer),resume=()=>{clearInterval(timer);timer=setInterval(()=>window.orkaHeroMove(1),3200)};
+ let timer=setInterval(()=>window.orkaHeroMove(1),31000);
+ const pause=()=>clearInterval(timer),resume=()=>{clearInterval(timer);timer=setInterval(()=>window.orkaHeroMove(1),31000)};
  let startX=0,startY=0,dragging=false,moved=false;
  stage.addEventListener('pointerdown',e=>{
    if(e.pointerType==='mouse'&&e.button!==0)return;
