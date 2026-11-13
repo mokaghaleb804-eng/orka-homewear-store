@@ -20,3 +20,11 @@
 6. Review Egypt data protection obligations with counsel before production processing.
 
 No production changes authorized by this draft.
+
+## Privacy and loyalty code audit (2026-11-13)
+- `index.html` stores account records in `localStorage` via `readOrkaAccounts`/`saveOrkaAccounts`, including name, email, phone, points, pending and orders fields. These values are client-editable and must never authorize rewards or purchases.
+- `window.checkOrkaAdminAccess` reads `admins/{uid}` in Firestore. This client check is only a UI control; actual authorization relies on deployed Firestore rules.
+- Admin order loader performs a broad `getDocs(collection(db,'orders'))`, authorized only for admins by the repository rules. Confirm deployed rules match.
+- `firestore.rules` permits `customers/{uid}` updates to selected profile fields and admin updates to points; no secure loyalty accrual pipeline is proven.
+- Privacy draft now explicitly describes local account records, favorites, membership/loyalty display, and Firebase processing. Legal and deployed-service review remains required.
+- Do not publish the draft privacy text or enable loyalty until accuracy is verified against live Firebase/RTDB behavior.
