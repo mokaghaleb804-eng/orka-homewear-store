@@ -60,41 +60,10 @@ service cloud.firestore {
     }
 
     match /orders/{orderId} {
-      allow create: if request.resource.data.keys().hasAll([
-          'uid', 'customer', 'phone', 'gov', 'address', 'notes',
-          'items', 'total', 'status', 'createdAt'
-        ])
-        && request.resource.data.keys().hasOnly([
-          'uid', 'customer', 'phone', 'gov', 'address', 'notes',
-          'items', 'total', 'status', 'createdAt'
-        ])
-        && request.resource.data.status == 'pending'
-        && request.resource.data.customer is string
-        && request.resource.data.customer.size() > 0
-        && request.resource.data.customer.size() <= 80
-        && request.resource.data.phone is string
-        && request.resource.data.phone.size() >= 10
-        && request.resource.data.phone.size() <= 30
-        && request.resource.data.gov is string
-        && request.resource.data.gov.size() > 0
-        && request.resource.data.gov.size() <= 60
-        && request.resource.data.address is string
-        && request.resource.data.address.size() > 0
-        && request.resource.data.address.size() <= 500
-        && request.resource.data.notes is string
-        && request.resource.data.notes.size() <= 500
-        && request.resource.data.items is list
-        && request.resource.data.items.size() > 0
-        && request.resource.data.items.size() <= 30
-        && request.resource.data.total is number
-        && request.resource.data.total >= 0
-        && request.resource.data.createdAt == request.time
-        && (
-          (signedIn()
-            && request.resource.data.uid == request.auth.uid
-            && request.resource.data.phone == request.auth.token.phone_number)
-          || (!signedIn() && request.resource.data.uid == null)
-        );
+      // Release gate: all client-side order creation is denied until a trusted
+      // server-side checkout validates catalog prices, shipping and inventory.
+      // This intentionally blocks guest and signed-in checkout writes.
+      allow create: if false;
 
       allow read: if isAdmin()
         || (signedIn() && resource.data.uid == request.auth.uid);
