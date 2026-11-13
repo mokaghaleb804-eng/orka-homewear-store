@@ -24,7 +24,7 @@ const dict={en:{checkoutTitle:"Checkout",checkoutSub:"Delivery details ← Payme
   if(!Array.isArray(raw)||!raw.length){target.textContent='سلة المعاينة فارغة — لا توجد عملية شراء فعلية.';return;}
   const safe=raw.filter(x=>x&&Number.isFinite(Number(x.qty))&&Number(x.qty)>0&&Number(x.qty)<=99).slice(0,30);
   const heading=document.createElement('p');heading.textContent='عناصر السلة المحلية (للمعاينة فقط — الأسعار غير معتمدة):';target.appendChild(heading);
-  safe.forEach(x=>{const p=document.createElement('p');const label=String(x.name||x.title||x.id||'منتج').slice(0,100);p.textContent=label+' — '+String(x.size||'')+' × '+Number(x.qty);target.appendChild(p);});
+  safe.forEach(x=>{const p=document.createElement('p');const label=String(x.name||x.title||x.id||'منتج').slice(0,100);p.style.cssText='display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid #eee';const imageUrl=String(x.img||'');if(imageUrl&&(/^(\\.\\/|\\/|https:\\/\\/)/.test(imageUrl))){try{const u=new URL(imageUrl,location.href);if(u.origin===location.origin){const img=document.createElement('img');img.src=u.href;img.alt='';img.loading='lazy';img.style.cssText='width:56px;height:65px;object-fit:cover;border-radius:6px';p.appendChild(img)}}catch(e){}}const detail=document.createElement('span');detail.textContent=label+' — المقاس '+String(x.size||'')+' × '+Number(x.qty);p.appendChild(detail);target.appendChild(p);});
  }catch(e){target.textContent='تعذر قراءة السلة المحلية في المعاينة.';}
 })();
 </script></body></html>
