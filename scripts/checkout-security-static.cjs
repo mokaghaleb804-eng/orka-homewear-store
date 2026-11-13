@@ -1,0 +1,14 @@
+'use strict';
+const fs = require('node:fs');
+const assert = require('node:assert/strict');
+const rules = fs.readFileSync('firestore.rules', 'utf8');
+const html = fs.readFileSync('index.html', 'utf8');
+const checkout = fs.readFileSync('checkout-preview.html', 'utf8');
+const section = rules.match(/match \/orders\/\{orderId\} \{([\s\S]*?)\n    \}/);
+assert.ok(section, 'orders rule block missing');
+assert.match(section[1], /allow create:\s*if false\s*;/, 'orders must fail closed');
+assert.match(section[1], /allow read:\s*if isAdmin\(\)\s*\|\|\s*\(signedIn\(\)\s*&&\s*resource\.data\.uid\s*==\s*request\.auth\.uid\)/, 'orders must be owner/admin read-only');
+assert.match(rules, /match \/admins\/\{uid\}[\s\S]*?allow write:\s*if false\s*;/, 'admins must be immutable from clients');
+assert.match(html, /إرسال الطلبات الحقيقية معطّل/, 'storefront real order submission must remain disabled');
+assert.match(checkout, /type="button" disabled data-i18n="submit"/, 'preview checkout must remain disabled');
+console.log('PASS: six static checkout release gates. These do not replace emulator or deployed rules tests.');
