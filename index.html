@@ -1143,29 +1143,58 @@ let heroIndex=0;const heroSlides=[...document.querySelectorAll('.hero-slideshow 
 <style id="orka-video-card-style">.orka-video-card video{display:block;width:100%;height:100%;object-fit:contain;background:#f1f1ee}.orka-video-card .orka-model-card-image{display:block;overflow:hidden}.orka-video-card{cursor:default}</style>
 <script id="orka-model-carousel-script">
 (function(){
- const stage=document.getElementById('orkaModelCarousel'); if(!stage)return;
+ const stage=document.getElementById('orkaModelCarousel');if(!stage)return;
  const cards=()=>Array.from(stage.querySelectorAll('.orka-model-card'));
- function syncVideo(){stage.querySelectorAll('video').forEach(v=>{if(v.closest('.orka-model-card')?.classList.contains('is-center')){v.play().catch(()=>{});}else{v.pause();v.currentTime=0;}})}
- function paint(){const c=cards();const names=['is-center','is-right','is-back','is-left'];c.forEach((el,i)=>{el.classList.remove('is-center','is-left','is-right','is-back');el.classList.add(names[i]||'is-back');});syncVideo();}
- window.orkaHeroMove=function(direction){const c=cards();if(c.length<2)return;if(direction>0)stage.appendChild(c[0]);else stage.insertBefore(c[c.length-1],c[0]);paint();};
- paint();
- let timer=setInterval(()=>window.orkaHeroMove(1),31000);
- const pause=()=>clearInterval(timer),resume=()=>{clearInterval(timer);timer=setInterval(()=>window.orkaHeroMove(1),31000)};
- let startX=0,startY=0,dragging=false,moved=false;
+ const STILL_CARD_MS=31000,AFTER_VIDEO_MS=2000;
+ let timer=null,paused=false,dragging=false,moved=false,startX=0,startY=0;
+ function clearTimer(){if(timer!==null){clearTimeout(timer);timer=null;}}
+ function centerVideo(){return stage.querySelector('.orka-model-card.is-center video');}
+ function schedule(){
+  clearTimer();if(paused)return;
+  const video=centerVideo();
+  if(!video){timer=setTimeout(()=>window.orkaHeroMove(1),STILL_CARD_MS);return;}
+  video.loop=false;
+  if(video.ended){timer=setTimeout(()=>window.orkaHeroMove(1),AFTER_VIDEO_MS);return;}
+  // Fallback if autoplay is blocked or media cannot load.
+  timer=setTimeout(()=>window.orkaHeroMove(1),Math.max(STILL_CARD_MS,((video.duration||29)+2)*1000));
+  video.play().catch(()=>{});
+ }
+ function paint(){
+  const c=cards(),names=['is-center','is-right','is-back','is-left'];
+  c.forEach((el,i)=>{el.classList.remove('is-center','is-left','is-right','is-back');el.classList.add(names[i]||'is-back');});
+  stage.querySelectorAll('video').forEach(v=>{
+   if(v!==centerVideo()){v.pause();try{v.currentTime=0;}catch(_){}}
+  });
+  schedule();
+ }
+ window.orkaHeroMove=function(direction){
+  const c=cards();if(c.length<2)return;
+  clearTimer();if(direction>0)stage.appendChild(c[0]);else stage.insertBefore(c[c.length-1],c[0]);
+  paint();
+ };
+ stage.querySelectorAll('video').forEach(v=>{
+  v.loop=false;
+  v.addEventListener('ended',()=>{if(v===centerVideo()&&!paused){clearTimer();timer=setTimeout(()=>window.orkaHeroMove(1),AFTER_VIDEO_MS);}});
+  v.addEventListener('error',()=>{if(v===centerVideo())schedule();});
+ });
+ const pause=()=>{paused=true;clearTimer();const v=centerVideo();if(v)v.pause();};
+ const resume=()=>{paused=false;schedule();};
  stage.addEventListener('pointerdown',e=>{
-   if(e.pointerType==='mouse'&&e.button!==0)return;
-   startX=e.clientX;startY=e.clientY;dragging=true;moved=false;pause();
-   try{stage.setPointerCapture(e.pointerId)}catch(_){}
+  if(e.pointerType==='mouse'&&e.button!==0)return;
+  startX=e.clientX;startY=e.clientY;dragging=true;moved=false;pause();
+  try{stage.setPointerCapture(e.pointerId)}catch(_){}
  });
  stage.addEventListener('pointerup',e=>{
-   if(!dragging)return;dragging=false;
-   const dx=e.clientX-startX,dy=e.clientY-startY;
-   if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.15){moved=true;window.orkaHeroMove(dx<0?1:-1);}
-   resume();
+  if(!dragging)return;dragging=false;
+  const dx=e.clientX-startX,dy=e.clientY-startY;
+  if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.15){moved=true;window.orkaHeroMove(dx<0?1:-1);}
+  resume();
  });
- stage.addEventListener('pointercancel',()=>{dragging=false;resume()});
+ stage.addEventListener('pointercancel',()=>{dragging=false;resume();});
  stage.addEventListener('click',e=>{if(moved){e.preventDefault();e.stopPropagation();moved=false;}},true);
- stage.addEventListener('mouseenter',pause);stage.addEventListener('mouseleave',()=>{if(!dragging)resume()});
+ stage.addEventListener('mouseenter',pause);
+ stage.addEventListener('mouseleave',()=>{if(!dragging)resume();});
+ paint();
 })();
 </script>
 
