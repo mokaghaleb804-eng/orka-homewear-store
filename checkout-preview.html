@@ -29,9 +29,11 @@ document.getElementById('validatePreview').addEventListener('click',()=>{
  if(missing.length)errors.push('استكمل بيانات التواصل والعنوان المطلوبة ('+missing.length+' حقول).');
  if(phone&&!/^01[0125][0-9]{8}$/.test(phone.value.trim()))errors.push('راجع رقم الموبايل المصري (11 رقم).');
  if(email&&email.value.trim()&&!email.validity.valid)errors.push('راجع البريد الإلكتروني.');
+ const addressFields=fields.filter(el=>el!==phone&&el!==email);if(addressFields.some(el=>el.value.trim().length>0&&el.value.trim().length<2))errors.push('بعض بيانات العنوان قصيرة جدًا.');
  let count=0;
  try{const raw=JSON.parse(localStorage.getItem('orka-cart')||'[]');if(Array.isArray(raw))count=raw.filter(x=>x&&x.id!==undefined&&x.size&&Number(x.qty)>0).length;}catch(e){}
  if(!count)errors.push('السلة فارغة أو غير متاحة على نفس نطاق المتجر.');
+ if(!count)errors.push('يمكن استخدام زر السلة الوهمية لاختبار العرض فقط، وليس اعتماد ربط السلة الحقيقية.');
  const result=document.getElementById('validationResult');
  result.style.color=errors.length?'#a60f36':'#186a3b';
  result.textContent=errors.length?'نتيجة الاختبار: '+errors.join(' '):'بيانات المعاينة مكتملة مبدئيًا. لم يتم إنشاء طلب أو إرسال أي بيانات. الأسعار والشحن والدفع لا تزال غير معتمدة.';
