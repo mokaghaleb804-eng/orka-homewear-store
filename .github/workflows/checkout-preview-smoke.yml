@@ -1,0 +1,22 @@
+name: ORKA checkout preview smoke tests
+on:
+  pull_request:
+    paths:
+      - 'checkout-preview.html'
+      - 'checkout-preview.config.json'
+      - 'index.html'
+      - 'scripts/checkout-preview-smoke.cjs'
+      - '.github/workflows/checkout-preview-smoke.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  preview-safety:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate checkout preview (no live calls)
+        run: node scripts/checkout-preview-smoke.cjs

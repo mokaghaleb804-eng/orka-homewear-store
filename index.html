@@ -1087,6 +1087,21 @@ function updateCart(){
  (rewardCreditUsed>0?'<div class="cart-total"><span>رصيد المكافآت المستخدم</span><span>− '+money(rewardCreditUsed)+'</span></div>':'')+
  '<div class="cart-total"><strong>الإجمالي بعد الخصومات وقبل الشحن</strong><strong>'+money(payableTotal)+'</strong></div>'+
  '<p class="notice" style="background:#fff4f3;border:1px solid #f1d0d0;padding:12px;border-radius:8px;color:#80313a;font-weight:800">تنبيه: الأسعار تجريبية للاختبار فقط وليست أسعار بيع معتمدة. إتمام الطلب متوقف لحين اعتماد الأسعار الفعلية.</p>';
+ // Development-only entry point to the redesigned checkout; preserves existing cart and order controls.
+ if(!checkout.querySelector('#orka-checkout-preview-entry')){
+  const previewEntry=document.createElement('div');
+  previewEntry.id='orka-checkout-preview-entry';
+  previewEntry.style.cssText='margin:14px 0;padding:12px;border:1px solid #E8DCC8;border-radius:10px;background:#FFFAF1;text-align:center';
+  const previewLink=document.createElement('a');
+  previewLink.href='checkout-preview.html';
+  previewLink.textContent='معاينة صفحة إتمام الطلب الجديدة';
+  previewLink.style.cssText='display:block;padding:12px;background:#10294A;color:#fff;border-radius:8px;text-decoration:none;font-weight:800';
+  const previewNotice=document.createElement('small');
+  previewNotice.textContent='تصميم تجريبي فقط — لا يتم تسجيل طلب أو تحصيل أي مبلغ';
+  previewNotice.style.cssText='display:block;margin-top:8px;color:#80313a;line-height:1.7';
+  previewEntry.append(previewLink,previewNotice);
+  checkout.prepend(previewEntry);
+ }
  // Keep the existing form and its entered values when cart totals change.
  if(!checkout.querySelector('form.checkout-form')) checkout.innerHTML='<h4 style="color:var(--navy)">بيانات التوصيل</h4><form class="checkout-form" onsubmit="submitOrder(event)"><p class="notice">تفاصيل استخدام بياناتك وحقوقك في <a href="privacy.html" target="_blank" rel="noopener">سياسة الخصوصية</a>. بيانات الطلب لا تشترك تلقائيًا في العروض.</p><label>الاسم بالكامل<input name="name" required placeholder="اسم العميل"></label><label>رقم الموبايل المصري<input name="phone" type="tel" required inputmode="tel" autocomplete="tel" pattern="[0-9+() -]{10,20}" placeholder="01xxxxxxxxx"><small style="display:block;margin-top:5px;color:#777;font-size:10px">رقم صحيح للتواصل مع شركة الشحن — مش محتاج كود SMS.</small></label><label>المحافظة<select name="gov" required><option value="">اختار المحافظة</option>'+['القاهرة','الجيزة','الإسكندرية','القليوبية','الشرقية','الدقهلية','البحيرة','الغربية','المنوفية','كفر الشيخ','دمياط','بورسعيد','الإسماعيلية','السويس','الفيوم','بني سويف','المنيا','أسيوط','سوهاج','قنا','الأقصر','أسوان','البحر الأحمر','مطروح','شمال سيناء','جنوب سيناء','الوادي الجديد'].map(g=>'<option>'+g+'</option>').join('')+'</select></label><label>العنوان بالتفصيل<textarea name="address" required placeholder="المنطقة، الشارع، رقم العقار، علامة مميزة"></textarea></label><label>ملاحظات (اختياري)<textarea name="notes" placeholder="أي تفاصيل إضافية"></textarea></label><label>طريقة الدفع<input value="الدفع عند الاستلام" readonly></label><button class="btn" type="submit" disabled style="opacity:.55;cursor:not-allowed">الشراء متوقف لحين اعتماد الأسعار</button><p class="notice">هذه نسخة اختبار فقط؛ لن يتم إرسال طلب شراء حقيقي. بعد اعتماد الأسعار الفعلية سيتم تفعيل الطلبات. يمكن تسجيل الطلب في قاعدة بيانات ORKA إذا كانت قواعد Firestore منشورة، ثم تُفتح واتساب لإرسال نسخة لخدمة العملاء.</p></form>';
 }
