@@ -2163,11 +2163,43 @@ window.addEventListener("pagehide", () => window.orkaPresenceStop());
 #shop #products .orka-card-gallery .orka-card-next{right:5px}
 #shop #products .orka-card-gallery .orka-card-counter{position:absolute;bottom:7px;left:50%;transform:translateX(-50%);background:#10294ad9;color:#fff;padding:3px 9px;border-radius:20px;font-size:11px;pointer-events:none}
 #shop #products .orka-card-gallery:has(.product-img[src]){background:#f9f6f0}
+
+#shop #products .orka-card-gallery .orka-slide-incoming{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;z-index:1;pointer-events:none;border-radius:9px}
+#shop #products .orka-card-gallery .product-img{will-change:transform,opacity}
+#shop #products .orka-card-gallery .orka-card-counter{z-index:5;transition:background .25s ease}
+#shop #products .orka-card-gallery button{transition:background .2s ease,box-shadow .2s ease}
+#shop #products .orka-card-gallery button:active{background:#e8dcc8;box-shadow:0 1px 8px #10294a22}
 </style>
 <script id="orka-card-gallery-v2-script">
 (function(){
  const indices=new Map();
- window.orkaCardMove=function(id,step){const p=products.find(x=>x.id===id);if(!p)return;const gallery=p.gallery?.length?p.gallery:[p.img];const card=document.querySelector('.orka-card-gallery[data-product-id="'+id+'"]');if(!card||gallery.length<2)return;const index=((indices.get(id)||0)+step+gallery.length)%gallery.length;indices.set(id,index);const img=card.querySelector('img.product-img');img.src=gallery[index];img.alt=p.name+' — صورة '+(index+1);card.querySelector('.orka-card-counter').textContent=(index+1)+' / '+gallery.length};
+ window.orkaCardMove=function(id,step){
+  const p=products.find(x=>x.id===id);if(!p)return;
+  const gallery=p.gallery?.length?p.gallery:[p.img];
+  const card=document.querySelector('.orka-card-gallery[data-product-id="'+id+'"]');
+  if(!card||gallery.length<2||card.dataset.animating==='1')return;
+  const current=indices.get(id)||0;
+  const index=(current+step+gallery.length)%gallery.length;
+  const img=card.querySelector('img.product-img');
+  const nextSrc=gallery[index];
+  const finish=()=>{img.src=nextSrc;img.alt=p.name+' — صورة '+(index+1);indices.set(id,index);card.querySelector('.orka-card-counter').textContent=(index+1)+' / '+gallery.length;delete card.dataset.animating};
+  if(window.matchMedia('(prefers-reduced-motion: reduce)').matches){finish();return}
+  card.dataset.animating='1';
+  const preload=new Image();preload.src=nextSrc;
+  const run=()=>{
+   if(!card.isConnected){delete card.dataset.animating;return}
+   const incoming=document.createElement('img');incoming.src=nextSrc;incoming.alt='';incoming.setAttribute('aria-hidden','true');incoming.className='orka-slide-incoming';
+   card.appendChild(incoming);
+   const dir=step>0?1:-1;
+   const ease='cubic-bezier(.22,1,.36,1)';
+   const oldAnim=img.animate([{transform:'translateX(0)',opacity:1},{transform:'translateX('+(-dir*25)+'%)',opacity:.28}],{duration:410,easing:ease,fill:'forwards'});
+   const newAnim=incoming.animate([{transform:'translateX('+(dir*35)+'%)',opacity:.35},{transform:'translateX(0)',opacity:1}],{duration:410,easing:ease,fill:'forwards'});
+   const done=()=>{oldAnim.cancel();newAnim.cancel();incoming.remove();finish()};
+   newAnim.finished.then(done).catch(()=>{incoming.remove();finish()});
+  };
+  if(preload.complete&&preload.naturalWidth){run()}else{preload.onload=run;preload.onerror=()=>{delete card.dataset.animating;finish()}}
+ };
+
  let touch=null;
  document.addEventListener('touchstart',e=>{const card=e.target.closest?.('.orka-card-gallery');if(!card||e.touches.length!==1)return;touch={card,x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});
  document.addEventListener('touchend',e=>{if(!touch)return;const t=touch;touch=null;if(!t.card.isConnected||e.changedTouches.length!==1)return;const dx=e.changedTouches[0].clientX-t.x,dy=e.changedTouches[0].clientY-t.y;if(Math.abs(dx)>40&&Math.abs(dx)>Math.abs(dy)*1.15){orkaCardMove(Number(t.card.dataset.productId),dx<0?1:-1);t.card.dataset.justSwiped='1';setTimeout(()=>{if(t.card.isConnected)delete t.card.dataset.justSwiped},450)}},{passive:true});
