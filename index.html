@@ -2093,4 +2093,64 @@ window.addEventListener("pagehide", () => window.orkaPresenceStop());
 </script>
 
 <script id="mojeeb-chat-widget" src="https://chat.mojeeb.app/mojeeb-widget.js" data-widget-id="919d0a93-127c-4a52-9837-0d8da4167a06" data-mode="default" data-config="{}"></script>
+
+<style id="orka-linked-swipe-gallery-css">
+#orkaModelCarousel .orka-model-card[data-product-id]{cursor:pointer}
+#orkaModelCarousel .orka-model-card[data-product-id]:focus-visible{outline:3px solid #a60f36;outline-offset:3px}
+#detailImage{touch-action:pan-y;user-select:none;-webkit-user-drag:none}
+#orkaMilanoGallery{scroll-snap-type:x proximity;-webkit-overflow-scrolling:touch}
+#orkaMilanoGallery button{scroll-snap-align:center}
+#orkaMilanoGallery button[aria-current="true"]{border:2px solid #10294a!important}
+</style>
+<script id="orka-linked-swipe-gallery-js">
+(function(){
+ const hero=document.getElementById('orkaModelCarousel');
+ if(hero){
+  const linkMap={
+   'file_00000000512c81f48d81e1d074c34ab7.jpg':103,
+   'sage-02-pointing-pose.jpg':102,
+   'babyblue-01-front-pose.jpg':101
+  };
+  hero.querySelectorAll('.orka-model-card').forEach(card=>{
+   const src=card.querySelector('img')?.getAttribute('src');const id=linkMap[src];
+   if(!id)return;
+   card.dataset.productId=String(id);card.tabIndex=0;card.setAttribute('role','button');
+   card.setAttribute('aria-label',(card.getAttribute('aria-label')||'موديل ORKA')+' — عرض المنتج');
+   card.addEventListener('click',e=>{
+    if(!card.classList.contains('is-center'))return;
+    const p=products.find(x=>x.id===id);if(!p)return;
+    activeFilter='all';renderProducts();
+    document.getElementById('shop')?.scrollIntoView({behavior:'smooth',block:'start'});
+    setTimeout(()=>openProductDetails(id),450);
+   });
+   card.addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();card.click()}});
+  });
+ }
+ const image=document.getElementById('detailImage');if(!image)return;
+ let start=null,suppressClick=false;
+ function showGalleryOffset(offset){
+  const p=products.find(x=>x.id===detailProductId);if(!p)return;
+  const imgs=p.gallery?.length?p.gallery:[p.img];if(imgs.length<2)return;
+  const current=imgs.findIndex(src=>image.getAttribute('src')===src);
+  const next=(Math.max(current,0)+offset+imgs.length)%imgs.length;
+  image.src=imgs[next];image.alt=p.name+' — صورة '+(next+1);
+  const buttons=[...document.querySelectorAll('#orkaMilanoGallery button')];
+  buttons.forEach((btn,i)=>btn.setAttribute('aria-current',String(i===next)));
+  buttons[next]?.scrollIntoView({behavior:'smooth',block:'nearest',inline:'center'});
+ }
+ image.addEventListener('touchstart',e=>{if(e.touches.length!==1){start=null;return}start={x:e.touches[0].clientX,y:e.touches[0].clientY}},{passive:true});
+ image.addEventListener('touchend',e=>{
+  if(!start||e.changedTouches.length!==1)return;
+  const dx=e.changedTouches[0].clientX-start.x,dy=e.changedTouches[0].clientY-start.y;start=null;
+  if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.2){suppressClick=true;showGalleryOffset(dx<0?1:-1);setTimeout(()=>suppressClick=false,350)}
+ },{passive:true});
+ image.addEventListener('touchcancel',()=>start=null,{passive:true});
+ image.addEventListener('click',e=>{if(suppressClick){e.stopImmediatePropagation();e.preventDefault();suppressClick=false}},true);
+ document.addEventListener('keydown',e=>{
+  if(!document.getElementById('productModal')?.classList.contains('show'))return;
+  if(document.getElementById('imageZoom')?.classList.contains('show'))return;
+  if(e.key==='ArrowRight'||e.key==='ArrowLeft')showGalleryOffset(e.key==='ArrowRight'?-1:1);
+ });
+})();
+</script>
 </body></html>
