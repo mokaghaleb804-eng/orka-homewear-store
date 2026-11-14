@@ -884,6 +884,34 @@ html[data-product-columns="1"] #shop #products .product-img-wrap .product-img{bo
  });
 })();
 </script>
+
+<style id="orka-collection-mobile-refinement">
+/* Collection introduction: consistent ORKA typography and compact mobile rhythm. */
+.signature-collection-intro{padding:clamp(36px,5vw,65px) clamp(18px,5vw,72px) 28px!important}
+.signature-collection-intro .signature-eyebrow{color:#a60f36;letter-spacing:.14em;font-size:11px;font-weight:800;margin-bottom:12px}
+.signature-collection-intro h2{font-size:clamp(26px,4vw,46px)!important;line-height:1.24!important;letter-spacing:0!important;margin:0 0 24px!important;overflow-wrap:break-word}
+.signature-categories{gap:clamp(10px,2vw,20px)!important}
+.signature-categories a{min-height:170px!important;padding:clamp(17px,3vw,28px)!important;border-radius:20px!important;gap:12px!important;justify-content:flex-end;transition:transform .2s ease,box-shadow .2s ease}
+.signature-categories a:hover{transform:translateY(-3px);box-shadow:0 10px 22px #10294a12}
+.signature-categories strong{font-size:clamp(17px,2.5vw,29px)!important;line-height:1.3!important;font-weight:800!important}
+.signature-categories small{font-size:clamp(10px,1.5vw,12px)!important;letter-spacing:.02em!important;line-height:1.5!important}
+#shop .section-head{align-items:start!important;gap:16px!important}
+#shop .section-head h2{font-size:clamp(25px,3vw,39px)!important;line-height:1.3!important;letter-spacing:0!important;margin:8px 0 0!important}
+#shop .section-head p{font-size:clamp(13px,1.25vw,15px)!important;line-height:1.9!important;max-width:540px!important;color:#536172!important;overflow-wrap:break-word}
+@media(max-width:700px){
+.signature-collection-intro{padding:30px 16px 20px!important}
+.signature-collection-intro h2{font-size:clamp(25px,6vw,34px)!important;margin-bottom:18px!important}
+.signature-categories{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:12px!important}
+.signature-categories a{min-height:145px!important;padding:16px 12px!important;border-radius:16px!important}
+.signature-categories strong{font-size:clamp(15px,4vw,20px)!important}
+.signature-categories small{font-size:10px!important;letter-spacing:0!important}
+#shop{padding:32px 17px 45px!important}
+#shop .section-head{display:flex!important;flex-direction:column!important;align-items:stretch!important;gap:13px!important;margin-bottom:20px!important}
+#shop .section-head h2{font-size:clamp(25px,6vw,32px)!important;margin:6px 0 0!important;line-height:1.3!important}
+#shop .section-head p{max-width:100%!important;font-size:13px!important;line-height:1.85!important;margin:0!important}
+#shop .filters{margin-top:18px!important}
+}
+</style>
 </head>
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
@@ -911,7 +939,7 @@ html[data-product-columns="1"] #shop #products .product-img-wrap .product-img{bo
       
       
       
-    </div></div><div class="signature-drag-caption">DRAG / SWIPE TO EXPLORE</div></div></section><section class="signature-collection-intro"><div class="signature-eyebrow">THE COLLECTION</div><h2>Made to move.</h2><div class="signature-categories"><a href="#shop" onclick="document.querySelector('[data-filter=boys]')?.click()"><strong>For Boys ↗</strong><small>EXPLORE THE EDIT</small></a><a href="#shop" onclick="document.querySelector('[data-filter=girls]')?.click()"><strong>For Girls ↗</strong><small>EXPLORE THE EDIT</small></a></div></section><section class="section" id="shop"><div class="section-head"><div><div class="eyebrow">CURATED FOR LITTLE ADVENTURES</div><h2>اكتشف تشكيلة ORKA Kids</h2></div><p>اكتشف أول كولكشن من ORKA Kids، بتصميمات مميزة وألوان مختارة بعناية، تجمع بين الأناقة والراحة في كل تفصيلة. تصفّح موديلاتنا، واكتشف الألوان والتفاصيل اللي بتخلي كل طقم مختلف. ORKA HOMEWEAR — حكاية كل بيت</p></div>
+    </div></div><div class="signature-drag-caption">DRAG / SWIPE TO EXPLORE</div></div></section><section class="signature-collection-intro" aria-label="تصفح تشكيلة ORKA Kids"><div class="signature-eyebrow">ORKA KIDS COLLECTION</div><h2>تصميمات تليق بكل حركة.</h2><div class="signature-categories"><a href="#shop" onclick="document.querySelector('[data-filter=boys]')?.click()"><strong>موديلات الأولاد</strong><small>اكتشف التشكيلة ←</small></a><a href="#shop" onclick="document.querySelector('[data-filter=girls]')?.click()"><strong>موديلات البنات</strong><small>اكتشف التشكيلة ←</small></a></div></section><section class="section" id="shop"><div class="section-head"><div><div class="eyebrow">ORKA KIDS / THE COLLECTION</div><h2>اكتشف تشكيلة ORKA Kids</h2></div><p>اكتشف أول كولكشن من ORKA Kids، بتصميمات مميزة وألوان مختارة بعناية، تجمع بين الأناقة والراحة في كل تفصيلة. تصفّح موديلاتنا، واكتشف الألوان والتفاصيل اللي بتخلي كل طقم مختلف. ORKA HOMEWEAR — حكاية كل بيت</p></div>
 <div class="filters"><button class="filter active" data-filter="all">كل المنتجات</button><button class="filter" data-filter="boys">أولاد</button><button class="filter" data-filter="girls">بنات</button><button class="filter" data-filter="sets">أطقم شتوي</button><button class="filter" data-filter="favorites">❤️ المختارات <span id="favoriteCount">0</span></button></div>
 <div class="orka-grid-toolbar"><span id="orkaGridLabel">طريقة العرض</span><div class="orka-grid-options" role="group" aria-labelledby="orkaGridLabel">
 <button type="button" class="orka-grid-option" data-product-columns="1" aria-controls="products" aria-pressed="false" aria-label="منتج واحد في الصف"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"/></svg><span>منتج واحد</span></button>
@@ -1628,6 +1656,10 @@ window.orkaAuthReady=new Promise(resolve=>{
 <script>
 (function(){
  const translations = {
+ "تصميمات تليق بكل حركة.":"Designed for every move.",
+ "موديلات الأولاد":"Boys’ Collection",
+ "موديلات البنات":"Girls’ Collection",
+ "اكتشف التشكيلة ←":"Explore the collection ←",
  "اكتشف تشكيلة ORKA Kids":"Discover the ORKA Kids Collection",
  "اكتشف أول كولكشن من ORKA Kids، بتصميمات مميزة وألوان مختارة بعناية، تجمع بين الأناقة والراحة في كل تفصيلة. تصفّح موديلاتنا، واكتشف الألوان والتفاصيل اللي بتخلي كل طقم مختلف. ORKA HOMEWEAR — حكاية كل بيت":"Discover the first ORKA Kids collection, featuring distinctive designs and carefully selected colors that combine comfort and style in every detail. Explore our models, colors, and the details that make each set unique. ORKA HOMEWEAR — A Story in Every Home",
  "طريقة العرض":"View layout","منتج واحد":"One product","منتجين":"Two products",
