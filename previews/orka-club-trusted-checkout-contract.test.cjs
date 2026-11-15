@@ -14,4 +14,9 @@ assert.throws(()=>buildTrustedCheckout({...input,items:[{unitId:'u1',productId:'
 assert.throws(()=>buildTrustedCheckout({...input,items:[{unitId:'u1',productId:'hoodie'},{unitId:'u1',productId:'hoodie'}]}),/Invalid or duplicate unit/);
 assert.throws(()=>buildTrustedCheckout({...input,shippingPiastres:-1}),/Invalid checkout request/);
 assert.throws(()=>buildTrustedCheckout({...input,authenticatedUid:'../alice'}),/Invalid checkout request/);
+assert.throws(()=>buildTrustedCheckout({...input,orderId:'..'}),/Invalid checkout request/);
+assert.throws(()=>buildTrustedCheckout({...input,orderId:'a\\\\b'}),/Invalid checkout request/);
+assert.throws(()=>buildTrustedCheckout({...input,items:[{unitId:'u1',productId:'toString'}]}),/Unavailable trusted product/);
+assert.throws(()=>buildTrustedCheckout({...input,items:[{unitId:'u1',productId:'__proto__'}]}),/Unavailable trusted product/);
+assert.throws(()=>buildTrustedCheckout({...input,items:[{unitId:'u1',productId:'hoodie\\n'}]}),/Invalid or duplicate unit|Unavailable trusted product/);
 console.log('Trusted checkout contract price, owner, shipping and unit validation passed');
