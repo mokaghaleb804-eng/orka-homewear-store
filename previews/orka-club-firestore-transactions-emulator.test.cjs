@@ -35,6 +35,11 @@ const db=getFirestore(app);
  }
  const [a,b]=await Promise.all([mk('first'),mk('second')]);
  assert.equal(a.discountPiastres+b.discountPiastres,10000);
+ const firstOrder=(await db.doc('orders/checkout-first').get()).data();
+ assert.equal(firstOrder.shippingPiastres,2500);
+ assert.equal(firstOrder.totalPiastres,10500);
+ assert.equal(firstOrder.walletDiscountPiastres,a.discountPiastres);
+ assert.equal(firstOrder.walletRedemptionOperationId,'first');
  const credit=await db.doc('wallets/alice/credits/grant_'+orderId).get();
  assert.equal(credit.data().remaining,0);
  assert.deepEqual(await mk('first'),a);
