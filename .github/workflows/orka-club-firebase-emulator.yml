@@ -7,7 +7,6 @@ on:
       - 'previews/orka-club-firestore-emulator.test.cjs'
       - 'previews/orka-club-firestore-*-service.cjs'
       - 'previews/orka-club-firestore-transactions-emulator.test.cjs'
-      - 'orka-club-emulator.firebase.json'
       - '.github/workflows/orka-club-firebase-emulator.yml'
   workflow_dispatch:
 permissions:
@@ -26,6 +25,8 @@ jobs:
           java-version: '21'
       - name: Install test-only Firebase dependencies
         run: npm install --no-save --package-lock=false @firebase/rules-unit-testing firebase firebase-admin firebase-tools
+      - name: Assert emulator rules configuration
+        run: node -e "const fs=require('fs');const c=require('./orka-club-emulator.firebase.json');if(c.firestore.rules!=='firestore.rules'||!fs.existsSync(c.firestore.rules))process.exit(1)"
       - name: Test Firestore transactional wallet operations in emulator
         run: npx firebase emulators:exec --only firestore --project orka-club-rules-test --config orka-club-emulator.firebase.json "node previews/orka-club-firestore-transactions-emulator.test.cjs"
       - name: Test Firestore authorization in emulator
