@@ -26,7 +26,7 @@ const adminAuth={verifyIdToken:async(token,revoked)=>{
 }};
 (async()=>{
  const backend=createOrkaClubCheckoutBackend({adminAuth,firestore});
- const req={identityToken:'valid',orderId:'ord1',items:[{unitId:'u1',productId:'sku1',pricePiastres:1}],shippingAddress:{zoneId:'giza'},walletUnitId:'u1'};
+ const req={identityToken:'valid',orderId:'ord1',items:[{unitId:'u1',productId:'sku1'}],shippingAddress:{zoneId:'giza'},walletUnitId:'u1'};
  const result=await backend.createCheckout(req);
  assert.equal(result.order.totalPiastres,91000);
  assert.equal(result.order.walletRedemptionUnit.pricePiastres,85000);
