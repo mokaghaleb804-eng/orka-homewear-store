@@ -19,6 +19,9 @@ const db=getFirestore(app);
  const grants=await Promise.all(Array.from({length:8},()=>grant.grantDeliveredOrder(orderId)));
  assert.equal(grants.filter(g=>!g.duplicate).length,1);
  assert.ok(grants.every(g=>g.amountPiastres===10000));
+ await db.doc('orders/'+orderId).update({eligibleSubtotalPiastres:200000});
+ await assert.rejects(grant.grantDeliveredOrder(orderId),/Delivery replay conflict/);
+ await db.doc('orders/'+orderId).update({eligibleSubtotalPiastres:100000});
  const redeem=createFirestoreWalletRedeemService(db);
  const mk=id=>redeem.redeemTrustedUnit({
   uid:'alice',operationId:id,orderId:'checkout-'+id,unitId:'unit1',
