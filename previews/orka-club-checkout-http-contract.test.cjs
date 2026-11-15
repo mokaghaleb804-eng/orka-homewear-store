@@ -10,6 +10,7 @@ const handler=createCheckoutHttpHandler({createCheckout:async input=>{
 }});
 const req={method:'POST',headers:{authorization:'Bearer valid','content-type':'application/json'},body:{orderId:'ord1',items:[{unitId:'u1',productId:'sku1'}],shippingAddress:{zoneId:'giza'}}};
 (async()=>{
+ assert.equal((await handler({...req,body:{...req.body,deliveryDetails:undefined}})).status,400);
  const result=await handler(req);
  assert.equal(result.status,201);
  assert.deepEqual(result.body,{orderId:'ord1',subtotalPiastres:85000,shippingPiastres:6000,totalPiastres:91000,duplicate:false});
