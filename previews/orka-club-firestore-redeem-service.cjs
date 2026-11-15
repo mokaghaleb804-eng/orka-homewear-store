@@ -3,10 +3,10 @@
 // order/unit before invoking. Not an HTTP endpoint or deployed checkout.
 const {redeem}=require('./orka-club-wallet-engine.cjs');
 function validId(x){return typeof x==='string'&&x.length>0&&!x.includes('/')}
-function createFirestoreWalletRedeemService(db){
- if(!db||typeof db.runTransaction!=='function')throw Error('Admin Firestore required');
- return {async redeemTrustedUnit({uid,operationId,orderId,unitId,unitPricePiastres,now}){
-  if(![uid,operationId,orderId,unitId].every(validId)||!Number.isSafeInteger(unitPricePiastres)||unitPricePiastres<0||!Number.isFinite(Date.parse(now)))throw Error('Invalid trusted redemption');
+function createFirestoreWalletRedeemService(db,{clock=()=>new Date()}={}){
+ if(!db||typeof db.runTransaction!=='function'||typeof clock!=='function')throw Error('Admin Firestore and server clock required');
+ return {async redeemTrustedUnit({uid,operationId,orderId,unitId,unitPricePiastres}){
+  if(![uid,operationId,orderId,unitId].every(validId)||!Number.isSafeInteger(unitPricePiastres)||unitPricePiastres<0)throw Error('Invalid trusted redemption');
   // Trusted caller must enforce one eligible unit, non-stacking and price snapshot.
   const signature=JSON.stringify({uid,orderId,unitId,unitPricePiastres});
   return db.runTransaction(async tx=>{
@@ -22,7 +22,9 @@ function createFirestoreWalletRedeemService(db){
    const q=db.collection('wallets').doc(uid).collection('credits');
    const snapshot=await tx.get(q);
    const credits=snapshot.docs.map(d=>({id:d.id,remaining:d.data().remaining,expiresAt:d.data().expiresAt}));
-   const result=redeem({credits,pricePiastres:unitPricePiastres,now});
+   const serverNow=clock();
+   if(!(serverNow instanceof Date)||!Number.isFinite(serverNow.getTime()))throw Error('Invalid server clock');
+   const result=redeem({credits,pricePiastres:unitPricePiastres,now:serverNow.toISOString()});
    if(result.discount===0)throw Error('No eligible wallet credit');
    // Every read above occurs before any transaction write.
    for(const debit of result.debits){
