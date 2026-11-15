@@ -19,12 +19,16 @@ const db=getFirestore(app);
   verifyIdentity:async token=>token==='emulator-token'?{uid:'alice'}:null,
   resolveShipping:createFirestoreShippingResolver(db)
  });
- const request={identityToken:'emulator-token',orderId:'emulator-checkout',items:[{unitId:'unit-emulator',productId:'emulator-sku'}],shippingAddress:{zoneId:'emulator-giza'},walletUnitId:'unit-emulator'};
+ const request={identityToken:'emulator-token',orderId:'emulator-checkout',items:[{unitId:'unit-emulator',productId:'emulator-sku'}],shippingAddress:{zoneId:'emulator-giza'},walletUnitId:'unit-emulator',deliveryDetails:{recipientName:'Test Customer',phone:'01012345678',governorate:'Giza',streetAddress:'Example Street 12',building:'12'}};
  const concurrent=await Promise.all(Array.from({length:5},()=>checkout.createCheckout(request)));
  assert.equal(concurrent.filter(x=>!x.duplicate).length,1);
  assert.ok(concurrent.every(x=>x.order.totalPiastres===91000));
  const saved=(await db.doc('orders/emulator-checkout').get()).data();
  assert.equal(saved.uid,'alice');
+ assert.equal(saved.deliveryDetails.phone,'01012345678');
+ await assert.rejects(checkout.createCheckout({...request,deliveryDetails:{...request.deliveryDetails,building:'14'}}),/idempotency conflict/);
+ await assert.rejects(checkout.createCheckout({...request,orderId:'emulator-invalid-delivery',deliveryDetails:{...request.deliveryDetails,phone:'123'}}),/Invalid delivery field|mobile/);
+ assert.equal((await db.doc('orders/emulator-invalid-delivery').get()).exists,false);
  assert.equal(saved.units[0].pricePiastres,85000);
  assert.equal(saved.totalPiastres,91000);
  await assert.rejects(checkout.createCheckout({...request,items:[{unitId:'unit-emulator',productId:'emulator-sku'},{unitId:'second',productId:'emulator-sku'}]}),/idempotency conflict/);
