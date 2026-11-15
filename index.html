@@ -1548,40 +1548,7 @@ window.prefillOrkaCheckout=()=>{
  if(saved){if(saved.gov&&form.elements.gov&&!form.elements.gov.value)form.elements.gov.value=saved.gov;if(saved.address&&form.elements.address&&!form.elements.address.value)form.elements.address.value=saved.address;}
  if(form.elements.name&&!form.elements.name.value){const key=user?.phoneNumber||('social:'+user?.uid);const accounts=readOrkaAccounts();form.elements.name.value=accounts[key]?.name||user?.displayName||'';}
 };
-window.saveOrkaOrder = async(order) => {
- const user=auth.currentUser;
- const safeOrder={
-  uid:user?.uid||null,
-  customer:String(order.customer||'').trim().slice(0,80),
-  phone:String(user?.phoneNumber||order.phone||'').trim().slice(0,30),
-  gov:String(order.gov||'').trim().slice(0,60),
-  address:String(order.address||'').trim().slice(0,500),
-  notes:String(order.notes||'').trim().slice(0,500),
-  items:(Array.isArray(order.items)?order.items:[]).slice(0,30).map(item=>({
-   name:String(item.name||'').slice(0,120),
-   size:String(item.size||'').slice(0,40),
-   color:String(item.color||'').slice(0,40),
-   qty:Math.max(1,Math.min(99,Number(item.qty)||1)),
-   price:Math.max(0,Number(item.price)||0)
-  })),
-  loyaltyVersion:Math.max(0,Math.floor(Number(order.loyaltyVersion)||0)),
-  total:Math.max(0,Number(order.total)||0),
-  productSubtotal:Math.max(0,Number(order.productSubtotal??order.total)||0),
-  redeemPoints:Math.max(0,Math.floor(Number(order.redeemPoints)||0)),
-  discount:Math.max(0,Number(order.discount)||0),
-  membershipDiscountRate:Math.max(0,Math.min(0.10,Number(order.membershipDiscountRate)||0)),
-  membershipDiscount:Math.max(0,Number(order.membershipDiscount)||0),
-  rewardCreditUsed:Math.max(0,Number(order.rewardCreditUsed)||0),
-  rewardCreditEarned:Math.max(0,Number(order.rewardCreditEarned)||0),
-  eligibleSpend:Math.max(0,Number(order.eligibleSpend)||0),
-  payableTotal:Math.max(0,Number(order.payableTotal??order.total)||0),
-  status:'pending',
-  createdAt:serverTimestamp()
- };
- if(!safeOrder.customer || !safeOrder.phone || !safeOrder.gov || !safeOrder.address || safeOrder.items.length===0) throw new Error('بيانات الطلب غير مكتملة.');
- const ref=await addDoc(collection(db,'orders'),safeOrder);
- return ref.id;
-};
+// Legacy browser-side order writes removed: checkout remains disabled until a trusted server endpoint is approved.
 let recaptchaVerifier = null;
 let confirmationResult = null;
 function normalizeEgyptPhone(input){
