@@ -28,6 +28,8 @@ jobs:
         run: node previews/orka-club-firebase-identity-verifier.test.cjs
       - name: Trusted shipping zone resolver tests
         run: node previews/orka-club-firestore-shipping-resolver.test.cjs
+      - name: Egyptian COD delivery details validation tests
+        run: node previews/orka-club-delivery-details-validator.test.cjs
       - name: Cart to trusted variant mapping tests
         run: node previews/orka-club-cart-variant-adapter.test.cjs
       - name: Checkout HTTP boundary contract tests
