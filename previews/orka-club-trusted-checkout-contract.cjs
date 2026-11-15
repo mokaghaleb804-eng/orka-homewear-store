@@ -2,7 +2,7 @@
 // SERVER-ONLY draft: price and shipping must come from trusted backend catalog.
 // This is a validation contract, not a deployed checkout endpoint.
 function money(n){return Number.isSafeInteger(n)&&n>=0}
-function id(x){return typeof x==='string'&&x.length>0&&!x.includes('/')}
+function id(x){return typeof x==='string'&&x.length>0&&x.length<=256&&x!=='.'&&x!=='..'&&!x.includes('/')&&!x.includes('\\')&&!/[\u0000-\u001f]/.test(x)}
 function buildTrustedCheckout({authenticatedUid,items,catalog,shippingPiastres,orderId}){
  if(!id(authenticatedUid)||!id(orderId)||!Array.isArray(items)||items.length===0||!money(shippingPiastres))throw Error('Invalid checkout request');
  if(!catalog||typeof catalog!=='object')throw Error('Trusted catalog required');
@@ -10,7 +10,7 @@ function buildTrustedCheckout({authenticatedUid,items,catalog,shippingPiastres,o
  for(const item of items){
   if(!item||!id(item.unitId)||!id(item.productId)||seen.has(item.unitId))throw Error('Invalid or duplicate unit');
   seen.add(item.unitId);
-  const product=catalog[item.productId];
+  const product=Object.hasOwn(catalog,item.productId)?catalog[item.productId]:null;
   if(!product||product.active!==true||!money(product.pricePiastres)||product.fullPrice!==true)throw Error('Unavailable trusted product');
   // Client-supplied price, discount and totals are never used.
   subtotal+=product.pricePiastres;
