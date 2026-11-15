@@ -23,6 +23,8 @@ function fake(){
  const first=await service.redeemTrustedUnit(input);
  assert.equal(first.discountPiastres,8000);assert.equal(docs.get('wallets/alice/credits/g1').remaining,2000);
  assert.deepEqual(await service.redeemTrustedUnit(input),first);
+ assert.equal(docs.get('orders/ord2').walletRedemptionOperationId,'red1');
+ await assert.rejects(service.redeemTrustedUnit({...input,operationId:'red2'}),/Order already redeemed/);
  await assert.rejects(service.redeemTrustedUnit({...input,unitPricePiastres:9000}),/Untrusted checkout or price/);
  assert.equal(docs.get('wallets/alice/credits/g1').remaining,2000);
  await assert.rejects(service.redeemTrustedUnit({...input,uid:'../alice'}),/Invalid trusted redemption/);
