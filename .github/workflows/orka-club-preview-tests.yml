@@ -32,6 +32,8 @@ jobs:
         run: node previews/orka-club-delivery-details-validator.test.cjs
       - name: Cart to trusted variant mapping tests
         run: node previews/orka-club-cart-variant-adapter.test.cjs
+      - name: Trusted ORKA catalog variant registry tests
+        run: node previews/orka-club-trusted-variant-registry.test.cjs
       - name: Checkout HTTP boundary contract tests
         run: node previews/orka-club-checkout-http-contract.test.cjs
       - name: Integrated checkout backend mock tests
