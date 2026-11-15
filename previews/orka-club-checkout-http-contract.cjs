@@ -14,6 +14,7 @@ function createCheckoutHttpHandler(backend){
   const allowed=new Set(['orderId','items','shippingAddress','walletUnitId']);
   if(Object.keys(body).some(key=>!allowed.has(key)))return {status:400,body:{error:'Unexpected checkout field'}};
   if(typeof body.orderId!=='string'||!Array.isArray(body.items)||!body.items.length||body.items.length>50)return {status:400,body:{error:'Invalid checkout input'}};
+  if(!body.shippingAddress||typeof body.shippingAddress!=='object'||Array.isArray(body.shippingAddress)||Object.keys(body.shippingAddress).length!==1||typeof body.shippingAddress.zoneId!=='string')return {status:400,body:{error:'Invalid shipping address'}};
   if(body.items.some(item=>!item||typeof item!=='object'||Array.isArray(item)||Object.keys(item).some(k=>!['unitId','productId'].includes(k))))return {status:400,body:{error:'Unexpected item field'}};
   try{
    const result=await backend.createCheckout({identityToken:auth.slice(7),orderId:body.orderId,items:body.items,shippingAddress:body.shippingAddress,walletUnitId:body.walletUnitId});
