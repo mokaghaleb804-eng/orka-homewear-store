@@ -26,6 +26,8 @@ jobs:
         run: node previews/orka-club-trusted-checkout-contract.test.cjs
       - name: Firebase Admin identity verifier tests
         run: node previews/orka-club-firebase-identity-verifier.test.cjs
+      - name: Trusted shipping zone resolver tests
+        run: node previews/orka-club-firestore-shipping-resolver.test.cjs
       - name: Authenticated Firestore checkout service mock tests
         run: node previews/orka-club-firestore-checkout-service.test.cjs
       - name: Firestore redemption service mock contract tests
