@@ -21,6 +21,11 @@ const req={method:'POST',headers:{authorization:'Bearer valid','content-type':'a
  assert.equal((await handler({...req,body:{...req.body,shippingAddress:{zoneId:'giza',shippingPiastres:1}}})).status,400);
  assert.equal((await handler({...req,body:{...req.body,shippingAddress:{zoneId:'giza',address:'spoofed'}}})).status,400);
  assert.equal((await handler({...req,body:{...req.body,shippingAddress:null}})).status,400);
+ assert.equal((await handler({...req,body:{...req.body,orderId:'../orders'}})).status,400);
+ assert.equal((await handler({...req,body:{...req.body,shippingAddress:{zoneId:'../giza'}}})).status,400);
+ assert.equal((await handler({...req,body:{...req.body,items:[{unitId:'u1',productId:'sku1'},{unitId:'u1',productId:'sku1'}]}})).status,400);
+ assert.equal((await handler({...req,body:{...req.body,walletUnitId:'u9'}})).status,400);
+ assert.equal((await handler({...req,body:{...req.body,items:[{unitId:'u1',productId:'sku/1'}]}})).status,400);
  assert.equal(called,1);
  const fail=createCheckoutHttpHandler({createCheckout:async()=>{throw Error('secret Firestore credentials')}});
  const error=await fail(req);
