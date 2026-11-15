@@ -27,3 +27,11 @@ Status: PROPOSED / NOT DEPLOYED. No production, Firebase, checkout or customer-d
 7. Separate explicit approval before any merge, Firebase update, public preview deployment or production rollout.
 
 The HTML previews are static examples only; their calculations are not trusted checkout logic.
+
+## Prototype limitations discovered during review (blocking)
+- In-memory idempotency does NOT survive process restarts, concurrent requests or multiple server instances. Must use durable database transactions and unique order/redemption IDs.
+- Prototype `delivered` accepts a caller-supplied delivery flag, price and account ID; it must never be exposed as an API. Production must derive these from verified order records and authenticated session.
+- Duplicate order IDs across accounts, account reassignment, return reversals, debt reconciliation and redemption retry responses are NOT implemented.
+- Expiration is currently 30 x 24 hours from timestamp; business must confirm whether this means elapsed hours or local calendar dates.
+- Pure calculator and in-memory tests are only test cases added to repository, not evidence that GitHub Actions or emulator tests have passed.
+- Before production, require atomic ledger with audit trail, concurrency tests, owner checks, immutable price snapshots, authenticated fulfillment status and refund handling.
