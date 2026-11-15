@@ -43,5 +43,8 @@ function fake(){
  await assert.rejects(service.redeemTrustedUnit({...input,orderId:'ord-unit-mismatch',operationId:'red-unit-mismatch'}),/Untrusted checkout or price/);
  docs.set('orders/ord-unit-duplicate',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,eligibleSubtotalPiastres:8000,shippingPiastres:2500,totalPiastres:10500,units:[{id:'unit1',pricePiastres:8000},{id:'unit1',pricePiastres:8000}],walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
  await assert.rejects(service.redeemTrustedUnit({...input,orderId:'ord-unit-duplicate',operationId:'red-unit-duplicate'}),/Untrusted checkout or price/);
+ docs.set('orders/ord-subtotal-mismatch',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,eligibleSubtotalPiastres:8000,shippingPiastres:2500,totalPiastres:10500,units:[{id:'unit1',pricePiastres:8000},{id:'unit2',pricePiastres:1000}],walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
+ await assert.rejects(service.redeemTrustedUnit({...input,orderId:'ord-subtotal-mismatch',operationId:'red-subtotal-mismatch'}),/Trusted unit subtotal mismatch/);
+ assert.equal(docs.get('orders/ord-subtotal-mismatch').usedWallet,false);
  console.log('Firestore redeem service mock contract tests passed; emulator concurrency remains required');
 })().catch(e=>{console.error(e);process.exitCode=1});
