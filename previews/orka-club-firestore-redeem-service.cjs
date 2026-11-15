@@ -16,8 +16,9 @@ function createFirestoreWalletRedeemService(db){
    if(!orderSnap.exists)throw Error('Trusted checkout order missing');
    const order=orderSnap.data();
    const unit=order.walletRedemptionUnit;
-   if(order.uid!==uid||order.checkoutValidatedByServer!==true||order.status!=='pending'||order.usedWallet!==false||order.fullPrice!==true||!unit||unit.id!==unitId||unit.pricePiastres!==unitPricePiastres)throw Error('Untrusted checkout or price');
-   if(prior.exists){const p=prior.data();if(p.signature!==signature)throw Error('Idempotency conflict');return p.result}
+   if(order.uid!==uid||order.checkoutValidatedByServer!==true||order.status!=='pending'||order.fullPrice!==true||!unit||unit.id!==unitId||unit.pricePiastres!==unitPricePiastres)throw Error('Untrusted checkout or price');
+   if(prior.exists){const p=prior.data();if(p.signature!==signature)throw Error('Idempotency conflict');if(order.walletRedemptionOperationId!==operationId)throw Error('Order redemption conflict');return p.result}
+   if(order.usedWallet!==false||order.walletRedemptionOperationId)throw Error('Order already redeemed');
    const q=db.collection('wallets').doc(uid).collection('credits');
    const snapshot=await tx.get(q);
    const credits=snapshot.docs.map(d=>({id:d.id,remaining:d.data().remaining,expiresAt:d.data().expiresAt}));
@@ -28,6 +29,7 @@ function createFirestoreWalletRedeemService(db){
     tx.update(doc.ref,{remaining:result.credits.find(c=>c.id===debit.creditId).remaining});
    }
    const response={orderId,unitId,discountPiastres:result.discount,duePiastres:result.due,debits:result.debits};
+   tx.update(orderRef,{usedWallet:true,walletRedemptionOperationId:operationId,walletDiscountPiastres:result.discount});
    tx.create(opRef,{uid,signature,type:'redeem',result:response});
    return response;
   });
