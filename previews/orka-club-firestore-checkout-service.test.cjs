@@ -22,7 +22,7 @@ const service=createFirestoreTrustedCheckoutService(db,{
  assert.equal(first.order.walletRedemptionUnit.pricePiastres,85000);
  assert.equal((await service.createCheckout(input)).duplicate,true);
  await assert.rejects(service.createCheckout({...input,identityToken:'invalid',orderId:'order2'}),/Invalid authenticated checkout/);
- await assert.rejects(service.createCheckout({...input,orderId:'order1',items:[{unitId:'u2',productId:'sku1'}]}),/idempotency conflict/);
+ await assert.rejects(service.createCheckout({...input,orderId:'order1',items:[{unitId:'u1',productId:'sku1'},{unitId:'u2',productId:'sku1'}]}),/idempotency conflict/);
  await assert.rejects(service.createCheckout({...input,orderId:'order3',items:[{unitId:'u1',productId:'missing'}]}),/Catalog product missing/);
  assert.equal(docs.has('orders/order2'),false);
  assert.equal(docs.has('orders/order3'),false);
