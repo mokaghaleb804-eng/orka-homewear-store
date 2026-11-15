@@ -1,5 +1,13 @@
 name: ORKA CLUB Firebase emulator authorization
 on:
+  push:
+    branches:
+      - feature/orka-club-wallet-preview
+    paths:
+      - 'firestore.rules'
+      - 'orka-club-emulator.firebase.json'
+      - 'previews/orka-club-firestore-*.cjs'
+      - '.github/workflows/orka-club-firebase-emulator.yml'
   pull_request:
     paths:
       - 'firestore.rules'
