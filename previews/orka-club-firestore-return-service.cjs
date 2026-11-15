@@ -26,6 +26,7 @@ function createFirestoreWalletReturnService(db){
    }
    if(!creditSnap.exists)throw Error('Grant not found; manual review required');
    const current={id:creditSnap.id,...creditSnap.data()};
+   if(current.orderId!==orderId||!Number.isSafeInteger(current.originalEligibleSubtotalPiastres)||current.originalEligibleSubtotalPiastres!==o.eligibleSubtotalPiastres)throw Error('Original grant subtotal mismatch');
    const result=reconcileGrantReturn({credits:[current],grantId:creditSnap.id,returnedEligiblePiastres:r.cumulativeReturnedEligiblePiastres,originalEligiblePiastres:o.eligibleSubtotalPiastres});
    const updated=result.credits[0];
    tx.update(creditRef,{remaining:updated.remaining,revokedPiastres:updated.revokedPiastres,recoveryExposurePiastres:updated.recoveryExposurePiastres,returnedEligiblePiastres:updated.returnedEligiblePiastres});
