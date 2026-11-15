@@ -8,7 +8,7 @@ function fake(){
   runTransaction:async fn=>{
    const writes=[];
    const tx={get:async r=>{
-    if(r.path==='wallets/alice/credits')return {docs:[...docs].map(([p,v])=>({id:p.split('/').at(-1),ref:ref(p),data:()=>({...v})}))};
+    if(r.path==='wallets/alice/credits')return {docs:[...docs].filter(([p])=>p.startsWith('wallets/alice/credits/')).map(([p,v])=>({id:p.split('/').at(-1),ref:ref(p),data:()=>({...v})}))};
     return {exists:docs.has(r.path),data:()=>docs.get(r.path)};
    },update:(r,v)=>writes.push(['update',r.path,v]),create:(r,v)=>writes.push(['create',r.path,v])};
    const result=await fn(tx);
@@ -23,7 +23,7 @@ function fake(){
  const first=await service.redeemTrustedUnit(input);
  assert.equal(first.discountPiastres,8000);assert.equal(docs.get('wallets/alice/credits/g1').remaining,2000);
  assert.deepEqual(await service.redeemTrustedUnit(input),first);
- await assert.rejects(service.redeemTrustedUnit({...input,unitPricePiastres:9000}),/Idempotency conflict/);
+ await assert.rejects(service.redeemTrustedUnit({...input,unitPricePiastres:9000}),/Untrusted checkout or price/);
  assert.equal(docs.get('wallets/alice/credits/g1').remaining,2000);
  await assert.rejects(service.redeemTrustedUnit({...input,uid:'../alice'}),/Invalid trusted redemption/);
  console.log('Firestore redeem service mock contract tests passed; emulator concurrency remains required');
