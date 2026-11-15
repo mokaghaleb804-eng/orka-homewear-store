@@ -4,7 +4,7 @@
 const {buildTrustedCheckout,selectWalletUnit}=require('./orka-club-trusted-checkout-contract.cjs');
 const {validateDeliveryDetails}=require('./orka-club-delivery-details-validator.cjs');
 function validId(s){return typeof s==='string'&&s.length>0&&s.length<=256&&s!=='.'&&s!=='..'&&!s.includes('/')&&!s.includes('\\')&&!/[\u0000-\u001f]/.test(s)}
-function createFirestoreTrustedCheckoutService(db,{verifyIdentity,resolveShipping}={}){
+function createFirestoreTrustedCheckoutService(db,{verifyIdentity,resolveShipping,requireDeliveryDetails=false}={}){
  if(!db||typeof db.runTransaction!=='function'||typeof verifyIdentity!=='function'||typeof resolveShipping!=='function')throw Error('Trusted backend dependencies required');
  return {async createCheckout({identityToken,orderId,items,shippingAddress,walletUnitId,deliveryDetails}){
   // Authentication must be independently verified by a privileged backend.
