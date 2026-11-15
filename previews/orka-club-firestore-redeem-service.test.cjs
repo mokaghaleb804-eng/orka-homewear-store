@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict');
 const {createFirestoreWalletRedeemService}=require('./orka-club-firestore-redeem-service.cjs');
 function fake(){
- const docs=new Map([['wallets/alice/credits/g1',{remaining:10000,expiresAt:'2026-12-01T00:00:00Z'}]]);
+ const docs=new Map([['wallets/alice/credits/g1',{remaining:10000,expiresAt:'2026-12-01T00:00:00Z'}],['orders/ord2',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,walletRedemptionUnit:{id:'unit1',pricePiastres:8000}}]]);
  const ref=p=>({path:p});
  const db={doc:ref,collection:p=>({doc:u=>({collection:n=>({path:p+'/'+u+'/'+n})})}),
   runTransaction:async fn=>{
