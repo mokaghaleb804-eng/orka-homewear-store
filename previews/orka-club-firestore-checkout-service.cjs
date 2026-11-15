@@ -9,6 +9,10 @@ function createFirestoreTrustedCheckoutService(db,{verifyIdentity,resolveShippin
   // Authentication must be independently verified by a privileged backend.
   const identity=await verifyIdentity(identityToken);
   if(!identity||!validId(identity.uid)||!validId(orderId)||!Array.isArray(items)||!items.length||items.length>50)throw Error('Invalid authenticated checkout');
+  // Reject extra browser fields even if the HTTP adapter is bypassed.
+  if(items.some(i=>!i||typeof i!=='object'||Array.isArray(i)||Object.keys(i).some(k=>!['unitId','productId'].includes(k))))throw Error('Unexpected checkout item field');
+  if(!shippingAddress||typeof shippingAddress!=='object'||Array.isArray(shippingAddress)||Object.keys(shippingAddress).length!==1||!validId(shippingAddress.zoneId))throw Error('Invalid shipping address');
+  if(walletUnitId!=null&&!validId(walletUnitId))throw Error('Invalid wallet unit');
   const requested=items.map(i=>({unitId:i?.unitId,productId:i?.productId}));
   if(requested.some(i=>!validId(i.unitId)||!validId(i.productId)))throw Error('Invalid checkout item');
   const signature=JSON.stringify({uid:identity.uid,items:requested,shippingAddress:shippingAddress??null,walletUnitId:walletUnitId??null});
