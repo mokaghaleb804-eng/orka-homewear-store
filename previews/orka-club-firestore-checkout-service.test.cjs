@@ -39,6 +39,13 @@ const service=createFirestoreTrustedCheckoutService(db,{
  assert.equal(multi.order.walletRedemptionUnit.pricePiastres,42000);
  assert.equal(multi.order.units[0].pricePiastres,85000);
  assert.equal(multi.order.units[1].pricePiastres,42000);
+ const repeated=await service.createCheckout({...input,orderId:'order-repeated-sku',walletUnitId:'u2',items:[{unitId:'u1',productId:'sku1'},{unitId:'u2',productId:'sku1'}]});
+ assert.equal(repeated.order.eligibleSubtotalPiastres,170000);
+ assert.equal(repeated.order.totalPiastres,179000);
+ assert.equal(repeated.order.units.length,2);
+ assert.equal(repeated.order.walletRedemptionUnit.pricePiastres,85000);
+ await assert.rejects(service.createCheckout({...input,orderId:'order-duplicate-unit',items:[{unitId:'u1',productId:'sku1'},{unitId:'u1',productId:'sku1'}]}),/Invalid or duplicate unit/);
+ assert.equal(docs.has('orders/order-duplicate-unit'),false);
  assert.equal(docs.has('orders/order2'),false);
  assert.equal(docs.has('orders/order3'),false);
  console.log('Trusted checkout Firestore adapter contract tests passed');
