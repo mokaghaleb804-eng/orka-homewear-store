@@ -8,6 +8,6 @@ function createOrkaClubCheckoutBackend({adminAuth,firestore}={}){
  if(!adminAuth||!firestore)throw Error('Firebase Admin services required');
  const verifyIdentity=createFirebaseIdentityVerifier(adminAuth);
  const resolveShipping=createFirestoreShippingResolver(firestore);
- return createFirestoreTrustedCheckoutService(firestore,{verifyIdentity,resolveShipping});
+ return createFirestoreTrustedCheckoutService(firestore,{verifyIdentity,resolveShipping,requireDeliveryDetails:true});
 }
 module.exports={createOrkaClubCheckoutBackend};
