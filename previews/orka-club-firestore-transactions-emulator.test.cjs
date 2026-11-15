@@ -28,11 +28,15 @@ const db=getFirestore(app);
   uid:'alice',operationId:id,orderId:'checkout-'+id,unitId:'unit1',
   unitPricePiastres:8000,now:'2026-11-15T00:00:00Z'
  });
+ for(const id of ['first','second'])await db.doc('orders/checkout-'+id).set({uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
  const [a,b]=await Promise.all([mk('first'),mk('second')]);
  assert.equal(a.discountPiastres+b.discountPiastres,10000);
  const credit=await db.doc('wallets/alice/credits/grant_'+orderId).get();
  assert.equal(credit.data().remaining,0);
  assert.deepEqual(await mk('first'),a);
+ await db.doc('orders/checkout-first').update({'walletRedemptionUnit.pricePiastres':9000});
+ await assert.rejects(mk('first'),/Untrusted checkout or price/);
+ await db.doc('orders/checkout-first').update({'walletRedemptionUnit.pricePiastres':8000});
  await assert.rejects(redeem.redeemTrustedUnit({
   uid:'alice',operationId:'first',orderId:'checkout-first',unitId:'unit1',
   unitPricePiastres:9000,now:'2026-11-15T00:00:00Z'
