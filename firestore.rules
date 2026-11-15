@@ -79,6 +79,29 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+
+    // ORKA CLUB wallet: owner may read; all client writes are denied.
+    // Admin SDK trusted server writes bypass Firestore Security Rules and
+    // MUST independently verify auth, order ownership, prices and delivery.
+    match /wallets/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid;
+      allow write: if false;
+
+      match /credits/{creditId} {
+        allow read: if signedIn() && request.auth.uid == uid;
+        allow write: if false;
+      }
+
+      match /events/{eventId} {
+        allow read: if signedIn() && request.auth.uid == uid;
+        allow write: if false;
+      }
+    }
+
+    match /walletOperations/{operationId} {
+      allow read, write: if false;
+    }
+
     match /{document=**} {
       allow read, write: if false;
     }
