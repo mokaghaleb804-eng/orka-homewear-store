@@ -11,7 +11,12 @@ function createFirestoreWalletRedeemService(db){
   const signature=JSON.stringify({uid,orderId,unitId,unitPricePiastres});
   return db.runTransaction(async tx=>{
    const opRef=db.doc('walletOperations/redeem_'+operationId);
-   const prior=await tx.get(opRef);
+   const orderRef=db.doc('orders/'+orderId);
+   const [prior,orderSnap]=await Promise.all([tx.get(opRef),tx.get(orderRef)]);
+   if(!orderSnap.exists)throw Error('Trusted checkout order missing');
+   const order=orderSnap.data();
+   const unit=order.walletRedemptionUnit;
+   if(order.uid!==uid||order.checkoutValidatedByServer!==true||order.status!=='pending'||order.usedWallet!==false||order.fullPrice!==true||!unit||unit.id!==unitId||unit.pricePiastres!==unitPricePiastres)throw Error('Untrusted checkout or price');
    if(prior.exists){const p=prior.data();if(p.signature!==signature)throw Error('Idempotency conflict');return p.result}
    const q=db.collection('wallets').doc(uid).collection('credits');
    const snapshot=await tx.get(q);
