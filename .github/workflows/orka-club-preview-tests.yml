@@ -22,6 +22,8 @@ jobs:
         run: node previews/orka-club-ledger-preview.test.cjs
       - name: Transaction contract mock tests
         run: node previews/orka-club-wallet-transaction-contract.test.cjs
+      - name: Refund reconciliation tests
+        run: node previews/orka-club-wallet-refunds-preview.test.cjs
       - name: Wallet Firestore rules static guard
         run: node previews/orka-club-firestore-rules-static.test.cjs
       - name: Known security blockers (expected and documented)
