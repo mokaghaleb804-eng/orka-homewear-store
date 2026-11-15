@@ -1,0 +1,27 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {createCheckoutHttpHandler}=require('./orka-club-checkout-http-contract.cjs');
+let called=0;
+const handler=createCheckoutHttpHandler({createCheckout:async input=>{
+ called++;
+ assert.equal(input.identityToken,'valid');
+ assert.equal(input.items[0].productId,'sku1');
+ return {duplicate:false,order:{orderId:'ord1',eligibleSubtotalPiastres:85000,shippingPiastres:6000,totalPiastres:91000}};
+}});
+const req={method:'POST',headers:{authorization:'Bearer valid','content-type':'application/json'},body:{orderId:'ord1',items:[{unitId:'u1',productId:'sku1'}],shippingAddress:{zoneId:'giza'}}};
+(async()=>{
+ const result=await handler(req);
+ assert.equal(result.status,201);
+ assert.deepEqual(result.body,{orderId:'ord1',subtotalPiastres:85000,shippingPiastres:6000,totalPiastres:91000,duplicate:false});
+ assert.equal((await handler({...req,method:'GET'})).status,405);
+ assert.equal((await handler({...req,headers:{'content-type':'application/json'}})).status,401);
+ assert.equal((await handler({...req,headers:{authorization:'Bearer valid','content-type':'text/plain'}})).status,415);
+ assert.equal((await handler({...req,body:{...req.body,uid:'other'}})).status,400);
+ assert.equal((await handler({...req,body:{...req.body,items:[{unitId:'u1',productId:'sku1',pricePiastres:1}]}})).status,400);
+ assert.equal(called,1);
+ const fail=createCheckoutHttpHandler({createCheckout:async()=>{throw Error('secret Firestore credentials')}});
+ const error=await fail(req);
+ assert.equal(error.status,422);
+ assert.equal(JSON.stringify(error).includes('secret'),false);
+ console.log('Checkout HTTP boundary contract tests passed');
+})().catch(e=>{console.error(e);process.exitCode=1});
