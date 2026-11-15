@@ -1,0 +1,23 @@
+name: ORKA CLUB preview tests
+on:
+  pull_request:
+    paths:
+      - 'previews/orka-club-*.cjs'
+      - '.github/workflows/orka-club-preview-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  wallet-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Wallet calculation tests
+        run: node previews/orka-club-wallet-engine.test.cjs
+      - name: Sequential ledger tests
+        run: node previews/orka-club-ledger-preview.test.cjs
+      - name: Known security blockers (expected and documented)
+        run: node previews/orka-club-wallet-security-negative.test.cjs
