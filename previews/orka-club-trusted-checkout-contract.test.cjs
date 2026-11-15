@@ -1,0 +1,17 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {buildTrustedCheckout,selectWalletUnit}=require('./orka-club-trusted-checkout-contract.cjs');
+const catalog={hoodie:{active:true,fullPrice:true,pricePiastres:85000},inactive:{active:false,fullPrice:true,pricePiastres:50000}};
+const input={authenticatedUid:'alice',orderId:'order1',items:[{unitId:'u1',productId:'hoodie',pricePiastres:1,discountPiastres:85000}],catalog,shippingPiastres:6000};
+const checkout=buildTrustedCheckout(input);
+assert.equal(checkout.eligibleSubtotalPiastres,85000);
+assert.equal(checkout.totalPiastres,91000);
+assert.equal(checkout.uid,'alice');
+assert.equal(checkout.checkoutValidatedByServer,true);
+assert.deepEqual(selectWalletUnit(checkout,'u1').walletRedemptionUnit,{id:'u1',pricePiastres:85000});
+assert.throws(()=>selectWalletUnit(checkout,'u2'),/Unit not in checkout/);
+assert.throws(()=>buildTrustedCheckout({...input,items:[{unitId:'u1',productId:'inactive'}]}),/Unavailable trusted product/);
+assert.throws(()=>buildTrustedCheckout({...input,items:[{unitId:'u1',productId:'hoodie'},{unitId:'u1',productId:'hoodie'}]}),/Invalid or duplicate unit/);
+assert.throws(()=>buildTrustedCheckout({...input,shippingPiastres:-1}),/Invalid checkout request/);
+assert.throws(()=>buildTrustedCheckout({...input,authenticatedUid:'../alice'}),/Invalid checkout request/);
+console.log('Trusted checkout contract price, owner, shipping and unit validation passed');
