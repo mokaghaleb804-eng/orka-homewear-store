@@ -16,7 +16,7 @@ function createFirestoreWalletRedeemService(db,{clock=()=>new Date()}={}){
    if(!orderSnap.exists)throw Error('Trusted checkout order missing');
    const order=orderSnap.data();
    const unit=order.walletRedemptionUnit;
-   if(order.uid!==uid||order.checkoutValidatedByServer!==true||order.status!=='pending'||order.fullPrice!==true||!unit||unit.id!==unitId||unit.pricePiastres!==unitPricePiastres)throw Error('Untrusted checkout or price');
+   if(order.uid!==uid||order.checkoutValidatedByServer!==true||order.status!=='pending'||order.fullPrice!==true||!unit||unit.id!==unitId||unit.pricePiastres!==unitPricePiastres||!Array.isArray(order.units)||order.units.filter(u=>u&&u.id===unitId&&u.pricePiastres===unitPricePiastres).length!==1)throw Error('Untrusted checkout or price');
    if(prior.exists){const p=prior.data();if(p.signature!==signature)throw Error('Idempotency conflict');if(order.walletRedemptionOperationId!==operationId)throw Error('Order redemption conflict');return p.result}
    if(order.usedWallet!==false||order.walletRedemptionOperationId)throw Error('Order already redeemed');
    const q=db.collection('wallets').doc(uid).collection('credits');
