@@ -17,6 +17,8 @@ function mockStore(){
  assert.deepEqual(await grantForDelivery(s,{uid:'uid-1',order}),{amount:10000,orderId:'order-1'});
  assert.equal((await grantForDelivery(s,{uid:'uid-1',order})).amount,10000);
  assert.equal(s.credits.get('uid-1').length,1);
+ await assert.rejects(grantForDelivery(s,{uid:'uid-1',order:{...order,eligibleSubtotalPiastres:200000}}),/Delivery idempotency conflict/);
+ await assert.rejects(grantForDelivery(s,{uid:'uid-1',order:{...order,deliveredAt:'2026-11-02T00:00:00Z'}}),/Delivery idempotency conflict/);
  await assert.rejects(grantForDelivery(s,{uid:'uid-2',order}),/Unverified order/);
  await assert.rejects(grantForDelivery(s,{uid:'uid-1',order:{...order,source:'client'}}),/Unverified order/);
  const input={uid:'uid-1',redemptionId:'redeem-1',orderId:'order-2',unitId:'unit-a',unitPricePiastres:8000,now:'2026-11-02T00:00:00Z'};
