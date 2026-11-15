@@ -6,6 +6,7 @@ const handler=createCheckoutHttpHandler({createCheckout:async input=>{
  called++;
  assert.equal(input.identityToken,'valid');
  assert.equal(input.items[0].productId,'sku1');
+ assert.equal(input.deliveryDetails.phone,'01012345678');
  return {duplicate:false,order:{orderId:'ord1',eligibleSubtotalPiastres:85000,shippingPiastres:6000,totalPiastres:91000}};
 }});
 const req={method:'POST',headers:{authorization:'Bearer valid','content-type':'application/json'},body:{orderId:'ord1',items:[{unitId:'u1',productId:'sku1'}],shippingAddress:{zoneId:'giza'},deliveryDetails:{recipientName:'Test Customer',phone:'01012345678',governorate:'Giza',streetAddress:'Example Street 12',building:'12'}}};
@@ -29,6 +30,13 @@ const req={method:'POST',headers:{authorization:'Bearer valid','content-type':'a
  assert.equal((await handler({...req,body:{...req.body,items:[{unitId:'u1',productId:'sku/1'}]}})).status,400);
  assert.equal((await handler({...req,body:{...req.body,deliveryDetails:{recipientName:'A',phone:'123'}}})).status,400);
  assert.equal(called,1);
+ const leak=createCheckoutHttpHandler({createCheckout:async()=>({duplicate:false,order:{orderId:'ord1',eligibleSubtotalPiastres:85000,shippingPiastres:6000,totalPiastres:91000,deliveryDetails:req.body.deliveryDetails,uid:'alice',checkoutRequestSignature:'secret',internalNote:'private'}})});
+ const safe=await leak(req);
+ assert.equal(safe.status,201);
+ assert.equal(JSON.stringify(safe).includes('01012345678'),false);
+ assert.equal(JSON.stringify(safe).includes('Example Street'),false);
+ assert.equal(JSON.stringify(safe).includes('secret'),false);
+ assert.equal(JSON.stringify(safe).includes('alice'),false);
  const fail=createCheckoutHttpHandler({createCheckout:async()=>{throw Error('secret Firestore credentials')}});
  const error=await fail(req);
  assert.equal(error.status,422);
