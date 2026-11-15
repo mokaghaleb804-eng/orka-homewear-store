@@ -1,6 +1,6 @@
 'use strict';
 const assert=require('node:assert/strict');
-const {earn,grant,redeem}=require('./wallet-engine.cjs');
+const {earn,grant,redeem}=require('./orka-club-wallet-engine.cjs');
 assert.equal(earn(100000),10000);
 assert.equal(earn(300000),30000);
 const a=grant({id:'a',amount:100000,issuedAt:'2026-11-01T00:00:00Z'});
