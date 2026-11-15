@@ -15,4 +15,7 @@ assert.doesNotMatch(html,/function orkaMembershipInfo\(/);
 assert.doesNotMatch(html,/خصم العضوية \(\'/);
 assert.match(html,/ORKA CLUB · المحفظة الجديدة/);
 assert.match(html,/10% رصيد/);
+assert.match(html,/<a href="#orkaClub" aria-label="ORKA CLUB loyalty program">ORKA CLUB<\/a>/);
+assert.match(html,/<a href="#orkaClub">ORKA CLUB · نادي أوركا<\/a>/);
+assert.match(html,/<section id="orkaClub"/);
 console.log('Storefront cleanup static safety gates passed');
