@@ -1,0 +1,14 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {validateDeliveryDetails}=require('./orka-club-delivery-details-validator.cjs');
+const valid={recipientName:'Test Customer',phone:'01012345678',governorate:'Giza',streetAddress:'Example Street 12',building:'12',apartment:'3',landmark:'Near Example'};
+const result=validateDeliveryDetails(valid);
+assert.equal(result.phone,valid.phone);
+assert(Object.isFrozen(result));
+assert.throws(()=>validateDeliveryDetails({...valid,phone:'0101234567'}),/delivery field/);
+assert.throws(()=>validateDeliveryDetails({...valid,phone:'01112345678\n'}),/delivery field/);
+assert.throws(()=>validateDeliveryDetails({...valid,shippingPiastres:1}),/Unexpected/);
+assert.throws(()=>validateDeliveryDetails({...valid,streetAddress:'x'}),/delivery field/);
+assert.throws(()=>validateDeliveryDetails({...valid,recipientName:' A '}),/delivery field/);
+assert.equal(validateDeliveryDetails({...valid,apartment:undefined,landmark:undefined}).apartment,null);
+console.log('ORKA CLUB COD delivery details validation tests passed');

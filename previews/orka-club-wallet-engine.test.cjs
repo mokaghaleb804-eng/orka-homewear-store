@@ -1,0 +1,15 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {earn,grant,redeem}=require('./orka-club-wallet-engine.cjs');
+assert.equal(earn(100000),10000);
+assert.equal(earn(300000),30000);
+const a=grant({id:'a',amount:100000,issuedAt:'2026-11-01T00:00:00Z'});
+const r=redeem({credits:[a],pricePiastres:80000,now:'2026-11-02T00:00:00Z'});
+assert.equal(r.discount,80000);assert.equal(r.due,0);assert.equal(r.credits[0].remaining,20000);
+assert.equal(a.remaining,100000,'pure operation must not mutate input');
+assert.equal(redeem({credits:[a],pricePiastres:100000,now:'2026-12-01T00:00:00Z'}).discount,0,'expiry is exclusive');
+const b=grant({id:'b',amount:10000,issuedAt:'2026-11-05T00:00:00Z'});
+const ordered=redeem({credits:[b,a],pricePiastres:5000,now:'2026-11-10T00:00:00Z'});
+assert.equal(ordered.debits[0].creditId,'a');
+assert.throws(()=>earn(-1));
+console.log('ORKA CLUB preview wallet pure calculation tests passed');

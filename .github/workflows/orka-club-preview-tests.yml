@@ -1,0 +1,56 @@
+name: ORKA CLUB preview tests
+on:
+  pull_request:
+    paths:
+      - 'previews/orka-club-*.cjs'
+      - 'firestore.rules'
+      - '.github/workflows/orka-club-preview-tests.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  wallet-preview:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Wallet calculation tests
+        run: node previews/orka-club-wallet-engine.test.cjs
+      - name: Sequential ledger tests
+        run: node previews/orka-club-ledger-preview.test.cjs
+      - name: Transaction contract mock tests
+        run: node previews/orka-club-wallet-transaction-contract.test.cjs
+      - name: Trusted checkout pricing contract tests
+        run: node previews/orka-club-trusted-checkout-contract.test.cjs
+      - name: Firebase Admin identity verifier tests
+        run: node previews/orka-club-firebase-identity-verifier.test.cjs
+      - name: Trusted shipping zone resolver tests
+        run: node previews/orka-club-firestore-shipping-resolver.test.cjs
+      - name: Egyptian COD delivery details validation tests
+        run: node previews/orka-club-delivery-details-validator.test.cjs
+      - name: Cart to trusted variant mapping tests
+        run: node previews/orka-club-cart-variant-adapter.test.cjs
+      - name: Trusted ORKA catalog variant registry tests
+        run: node previews/orka-club-trusted-variant-registry.test.cjs
+      - name: Server-only Firestore variant resolver mock tests
+        run: node previews/orka-club-firestore-variant-resolver.test.cjs
+      - name: Checkout HTTP boundary contract tests
+        run: node previews/orka-club-checkout-http-contract.test.cjs
+      - name: Integrated checkout backend mock tests
+        run: node previews/orka-club-checkout-backend.test.cjs
+      - name: Authenticated Firestore checkout service mock tests
+        run: node previews/orka-club-firestore-checkout-service.test.cjs
+      - name: Firestore redemption service mock contract tests
+        run: node previews/orka-club-firestore-redeem-service.test.cjs
+      - name: Firestore grant service mock contract tests
+        run: node previews/orka-club-firestore-grant-service.test.cjs
+      - name: Concurrent wallet operation tests
+        run: node previews/orka-club-wallet-concurrency.test.cjs
+      - name: Refund reconciliation tests
+        run: node previews/orka-club-wallet-refunds-preview.test.cjs
+      - name: Wallet Firestore rules static guard
+        run: node previews/orka-club-firestore-rules-static.test.cjs
+      - name: Known security blockers (expected and documented)
+        run: node previews/orka-club-wallet-security-negative.test.cjs
