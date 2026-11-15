@@ -7,10 +7,27 @@ const {createFirestoreWalletGrantService}=require('./orka-club-firestore-grant-s
 const {createFirestoreWalletRedeemService}=require('./orka-club-firestore-redeem-service.cjs');
 const {createFirestoreWalletReturnService}=require('./orka-club-firestore-return-service.cjs');
 const {buildTrustedCheckout,selectWalletUnit}=require('./orka-club-trusted-checkout-contract.cjs');
+const {createFirestoreTrustedCheckoutService}=require('./orka-club-firestore-checkout-service.cjs');
+const {createFirestoreShippingResolver}=require('./orka-club-firestore-shipping-resolver.cjs');
 if(!process.env.FIRESTORE_EMULATOR_HOST)throw Error('FIRESTORE_EMULATOR_HOST required; refusing live Firestore');
 const app=initializeApp({projectId:'orka-club-rules-test'});
 const db=getFirestore(app);
 (async()=>{
+ await db.doc('catalog/emulator-sku').set({active:true,fullPrice:true,pricePiastres:85000});
+ await db.doc('shippingZones/emulator-giza').set({active:true,pricePiastres:6000});
+ const checkout=createFirestoreTrustedCheckoutService(db,{
+  verifyIdentity:async token=>token==='emulator-token'?{uid:'alice'}:null,
+  resolveShipping:createFirestoreShippingResolver(db)
+ });
+ const request={identityToken:'emulator-token',orderId:'emulator-checkout',items:[{unitId:'unit-emulator',productId:'emulator-sku'}],shippingAddress:{zoneId:'emulator-giza'},walletUnitId:'unit-emulator'};
+ const concurrent=await Promise.all(Array.from({length:5},()=>checkout.createCheckout(request)));
+ assert.equal(concurrent.filter(x=>!x.duplicate).length,1);
+ assert.ok(concurrent.every(x=>x.order.totalPiastres===91000));
+ await db.doc('shippingZones/emulator-giza').update({active:false});
+ const replay=await checkout.createCheckout(request);
+ assert.equal(replay.duplicate,true);
+ assert.equal(replay.order.shippingPiastres,6000);
+ await assert.rejects(checkout.createCheckout({...request,orderId:'emulator-checkout-new'}),/Shipping zone inactive/);
  const orderId='delivery-test';
  await db.doc('orders/'+orderId).set({
   uid:'alice',status:'delivered',deliveryVerifiedByServer:true,
