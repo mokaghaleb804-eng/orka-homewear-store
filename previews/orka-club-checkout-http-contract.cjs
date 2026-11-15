@@ -24,6 +24,7 @@ function createCheckoutHttpHandler(backend){
   if(new Set(unitIds).size!==unitIds.length)return {status:400,body:{error:'Duplicate unit ID'}};
   if(body.walletUnitId!=null&&!unitIds.includes(body.walletUnitId))return {status:400,body:{error:'Wallet unit not in order'}};
   let deliveryDetails;
+  if(body.deliveryDetails===undefined)return {status:400,body:{error:'Delivery details required'}};
   if(body.deliveryDetails!==undefined){
    try{deliveryDetails=validateDeliveryDetails(body.deliveryDetails)}catch{return {status:400,body:{error:'Invalid delivery details'}}}
   }
