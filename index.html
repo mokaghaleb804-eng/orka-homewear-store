@@ -1107,7 +1107,6 @@ async function saveOrkaAddress(e){
 }
 function logoutOrka(){if(window.signOutOrkaFirebase)window.signOutOrkaFirebase();currentCustomerPhone='';renderAccount();toast('تم تسجيل الخروج')}
 
-const ORKA_TEST_PRICES = true; // Temporary test prices only; never allow real order submission.
 const products=[
 {id:108,sku:'ORK-K07-PK',name:'EXPLORER — Pink',category:'girls',desc:'ORKA Kids · طقم بناتي هودي وبنطلون جوجر · وردي · طباعة EXPLORER كحلي · صور تصميمية للمعاينة وليست تصوير المنتج الفعلي · كود ORK-K07-PK',price:0,old:0,tag:'صور للمعاينة',img:'file_00000000cbf88246b1a83ab58ee8539b.webp',gallery:["file_00000000cbf88246b1a83ab58ee8539b.webp","file_000000003290824692447380ae2148ab.webp","file_000000008fdc8246b0bbdfae7fead268.webp","file_0000000043cc8246ab697fdd6c06ee13.webp","file_00000000bc788246a6710a56a68cd3b4.webp","file_0000000060448246bafa324ab290ffcb.webp"],sizes:[],comingSoon:true},
 {id:107,sku:'ORK-K07-BL',name:'EXPLORER — Baby Blue',category:'girls',desc:'ORKA Kids · طقم بناتي هودي وبنطلون جوجر · بيبي بلو · طباعة EXPLORER كحلي · صور تصميمية للمعاينة وليست تصوير المنتج الفعلي · كود ORK-K07-BL',price:0,old:0,tag:'صور للمعاينة',img:'file_00000000725481f4a5374088365422b2.webp',gallery:["file_00000000725481f4a5374088365422b2.webp","file_00000000049481f487eac885320d1830.webp","file_00000000d2c482468df79053aa342ac8.webp","file_0000000047a081f4acf73ada5773683e (1).webp","file_00000000d16881f48906fdefe06abeb2.webp","file_00000000855881f481475dfd133fb2ca.webp","file_000000002e98821093bffd99df3bfbd8.webp"],sizes:[],comingSoon:true},
@@ -1119,7 +1118,7 @@ const products=[
 {id:101,sku:'ORK-K01-BL',name:'MILANO ITALIA — Baby Blue',category:'boys',desc:'ORKA Kids · طقم أولادي قطعتان · اللون Baby Blue · كود ORK-K01-BL',price:0,old:0,tag:'',img:'babyblue-01-front-pose.jpg',gallery:['babyblue-01-front-pose.jpg','babyblue-02-seated-pose.jpg','babyblue-03-back-view.jpg','babyblue-04-collar-finish.jpg','babyblue-05-sleeve-cuff-finish.jpg','babyblue-06-waistband-drawstring.jpg','babyblue-07-zoom-chest-print.jpg','babyblue-08-zoom-pants-logo-drawstring.jpg'],sizes:[],comingSoon:true}
 ];
 let favoriteIds=[];try{favoriteIds=JSON.parse(localStorage.getItem('orka-favorites')||'[]').map(Number)}catch(e){}
-let cart=[];try{const savedCart=JSON.parse(localStorage.getItem('orka-cart')||'[]');if(Array.isArray(savedCart))cart=savedCart.filter(x=>x&&x.id!==undefined&&x.size&&Number(x.qty)>0)}catch(e){cart=[]}let activeFilter='all';let selectedSizes={};let orkaRewardCreditEnabled=false;window.orkaRewardCredit=0;window.orkaReservedRewardCredit=0;window.orkaLifetimeSpend=0;window.orkaMemberDiscountRate=0;
+let cart=[];try{const savedCart=JSON.parse(localStorage.getItem('orka-cart')||'[]');if(Array.isArray(savedCart))cart=savedCart.filter(x=>x&&x.id!==undefined&&x.size&&Number(x.qty)>0)}catch(e){cart=[]}let activeFilter='all';let selectedSizes={};window.orkaRewardCredit=0;window.orkaReservedRewardCredit=0;window.orkaLifetimeSpend=0;window.orkaMemberDiscountRate=0;
 
 function money(n){return new Intl.NumberFormat('ar-EG',{maximumFractionDigits:2}).format(n)+' ج.م'}
 function orkaMembershipInfo(spend){spend=Math.max(0,Number(spend)||0);if(spend>=8000)return {rate:0.10,label:'المستوى الثالث · خصم 10%',next:null,remaining:0};if(spend>=5000)return {rate:0.075,label:'المستوى الثاني · خصم 7.5%',next:8000,remaining:8000-spend};if(spend>=2550)return {rate:0.05,label:'المستوى الأول · خصم 5%',next:5000,remaining:5000-spend};return {rate:0,label:'العضوية الأساسية',next:2550,remaining:2550-spend};}
@@ -1274,7 +1273,7 @@ window.addEventListener('load',function(){try{if(typeof renderProducts==='functi
 <script type="module">
 import { initializeApp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-app.js";
 import { getAuth, GoogleAuthProvider, FacebookAuthProvider, signInWithPopup, signInWithRedirect, getRedirectResult, RecaptchaVerifier, signInWithPhoneNumber, onAuthStateChanged, signOut, setPersistence, browserLocalPersistence, EmailAuthProvider, signInWithEmailAndPassword, linkWithCredential, updatePassword } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-auth.js";
-import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, addDoc, getDocs, query, where, limit, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
+import { getFirestore, doc, getDoc, setDoc, updateDoc, collection, getDocs, query, where, limit, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/13.0.0/firebase-firestore.js";
 const firebaseConfig = {
   apiKey: "AIzaSyB3O_4JMgRni_EUWCaQzQ9dVuK4dRjJwtQ",
   authDomain: "orka-homewear-e63db.firebaseapp.com",
