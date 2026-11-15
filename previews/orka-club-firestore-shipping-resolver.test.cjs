@@ -6,6 +6,10 @@ const db={doc:path=>({get:async()=>({exists:zones.has(path),data:()=>zones.get(p
 (async()=>{
  const resolve=createFirestoreShippingResolver(db);
  assert.equal(await resolve({address:{zoneId:'giza',pricePiastres:1}}),6000);
+ let transactionRead=false;
+ const tx={get:async ref=>{transactionRead=true;assert.equal(typeof ref.get,'function');return {exists:true,data:()=>({active:true,pricePiastres:7000})}}};
+ assert.equal(await resolve({address:{zoneId:'giza'},transaction:tx}),7000);
+ assert.equal(transactionRead,true);
  await assert.rejects(resolve({address:{zoneId:'../orders'}}),/Invalid shipping zone/);
  await assert.rejects(resolve({address:{zoneId:'missing'}}),/unavailable/);
  await assert.rejects(resolve({address:{zoneId:'off'}}),/inactive or invalid/);
