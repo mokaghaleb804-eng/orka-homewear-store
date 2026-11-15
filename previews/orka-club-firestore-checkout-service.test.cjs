@@ -18,6 +18,13 @@ const service=createFirestoreTrustedCheckoutService(db,{
  const input={identityToken:'verified-token',orderId:'order1',items:[{unitId:'u1',productId:'sku1'}],shippingAddress:{zoneId:'giza'},walletUnitId:'u1'};
  await assert.rejects(service.createCheckout({...input,orderId:'tampered-item',items:[{unitId:'u1',productId:'sku1',pricePiastres:1}]}),/Unexpected checkout item field/);
  await assert.rejects(service.createCheckout({...input,orderId:'tampered-shipping',shippingAddress:{zoneId:'giza',pricePiastres:1}}),/Invalid shipping address/);
+ const deliveryDetails={recipientName:'Test Customer',phone:'01012345678',governorate:'Giza',streetAddress:'Example Street 12',building:'12'};
+ const withDelivery=await service.createCheckout({...input,orderId:'delivery-order',deliveryDetails});
+ assert.equal(withDelivery.order.deliveryDetails.phone,'01012345678');
+ assert.equal((await service.createCheckout({...input,orderId:'delivery-order',deliveryDetails})).duplicate,true);
+ await assert.rejects(service.createCheckout({...input,orderId:'delivery-order',deliveryDetails:{...deliveryDetails,building:'14'}}),/idempotency conflict/);
+ await assert.rejects(service.createCheckout({...input,orderId:'bad-delivery',deliveryDetails:{...deliveryDetails,phone:'123'}}),/Invalid delivery field|mobile/);
+ assert.equal(docs.has('orders/bad-delivery'),false);
  const first=await service.createCheckout(input);
  assert.equal(first.duplicate,false);
  assert.equal(first.order.uid,'alice');
