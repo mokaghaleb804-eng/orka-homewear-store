@@ -39,6 +39,8 @@ const db=getFirestore(app);
  assert.equal(firstOrder.shippingPiastres,2500);
  assert.equal(firstOrder.totalPiastres,10500);
  assert.equal(firstOrder.walletDiscountPiastres,a.discountPiastres);
+ assert.equal(firstOrder.payablePiastres,firstOrder.totalPiastres-a.discountPiastres);
+ assert.ok(firstOrder.payablePiastres>=firstOrder.shippingPiastres);
  assert.equal(firstOrder.walletRedemptionOperationId,'first');
  const credit=await db.doc('wallets/alice/credits/grant_'+orderId).get();
  assert.equal(credit.data().remaining,0);
