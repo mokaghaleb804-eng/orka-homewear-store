@@ -33,7 +33,7 @@ function createFirestoreWalletGrantService(db){
     }
     if(amount){
      const credit=grant({id:'grant_'+orderId,amount,issuedAt:deliveredAt});
-     tx.create(creditRef,{orderId,originalAmount:amount,remaining:amount,issuedAt:credit.issuedAt,expiresAt:credit.expiresAt,revokedPiastres:0,recoveryExposurePiastres:0});
+     tx.create(creditRef,{orderId,originalAmount:amount,originalEligibleSubtotalPiastres:o.eligibleSubtotalPiastres,remaining:amount,issuedAt:credit.issuedAt,expiresAt:credit.expiresAt,revokedPiastres:0,recoveryExposurePiastres:0});
     }
     tx.create(opRef,{uid,orderId,type:'grant',amountPiastres:amount,signature,deliveryVersion:o.deliveryVersion||null});
     return {duplicate:false,amountPiastres:amount};
