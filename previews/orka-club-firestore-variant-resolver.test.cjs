@@ -15,7 +15,7 @@ const db={doc(path){return {async get(){return {exists:Object.hasOwn(docs,path),
  assert.deepEqual(cartToCheckoutUnits([{productId:'whale',size:'4',color:'navy',qty:1,price:1}],{resolveVariantId}),[{unitId:'line0-unit0',productId:'whale-4-navy'}]);
  assert.throws(()=>cartToCheckoutUnits([{productId:'whale',size:'6',color:'navy',qty:1}],{resolveVariantId}),/Unmapped/);
  await assert.rejects(()=>createFirestoreVariantResolver(db)([{productId:'missing',size:'4',color:'navy',qty:1}]),/Unmapped/);
- await assert.rejects(()=>createFirestoreVariantResolver(db)([{productId:'../orders',size:'4',color:'navy',qty:1}]),/Invalid product ID/);
+ await assert.rejects(()=>createFirestoreVariantResolver(db)([{productId:'../orders',size:'4',color:'navy',qty:1}]),/Invalid cart line/);
  const bad={doc(){return {async get(){return {exists:true,data:()=>({active:true,variants:[{variantId:'../orders',size:'4',color:'navy',active:true}]})}}}}};
  await assert.rejects(()=>createFirestoreVariantResolver(bad)([{productId:'whale',size:'4',color:'navy',qty:1}]),/Invalid trusted variant record/);
  console.log('Server-only Firestore variant mapping resolver tests passed');
