@@ -12,21 +12,22 @@ function createFirestoreTrustedCheckoutService(db,{verifyIdentity,resolveShippin
   const requested=items.map(i=>({unitId:i?.unitId,productId:i?.productId}));
   if(requested.some(i=>!validId(i.unitId)||!validId(i.productId)))throw Error('Invalid checkout item');
   const signature=JSON.stringify({uid:identity.uid,items:requested,shippingAddress:shippingAddress??null,walletUnitId:walletUnitId??null});
-  const shippingPiastres=await resolveShipping({uid:identity.uid,address:shippingAddress,items:requested});
-  if(!Number.isSafeInteger(shippingPiastres)||shippingPiastres<0)throw Error('Invalid server shipping');
   return db.runTransaction(async tx=>{
    const orderRef=db.doc('orders/'+orderId);
-   const productIds=[...new Set(requested.map(i=>i.productId))];
-   const refs=productIds.map(id=>db.doc('catalog/'+id));
-   const snapshots=await Promise.all([tx.get(orderRef),...refs.map(ref=>tx.get(ref))]);
-   if(snapshots[0].exists){
-    const prior=snapshots[0].data();
+   const existing=await tx.get(orderRef);
+   if(existing.exists){
+    const prior=existing.data();
     if(prior.checkoutRequestSignature!==signature||prior.uid!==identity.uid)throw Error('Checkout idempotency conflict');
     return {duplicate:true,order:prior};
    }
+   const shippingPiastres=await resolveShipping({uid:identity.uid,address:shippingAddress,items:requested});
+   if(!Number.isSafeInteger(shippingPiastres)||shippingPiastres<0)throw Error('Invalid server shipping');
+   const productIds=[...new Set(requested.map(i=>i.productId))];
+   const refs=productIds.map(id=>db.doc('catalog/'+id));
+   const snapshots=await Promise.all(refs.map(ref=>tx.get(ref)));
    const catalog=Object.create(null);
    for(let i=0;i<productIds.length;i++){
-    if(!snapshots[i+1].exists)throw Error('Catalog product missing');
+    if(!snapshots[i].exists)throw Error('Catalog product missing');
     catalog[productIds[i]]=snapshots[i+1].data();
    }
    let order=buildTrustedCheckout({authenticatedUid:identity.uid,orderId,items:requested,catalog,shippingPiastres});
