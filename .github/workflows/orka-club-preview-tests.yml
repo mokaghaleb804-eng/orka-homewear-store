@@ -22,6 +22,8 @@ jobs:
         run: node previews/orka-club-ledger-preview.test.cjs
       - name: Transaction contract mock tests
         run: node previews/orka-club-wallet-transaction-contract.test.cjs
+      - name: Trusted checkout pricing contract tests
+        run: node previews/orka-club-trusted-checkout-contract.test.cjs
       - name: Firestore redemption service mock contract tests
         run: node previews/orka-club-firestore-redeem-service.test.cjs
       - name: Firestore grant service mock contract tests
