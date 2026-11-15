@@ -6,6 +6,7 @@ const {getFirestore,Timestamp}=require('firebase-admin/firestore');
 const {createFirestoreWalletGrantService}=require('./orka-club-firestore-grant-service.cjs');
 const {createFirestoreWalletRedeemService}=require('./orka-club-firestore-redeem-service.cjs');
 const {createFirestoreWalletReturnService}=require('./orka-club-firestore-return-service.cjs');
+const {buildTrustedCheckout,selectWalletUnit}=require('./orka-club-trusted-checkout-contract.cjs');
 if(!process.env.FIRESTORE_EMULATOR_HOST)throw Error('FIRESTORE_EMULATOR_HOST required; refusing live Firestore');
 const app=initializeApp({projectId:'orka-club-rules-test'});
 const db=getFirestore(app);
@@ -28,7 +29,10 @@ const db=getFirestore(app);
   uid:'alice',operationId:id,orderId:'checkout-'+id,unitId:'unit1',
   unitPricePiastres:8000
  });
- for(const id of ['first','second'])await db.doc('orders/checkout-'+id).set({uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
+ for(const id of ['first','second']){
+  const checkout=buildTrustedCheckout({authenticatedUid:'alice',orderId:'checkout-'+id,items:[{unitId:'unit1',productId:'sku1',pricePiastres:1}],catalog:{sku1:{active:true,fullPrice:true,pricePiastres:8000}},shippingPiastres:2500});
+  await db.doc('orders/checkout-'+id).set(selectWalletUnit(checkout,'unit1'));
+ }
  const [a,b]=await Promise.all([mk('first'),mk('second')]);
  assert.equal(a.discountPiastres+b.discountPiastres,10000);
  const credit=await db.doc('wallets/alice/credits/grant_'+orderId).get();
