@@ -34,6 +34,8 @@ jobs:
         run: node previews/orka-club-cart-variant-adapter.test.cjs
       - name: Trusted ORKA catalog variant registry tests
         run: node previews/orka-club-trusted-variant-registry.test.cjs
+      - name: Server-only Firestore variant resolver mock tests
+        run: node previews/orka-club-firestore-variant-resolver.test.cjs
       - name: Checkout HTTP boundary contract tests
         run: node previews/orka-club-checkout-http-contract.test.cjs
       - name: Integrated checkout backend mock tests
