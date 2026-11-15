@@ -23,18 +23,19 @@ function createFirestoreWalletGrantService(db){
     const opRef=db.doc('walletOperations/grant_'+orderId);
     const creditRef=db.doc('wallets/'+uid+'/credits/grant_'+orderId);
     const opSnap=await tx.get(opRef);
-    if(opSnap.exists){
-     const prior=opSnap.data();
-     if(prior.uid!==uid)throw Error('Grant ownership conflict');
-     return {duplicate:true,amountPiastres:prior.amountPiastres};
-    }
     const amount=o.usedWallet===true||o.fullPrice!==true?0:earn(o.eligibleSubtotalPiastres);
     const deliveredAt=o.deliveredAt.toDate().toISOString();
+    const signature=JSON.stringify({uid,orderId,eligibleSubtotalPiastres:o.eligibleSubtotalPiastres,deliveredAt,fullPrice:o.fullPrice,usedWallet:o.usedWallet,deliveryVersion:o.deliveryVersion||null});
+    if(opSnap.exists){
+     const prior=opSnap.data();
+     if(prior.signature!==signature)throw Error('Delivery replay conflict');
+     return {duplicate:true,amountPiastres:prior.amountPiastres};
+    }
     if(amount){
      const credit=grant({id:'grant_'+orderId,amount,issuedAt:deliveredAt});
      tx.create(creditRef,{orderId,originalAmount:amount,remaining:amount,issuedAt:credit.issuedAt,expiresAt:credit.expiresAt,revokedPiastres:0,recoveryExposurePiastres:0});
     }
-    tx.create(opRef,{uid,orderId,type:'grant',amountPiastres:amount,deliveryVersion:o.deliveryVersion||null});
+    tx.create(opRef,{uid,orderId,type:'grant',amountPiastres:amount,signature,deliveryVersion:o.deliveryVersion||null});
     return {duplicate:false,amountPiastres:amount};
    });
   }
