@@ -1273,7 +1273,7 @@ let heroIndex=0;const heroSlides=[...document.querySelectorAll('.hero-slideshow 
  stage.addEventListener('pointerdown',e=>{
   if(e.pointerType==='mouse'&&e.button!==0)return;
   startX=e.clientX;startY=e.clientY;dragging=true;moved=false;pause();
-  try{stage.setPointerCapture(e.pointerId)}catch(_){}
+  try{e.target.setPointerCapture(e.pointerId)}catch(_){}
  });
  stage.addEventListener('pointerup',e=>{
   if(!dragging)return;dragging=false;
@@ -2169,6 +2169,7 @@ window.addEventListener("pagehide", () => window.orkaPresenceStop());
   const linkMap={
    'file_00000000512c81f48d81e1d074c34ab7.jpg':103,
    'sage-02-pointing-pose.jpg':102,
+   'file_00000000725481f4a5374088365422b2.webp':107,
    'babyblue-01-front-pose.jpg':101
   };
   hero.querySelectorAll('.orka-model-card').forEach(card=>{
