@@ -26,6 +26,9 @@ const service=createFirestoreTrustedCheckoutService(db,{
  const replay=await service.createCheckout(input);
  assert.equal(replay.duplicate,true);
  assert.equal(replay.order.totalPiastres,91000);
+ shippingRate=-1;
+ assert.equal((await service.createCheckout(input)).duplicate,true);
+ shippingRate=9000;
  await assert.rejects(service.createCheckout({...input,shippingAddress:{governorate:'Giza'}}),/idempotency conflict/);
  await assert.rejects(service.createCheckout({...input,identityToken:'invalid',orderId:'order2'}),/Invalid authenticated checkout/);
  await assert.rejects(service.createCheckout({...input,orderId:'order1',items:[{unitId:'u1',productId:'sku1'},{unitId:'u2',productId:'sku1'}]}),/idempotency conflict/);
