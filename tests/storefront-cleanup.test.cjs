@@ -18,4 +18,7 @@ assert.match(html,/10% رصيد/);
 assert.match(html,/<a href="#orkaClub" aria-label="ORKA CLUB loyalty program">ORKA CLUB<\/a>/);
 assert.match(html,/<a href="#orkaClub">ORKA CLUB · نادي أوركا<\/a>/);
 assert.match(html,/<section id="orkaClub"/);
+assert.match(html,/<a href="#orkaStory">Our Story<\/a>/);
+assert.match(html,/<a href="#orkaStory">حكاية ORKA<\/a>/);
+assert.match(html,/<section class="orka-sample-launch" id="orkaStory"/);
 console.log('Storefront cleanup static safety gates passed');
