@@ -5,6 +5,7 @@ const {initializeApp}=require('firebase-admin/app');
 const {getFirestore,Timestamp}=require('firebase-admin/firestore');
 const {createFirestoreWalletGrantService}=require('./orka-club-firestore-grant-service.cjs');
 const {createFirestoreWalletRedeemService}=require('./orka-club-firestore-redeem-service.cjs');
+const {createFirestoreWalletReturnService}=require('./orka-club-firestore-return-service.cjs');
 if(!process.env.FIRESTORE_EMULATOR_HOST)throw Error('FIRESTORE_EMULATOR_HOST required; refusing live Firestore');
 const app=initializeApp({projectId:'orka-club-rules-test'});
 const db=getFirestore(app);
@@ -36,5 +37,19 @@ const db=getFirestore(app);
   uid:'alice',operationId:'first',orderId:'checkout-first',unitId:'unit1',
   unitPricePiastres:9000,now:'2026-11-15T00:00:00Z'
  }),/Idempotency conflict/);
- console.log('Firestore emulator transactional grant, concurrent redeem, and replay tests passed');
+ const returns=createFirestoreWalletReturnService(db);
+ await db.doc('verifiedWalletReturns/return-half').set({verifiedByServer:true,uid:'alice',orderId,cumulativeReturnedEligiblePiastres:50000});
+ const half=await returns.reconcileVerifiedReturn({orderId,returnId:'return-half'});
+ assert.equal(half.revokedPiastres,0);
+ assert.equal(half.newExposurePiastres,5000);
+ assert.deepEqual(await returns.reconcileVerifiedReturn({orderId,returnId:'return-half'}),half);
+ await db.doc('verifiedWalletReturns/return-half').update({cumulativeReturnedEligiblePiastres:70000});
+ await assert.rejects(returns.reconcileVerifiedReturn({orderId,returnId:'return-half'}),/Return replay conflict/);
+ await db.doc('verifiedWalletReturns/return-full').set({verifiedByServer:true,uid:'alice',orderId,cumulativeReturnedEligiblePiastres:100000});
+ const full=await returns.reconcileVerifiedReturn({orderId,returnId:'return-full'});
+ assert.equal(full.totalExposurePiastres,10000);
+ const finalCredit=await db.doc('wallets/alice/credits/grant_'+orderId).get();
+ assert.equal(finalCredit.data().remaining,0);
+ assert.equal(finalCredit.data().recoveryExposurePiastres,10000);
+ console.log('Firestore emulator grant, concurrent redeem, replay and return reconciliation tests passed');
 })().then(()=>process.exit(0)).catch(e=>{console.error(e);process.exitCode=1;setTimeout(()=>process.exit(1),100)});
