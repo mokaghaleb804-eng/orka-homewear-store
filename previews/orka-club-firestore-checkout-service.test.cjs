@@ -15,7 +15,9 @@ const service=createFirestoreTrustedCheckoutService(db,{
  resolveShipping:async()=>shippingRate
 });
 (async()=>{
- const input={identityToken:'verified-token',orderId:'order1',items:[{unitId:'u1',productId:'sku1',pricePiastres:1,totalPiastres:1}],walletUnitId:'u1'};
+ const input={identityToken:'verified-token',orderId:'order1',items:[{unitId:'u1',productId:'sku1'}],shippingAddress:{zoneId:'giza'},walletUnitId:'u1'};
+ await assert.rejects(service.createCheckout({...input,orderId:'tampered-item',items:[{unitId:'u1',productId:'sku1',pricePiastres:1}]}),/Unexpected checkout item field/);
+ await assert.rejects(service.createCheckout({...input,orderId:'tampered-shipping',shippingAddress:{zoneId:'giza',pricePiastres:1}}),/Invalid shipping address/);
  const first=await service.createCheckout(input);
  assert.equal(first.duplicate,false);
  assert.equal(first.order.uid,'alice');
@@ -29,7 +31,7 @@ const service=createFirestoreTrustedCheckoutService(db,{
  shippingRate=-1;
  assert.equal((await service.createCheckout(input)).duplicate,true);
  shippingRate=9000;
- await assert.rejects(service.createCheckout({...input,shippingAddress:{governorate:'Giza'}}),/idempotency conflict/);
+ await assert.rejects(service.createCheckout({...input,shippingAddress:{zoneId:'cairo'}}),/idempotency conflict/);
  await assert.rejects(service.createCheckout({...input,identityToken:'invalid',orderId:'order2'}),/Invalid authenticated checkout/);
  await assert.rejects(service.createCheckout({...input,orderId:'order1',items:[{unitId:'u1',productId:'sku1'},{unitId:'u2',productId:'sku1'}]}),/idempotency conflict/);
  await assert.rejects(service.createCheckout({...input,orderId:'order3',items:[{unitId:'u1',productId:'missing'}]}),/Catalog product missing/);
