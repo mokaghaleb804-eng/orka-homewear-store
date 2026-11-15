@@ -1202,31 +1202,9 @@ function updateCart(){
 }
 function changeQty(id,size,delta){const item=cart.find(x=>x.id===id&&x.size===size);if(!item)return;item.qty+=delta;if(item.qty<=0)removeItem(id,size);else updateCart()}function removeItem(id,size){cart=cart.filter(x=>!(x.id===id&&x.size===size));updateCart()}function openCart(){updateCart();if(cart.length){trackOrkaEvent('begin_checkout',{currency:'EGP',value:cart.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0),items:cart.map(x=>orkaAnalyticsItem(x,x.size,x.qty))})}if(window.prefillOrkaCheckout)window.prefillOrkaCheckout();document.getElementById('cartOverlay').classList.add('show');document.body.style.overflow='hidden'}function closeCart(){document.getElementById('cartOverlay').classList.remove('show');document.body.style.overflow=''}async function submitOrder(e){
  e.preventDefault();
- toast('نسخة تجريبية فقط — إرسال الطلبات الحقيقية معطّل.'); return;
- if(ORKA_TEST_PRICES){toast('الأسعار تجريبية فقط؛ لن يتم إرسال طلب حقيقي.');return;}
- if(!cart.length){toast('السلة فارغة');return;}
- const data=new FormData(e.target);
- const phoneDigits=String(data.get('phone')||'').replace(/\D/g,'');
- if(!(/^01[0125]\d{8}$/.test(phoneDigits)||/^201[0125]\d{8}$/.test(phoneDigits))){toast('اكتب رقم موبايل مصري صحيح يبدأ بـ 010 أو 011 أو 012 أو 015');const phoneField=e.target.querySelector('[name="phone"]');if(phoneField)phoneField.focus();return;}
- const productSubtotal=orkaRoundMoney(cart.reduce((sum,item)=>sum+item.price*item.qty,0));
- const memberInfo=orkaMembershipInfo(window.orkaLifetimeSpend);
- const membershipDiscountRate=currentCustomerUid?memberInfo.rate:0;
- const membershipDiscount=orkaRoundMoney(productSubtotal*membershipDiscountRate);
- const eligibleSpend=orkaRoundMoney(productSubtotal-membershipDiscount);
- const availableCredit=Math.max(0,(Number(window.orkaRewardCredit)||0)-(Number(window.orkaReservedRewardCredit)||0));
- const rewardCreditUsed=currentCustomerUid&&window.orkaRewardCreditEnabled===true?Math.min(availableCredit,eligibleSpend):0;
- const rewardCreditEarned=orkaRoundMoney(eligibleSpend*0.02);
- const payableTotal=orkaRoundMoney(eligibleSpend-rewardCreditUsed);
- const order={loyaltyVersion:2,customer:data.get('name'),phone:data.get('phone'),gov:data.get('gov'),address:data.get('address'),notes:data.get('notes'),items:cart.map(x=>({name:x.name,size:x.size,qty:x.qty,price:x.price})),total:productSubtotal,productSubtotal,redeemPoints:0,discount:orkaRoundMoney(membershipDiscount+rewardCreditUsed),membershipDiscountRate,membershipDiscount,rewardCreditUsed,rewardCreditEarned,eligibleSpend,payableTotal};
- let cloudOrderMessage='';
- if(window.saveOrkaOrder){try{const savedId=await window.saveOrkaOrder(order);window.orkaReservedRewardCredit=(Number(window.orkaReservedRewardCredit)||0)+Number(order.rewardCreditUsed||0);window.orkaRewardCreditEnabled=false;cloudOrderMessage='\nرقم الطلب المسجل مبدئيًا: '+savedId+'\nالطلب في انتظار تأكيد خدمة العملاء.';}catch(cloudErr){console.error('ORKA order cloud save failed:',cloudErr);cloudOrderMessage='\nتعذر تسجيل الطلب في قاعدة البيانات حاليًا؛ يرجى تأكيد الطلب مع خدمة العملاء عبر واتساب.';}}
- const lines=['طلب جديد من ORKA HOMEWEAR','الاسم: '+order.customer,'هاتف العميل: '+order.phone,'المحافظة: '+order.gov,'العنوان: '+order.address,'ملاحظات: '+(order.notes||'لا يوجد'),'المنتجات:',...order.items.map(x=>'- '+x.name+' / المقاس '+x.size+' × '+x.qty+' = '+money(x.qty*x.price)),'إجمالي المنتجات: '+money(order.productSubtotal),'خصم العضوية ('+(membershipDiscountRate*100)+'%): −'+money(membershipDiscount),'رصيد المكافآت المستخدم: −'+money(rewardCreditUsed),'الإجمالي بعد الخصومات وقبل الشحن: '+money(order.payableTotal),'رصيد المكافآت المتوقع بعد التسليم: '+money(rewardCreditEarned),'الشحن: يُحدد يدويًا حسب المحافظة','الدفع: عند الاستلام','تنبيه: الطلب مرسل عبر واتساب ويحتاج تأكيد خدمة العملاء.'].join('\n');
- const member=currentCustomer();
- const memberNote=member?'\nعضوية ORKA CLUB: '+(member.phone||currentCustomerPhone)+'\nالمشتريات المؤهلة لهذا الطلب: '+money(eligibleSpend)+'\nالمشتريات التراكمية الحالية: '+money(window.orkaLifetimeSpend||0)+'\nسياسة الولاء: خصم عضوية تراكمي حتى 10%، ورصيد مكافآت 2% بعد التسليم، ويمكن استخدام الرصيد السابق مع خصم العضوية.':'';
- const waUrl='https://wa.me/201021006006?text='+encodeURIComponent(lines+memberNote+cloudOrderMessage);
- window.open(waUrl,'_blank','noopener,noreferrer');
- toast(member?'تم تجهيز الطلب؛ تُضاف مكافأة 2% بعد استلامه وتأكيده فقط.':'فتحنا واتساب لإرسال تفاصيل الطلب؛ أكّد الإرسال من داخل واتساب.');
+ toast('نسخة تجريبية فقط — إرسال الطلبات الحقيقية معطّل.');
 }
+
 let heroIndex=0;const heroSlides=[...document.querySelectorAll('.hero-slideshow img')];const heroDots=[...document.querySelectorAll('.hero-dot')];const heroCaptions=['دفا وراحة طول الشتاء','ألوان شتوية لكل شخصية','اختيارات مريحة لأيام البيت'];function setHero(i){if(!heroSlides.length)return;heroIndex=(i+heroSlides.length)%heroSlides.length;heroSlides.forEach((im,j)=>im.classList.toggle('active',j===heroIndex));heroDots.forEach((dot,j)=>dot.classList.toggle('active',j===heroIndex));const caption=document.getElementById('heroCaption');if(caption)caption.textContent=heroCaptions[heroIndex]}function changeHero(dir){setHero(heroIndex+dir)}let heroTimer=null;const heroBox=document.querySelector('.hero-slideshow');if(heroBox&&heroSlides.length){heroTimer=setInterval(()=>setHero(heroIndex+1),6000);heroBox.addEventListener('mouseenter',()=>clearInterval(heroTimer));heroBox.addEventListener('mouseleave',()=>{clearInterval(heroTimer);heroTimer=setInterval(()=>setHero(heroIndex+1),6000)})}let toastTimer;function toast(msg){const t=document.getElementById('toast');if(!t){alert(msg);return}t.textContent=msg;t.classList.add('show');clearTimeout(toastTimer);toastTimer=setTimeout(()=>t.classList.remove('show'),3500)}window.toast=toast;renderProducts();updateCart();
 </script>
 <style id="orka-video-card-style">.orka-video-card video{display:block;width:100%;height:100%;object-fit:contain;background:#f1f1ee}.orka-video-card .orka-model-card-image{display:block;overflow:hidden}.orka-video-card{cursor:default}</style>
