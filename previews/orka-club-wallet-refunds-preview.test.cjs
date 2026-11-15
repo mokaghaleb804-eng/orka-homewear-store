@@ -1,0 +1,18 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {reconcileGrantReturn}=require('./orka-club-wallet-refunds-preview.cjs');
+const base={id:'grant:1',originalAmount:10000,remaining:10000};
+let r=reconcileGrantReturn({credits:[base],grantId:'grant:1',returnedEligiblePiastres:50000,originalEligiblePiastres:100000});
+assert.equal(r.revokedPiastres,5000);assert.equal(r.totalExposurePiastres,0);
+assert.equal(r.credits[0].remaining,5000);assert.equal(base.remaining,10000);
+r=reconcileGrantReturn({credits:r.credits,grantId:'grant:1',returnedEligiblePiastres:50000,originalEligiblePiastres:100000});
+assert.equal(r.revokedPiastres,0,'same cumulative return must be idempotent');
+r=reconcileGrantReturn({credits:r.credits,grantId:'grant:1',returnedEligiblePiastres:100000,originalEligiblePiastres:100000});
+assert.equal(r.revokedPiastres,5000);assert.equal(r.credits[0].remaining,0);
+const spent={...base,remaining:2000};
+r=reconcileGrantReturn({credits:[spent],grantId:'grant:1',returnedEligiblePiastres:100000,originalEligiblePiastres:100000});
+assert.equal(r.revokedPiastres,2000);assert.equal(r.newExposurePiastres,8000);
+assert.equal(r.credits[0].remaining,0);
+assert.throws(()=>reconcileGrantReturn({credits:[base],grantId:'grant:1',returnedEligiblePiastres:100001,originalEligiblePiastres:100000}));
+assert.throws(()=>reconcileGrantReturn({credits:[base],grantId:'missing',returnedEligiblePiastres:1000,originalEligiblePiastres:100000}));
+console.log('Preview refund reconciliation tests passed');
