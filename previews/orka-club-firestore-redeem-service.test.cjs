@@ -28,5 +28,9 @@ function fake(){
  await assert.rejects(service.redeemTrustedUnit({...input,unitPricePiastres:9000}),/Untrusted checkout or price/);
  assert.equal(docs.get('wallets/alice/credits/g1').remaining,2000);
  await assert.rejects(service.redeemTrustedUnit({...input,uid:'../alice'}),/Invalid trusted redemption/);
+ docs.set('orders/ord-empty',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
+ await assert.rejects(service.redeemTrustedUnit({...input,orderId:'ord-empty',operationId:'red-empty',now:'2027-01-01T00:00:00Z'}),/No eligible wallet credit/);
+ assert.equal(docs.get('orders/ord-empty').usedWallet,false);
+ assert.equal(docs.has('walletOperations/redeem_red-empty'),false);
  console.log('Firestore redeem service mock contract tests passed; emulator concurrency remains required');
 })().catch(e=>{console.error(e);process.exitCode=1});
