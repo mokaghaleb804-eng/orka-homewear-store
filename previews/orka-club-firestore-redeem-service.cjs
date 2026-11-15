@@ -23,6 +23,7 @@ function createFirestoreWalletRedeemService(db){
    const snapshot=await tx.get(q);
    const credits=snapshot.docs.map(d=>({id:d.id,remaining:d.data().remaining,expiresAt:d.data().expiresAt}));
    const result=redeem({credits,pricePiastres:unitPricePiastres,now});
+   if(result.discount===0)throw Error('No eligible wallet credit');
    // Every read above occurs before any transaction write.
    for(const debit of result.debits){
     const doc=snapshot.docs.find(d=>d.id===debit.creditId);
