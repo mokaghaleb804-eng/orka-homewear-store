@@ -34,6 +34,7 @@ const db=getFirestore(app);
  const credit=await db.doc('wallets/alice/credits/grant_'+orderId).get();
  assert.equal(credit.data().remaining,0);
  assert.deepEqual(await mk('first'),a);
+ await assert.rejects(redeem.redeemTrustedUnit({uid:'alice',operationId:'third',orderId:'checkout-first',unitId:'unit1',unitPricePiastres:8000,now:'2026-11-15T00:00:00Z'}),/Order already redeemed/);
  await db.doc('orders/checkout-first').update({'walletRedemptionUnit.pricePiastres':9000});
  await assert.rejects(mk('first'),/Untrusted checkout or price/);
  await db.doc('orders/checkout-first').update({'walletRedemptionUnit.pricePiastres':8000});
