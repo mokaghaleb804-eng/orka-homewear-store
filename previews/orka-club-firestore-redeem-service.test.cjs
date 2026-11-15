@@ -18,8 +18,8 @@ function fake(){
  return {db,docs};
 }
 (async()=>{
- const {db,docs}=fake(),service=createFirestoreWalletRedeemService(db);
- const input={uid:'alice',operationId:'red1',orderId:'ord2',unitId:'unit1',unitPricePiastres:8000,now:'2026-11-15T00:00:00Z'};
+ const {db,docs}=fake(),service=createFirestoreWalletRedeemService(db,{clock:()=>new Date('2026-11-15T00:00:00Z')});
+ const input={uid:'alice',operationId:'red1',orderId:'ord2',unitId:'unit1',unitPricePiastres:8000};
  const first=await service.redeemTrustedUnit(input);
  assert.equal(first.discountPiastres,8000);assert.equal(docs.get('wallets/alice/credits/g1').remaining,2000);
  assert.deepEqual(await service.redeemTrustedUnit(input),first);
@@ -29,7 +29,7 @@ function fake(){
  assert.equal(docs.get('wallets/alice/credits/g1').remaining,2000);
  await assert.rejects(service.redeemTrustedUnit({...input,uid:'../alice'}),/Invalid trusted redemption/);
  docs.set('orders/ord-empty',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
- await assert.rejects(service.redeemTrustedUnit({...input,orderId:'ord-empty',operationId:'red-empty',now:'2027-01-01T00:00:00Z'}),/No eligible wallet credit/);
+ await assert.rejects(createFirestoreWalletRedeemService(db,{clock:()=>new Date('2027-01-01T00:00:00Z')}).redeemTrustedUnit({...input,orderId:'ord-empty',operationId:'red-empty'}),/No eligible wallet credit/);
  assert.equal(docs.get('orders/ord-empty').usedWallet,false);
  assert.equal(docs.has('walletOperations/redeem_red-empty'),false);
  console.log('Firestore redeem service mock contract tests passed; emulator concurrency remains required');
