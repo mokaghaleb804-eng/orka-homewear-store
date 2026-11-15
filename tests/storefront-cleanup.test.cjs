@@ -11,4 +11,8 @@ assert.doesNotMatch(html,/addDoc\(collection\(db,\s*['"]orders['"]\)/);
 assert.match(html,/function updateCart\(/);
 assert.match(html,/function addToCart\(/);
 assert.match(html,/firebaseConfig\s*=/);
+assert.doesNotMatch(html,/function orkaMembershipInfo\(/);
+assert.doesNotMatch(html,/خصم العضوية \(\'/);
+assert.match(html,/ORKA CLUB · المحفظة الجديدة/);
+assert.match(html,/10% رصيد/);
 console.log('Storefront cleanup static safety gates passed');
