@@ -17,6 +17,13 @@ function createFirestoreWalletRedeemService(db,{clock=()=>new Date()}={}){
    const order=orderSnap.data();
    const unit=order.walletRedemptionUnit;
    if(order.uid!==uid||order.checkoutValidatedByServer!==true||order.status!=='pending'||order.fullPrice!==true||!unit||unit.id!==unitId||unit.pricePiastres!==unitPricePiastres||!Array.isArray(order.units)||order.units.filter(u=>u&&u.id===unitId&&u.pricePiastres===unitPricePiastres).length!==1)throw Error('Untrusted checkout or price');
+   const seenUnits=new Set();let computedSubtotal=0;
+   for(const item of order.units){
+    if(!item||!validId(item.id)||seenUnits.has(item.id)||!Number.isSafeInteger(item.pricePiastres)||item.pricePiastres<0)throw Error('Invalid trusted order units');
+    seenUnits.add(item.id);computedSubtotal+=item.pricePiastres;
+    if(!Number.isSafeInteger(computedSubtotal))throw Error('Trusted order subtotal overflow');
+   }
+   if(computedSubtotal!==order.eligibleSubtotalPiastres)throw Error('Trusted unit subtotal mismatch');
    if(prior.exists){const p=prior.data();if(p.signature!==signature)throw Error('Idempotency conflict');if(order.walletRedemptionOperationId!==operationId)throw Error('Order redemption conflict');return p.result}
    if(order.usedWallet!==false||order.walletRedemptionOperationId)throw Error('Order already redeemed');
    const q=db.collection('wallets').doc(uid).collection('credits');
