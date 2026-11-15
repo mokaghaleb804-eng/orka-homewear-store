@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict');
 const {createFirestoreWalletRedeemService}=require('./orka-club-firestore-redeem-service.cjs');
 function fake(){
- const docs=new Map([['wallets/alice/credits/g1',{remaining:10000,expiresAt:'2026-12-01T00:00:00Z'}],['orders/ord2',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,eligibleSubtotalPiastres:8000,shippingPiastres:2500,totalPiastres:10500,walletRedemptionUnit:{id:'unit1',pricePiastres:8000}}]]);
+ const docs=new Map([['wallets/alice/credits/g1',{remaining:10000,expiresAt:'2026-12-01T00:00:00Z'}],['orders/ord2',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,eligibleSubtotalPiastres:8000,shippingPiastres:2500,totalPiastres:10500,units:[{id:'unit1',pricePiastres:8000}],walletRedemptionUnit:{id:'unit1',pricePiastres:8000}}]]);
  const ref=p=>({path:p});
  const db={doc:ref,collection:p=>({doc:u=>({collection:n=>({path:p+'/'+u+'/'+n})})}),
   runTransaction:async fn=>{
@@ -28,16 +28,20 @@ function fake(){
  await assert.rejects(service.redeemTrustedUnit({...input,unitPricePiastres:9000}),/Untrusted checkout or price/);
  assert.equal(docs.get('wallets/alice/credits/g1').remaining,2000);
  await assert.rejects(service.redeemTrustedUnit({...input,uid:'../alice'}),/Invalid trusted redemption/);
- docs.set('orders/ord-empty',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,eligibleSubtotalPiastres:8000,shippingPiastres:2500,totalPiastres:10500,walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
+ docs.set('orders/ord-empty',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,eligibleSubtotalPiastres:8000,shippingPiastres:2500,totalPiastres:10500,units:[{id:'unit1',pricePiastres:8000}],walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
  await assert.rejects(createFirestoreWalletRedeemService(db,{clock:()=>new Date('2027-01-01T00:00:00Z')}).redeemTrustedUnit({...input,orderId:'ord-empty',operationId:'red-empty'}),/No eligible wallet credit/);
  assert.equal(docs.get('orders/ord-empty').usedWallet,false);
  assert.equal(docs.has('walletOperations/redeem_red-empty'),false);
- docs.set('orders/ord-time-spoof',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,eligibleSubtotalPiastres:8000,shippingPiastres:2500,totalPiastres:10500,walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
+ docs.set('orders/ord-time-spoof',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,eligibleSubtotalPiastres:8000,shippingPiastres:2500,totalPiastres:10500,units:[{id:'unit1',pricePiastres:8000}],walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
  await assert.rejects(createFirestoreWalletRedeemService(db,{clock:()=>new Date('2027-01-01T00:00:00Z')}).redeemTrustedUnit({...input,orderId:'ord-time-spoof',operationId:'red-time-spoof',now:'2026-11-01T00:00:00Z'}),/No eligible wallet credit/);
  assert.equal(docs.get('orders/ord-time-spoof').usedWallet,false);
  assert.equal(docs.has('walletOperations/redeem_red-time-spoof'),false);
- docs.set('orders/ord-bad-total',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,eligibleSubtotalPiastres:8000,shippingPiastres:2500,totalPiastres:1,walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
+ docs.set('orders/ord-bad-total',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,eligibleSubtotalPiastres:8000,shippingPiastres:2500,totalPiastres:1,units:[{id:'unit1',pricePiastres:8000}],walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
  await assert.rejects(service.redeemTrustedUnit({...input,orderId:'ord-bad-total',operationId:'red-bad-total'}),/Invalid trusted order totals/);
  assert.equal(docs.get('orders/ord-bad-total').usedWallet,false);
+ docs.set('orders/ord-unit-mismatch',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,eligibleSubtotalPiastres:8000,shippingPiastres:2500,totalPiastres:10500,units:[{id:'unit1',pricePiastres:7000}],walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
+ await assert.rejects(service.redeemTrustedUnit({...input,orderId:'ord-unit-mismatch',operationId:'red-unit-mismatch'}),/Untrusted checkout or price/);
+ docs.set('orders/ord-unit-duplicate',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,eligibleSubtotalPiastres:8000,shippingPiastres:2500,totalPiastres:10500,units:[{id:'unit1',pricePiastres:8000},{id:'unit1',pricePiastres:8000}],walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
+ await assert.rejects(service.redeemTrustedUnit({...input,orderId:'ord-unit-duplicate',operationId:'red-unit-duplicate'}),/Untrusted checkout or price/);
  console.log('Firestore redeem service mock contract tests passed; emulator concurrency remains required');
 })().catch(e=>{console.error(e);process.exitCode=1});
