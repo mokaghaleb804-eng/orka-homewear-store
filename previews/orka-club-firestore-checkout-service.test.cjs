@@ -1,7 +1,7 @@
 'use strict';
 const assert=require('node:assert/strict');
 const {createFirestoreTrustedCheckoutService}=require('./orka-club-firestore-checkout-service.cjs');
-const docs=new Map([['catalog/sku1',{active:true,fullPrice:true,pricePiastres:85000}]]);
+const docs=new Map([['catalog/sku1',{active:true,fullPrice:true,pricePiastres:85000}],['catalog/sku2',{active:true,fullPrice:true,pricePiastres:42000}]]);
 const db={doc:path=>({path}),runTransaction:async fn=>{
  const writes=[];
  const tx={get:async ref=>({exists:docs.has(ref.path),data:()=>docs.get(ref.path)}),create:(ref,value)=>writes.push([ref.path,value])};
@@ -33,6 +33,12 @@ const service=createFirestoreTrustedCheckoutService(db,{
  await assert.rejects(service.createCheckout({...input,identityToken:'invalid',orderId:'order2'}),/Invalid authenticated checkout/);
  await assert.rejects(service.createCheckout({...input,orderId:'order1',items:[{unitId:'u1',productId:'sku1'},{unitId:'u2',productId:'sku1'}]}),/idempotency conflict/);
  await assert.rejects(service.createCheckout({...input,orderId:'order3',items:[{unitId:'u1',productId:'missing'}]}),/Catalog product missing/);
+ const multi=await service.createCheckout({...input,orderId:'order-multi',walletUnitId:'u2',items:[{unitId:'u1',productId:'sku1'},{unitId:'u2',productId:'sku2'}]});
+ assert.equal(multi.order.eligibleSubtotalPiastres,127000);
+ assert.equal(multi.order.totalPiastres,136000);
+ assert.equal(multi.order.walletRedemptionUnit.pricePiastres,42000);
+ assert.equal(multi.order.units[0].pricePiastres,85000);
+ assert.equal(multi.order.units[1].pricePiastres,42000);
  assert.equal(docs.has('orders/order2'),false);
  assert.equal(docs.has('orders/order3'),false);
  console.log('Trusted checkout Firestore adapter contract tests passed');
