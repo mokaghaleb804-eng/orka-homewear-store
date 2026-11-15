@@ -14,6 +14,7 @@ function createFirestoreTrustedCheckoutService(db,{verifyIdentity,resolveShippin
   if(items.some(i=>!i||typeof i!=='object'||Array.isArray(i)||Object.keys(i).some(k=>!['unitId','productId'].includes(k))))throw Error('Unexpected checkout item field');
   if(!shippingAddress||typeof shippingAddress!=='object'||Array.isArray(shippingAddress)||Object.keys(shippingAddress).length!==1||!validId(shippingAddress.zoneId))throw Error('Invalid shipping address');
   if(walletUnitId!=null&&!validId(walletUnitId))throw Error('Invalid wallet unit');
+  if(requireDeliveryDetails&&deliveryDetails===undefined)throw Error('Delivery details required');
   const verifiedDelivery=deliveryDetails===undefined?null:validateDeliveryDetails(deliveryDetails);
   const requested=items.map(i=>({unitId:i?.unitId,productId:i?.productId}));
   if(requested.some(i=>!validId(i.unitId)||!validId(i.productId)))throw Error('Invalid checkout item');
