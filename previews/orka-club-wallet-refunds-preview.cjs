@@ -12,7 +12,10 @@ function reconcileGrantReturn({credits,grantId,returnedEligiblePiastres,original
  // Cumulative returned subtotal must be supplied from trusted return records.
  const previous=c.returnedEligiblePiastres||0;
  if(!Number.isSafeInteger(previous)||previous<0||previous>returnedEligiblePiastres)throw Error('Non-monotonic return');
- const target=Math.round(c.originalAmount*returnedEligiblePiastres/originalEligiblePiastres);
+ // BigInt avoids floating-point precision loss and unsafe intermediate multiplication.
+ const numerator=BigInt(c.originalAmount)*BigInt(returnedEligiblePiastres);
+ const denominator=BigInt(originalEligiblePiastres);
+ const target=Number((numerator*2n+denominator)/(denominator*2n));
  const priorRevoked=c.revokedPiastres||0;
  const priorExposure=c.recoveryExposurePiastres||0;
  const already=priorRevoked+priorExposure;
