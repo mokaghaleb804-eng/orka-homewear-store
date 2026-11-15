@@ -20,7 +20,7 @@ function createFirestoreTrustedCheckoutService(db,{verifyIdentity,resolveShippin
     if(prior.checkoutRequestSignature!==signature||prior.uid!==identity.uid)throw Error('Checkout idempotency conflict');
     return {duplicate:true,order:prior};
    }
-   const shippingPiastres=await resolveShipping({uid:identity.uid,address:shippingAddress,items:requested});
+   const shippingPiastres=await resolveShipping({uid:identity.uid,address:shippingAddress,items:requested,transaction:tx});
    if(!Number.isSafeInteger(shippingPiastres)||shippingPiastres<0)throw Error('Invalid server shipping');
    const productIds=[...new Set(requested.map(i=>i.productId))];
    const refs=productIds.map(id=>db.doc('catalog/'+id));
