@@ -1,0 +1,22 @@
+name: ORKA storefront cleanup checks
+on:
+  push:
+    branches:
+      - chore/orka-storefront-cleanup-preview
+  pull_request:
+    paths:
+      - index.html
+      - tests/storefront-cleanup.test.cjs
+      - .github/workflows/orka-storefront-cleanup.yml
+jobs:
+  static-guard:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check safe storefront cleanup invariants
+        run: node tests/storefront-cleanup.test.cjs
