@@ -11,7 +11,7 @@ function createFirestoreTrustedCheckoutService(db,{verifyIdentity,resolveShippin
   if(!identity||!validId(identity.uid)||!validId(orderId)||!Array.isArray(items)||!items.length||items.length>50)throw Error('Invalid authenticated checkout');
   const requested=items.map(i=>({unitId:i?.unitId,productId:i?.productId}));
   if(requested.some(i=>!validId(i.unitId)||!validId(i.productId)))throw Error('Invalid checkout item');
-  const signature=JSON.stringify({uid:identity.uid,items:requested,walletUnitId:walletUnitId??null});
+  const signature=JSON.stringify({uid:identity.uid,items:requested,shippingAddress:shippingAddress??null,walletUnitId:walletUnitId??null});
   const shippingPiastres=await resolveShipping({uid:identity.uid,address:shippingAddress,items:requested});
   if(!Number.isSafeInteger(shippingPiastres)||shippingPiastres<0)throw Error('Invalid server shipping');
   return db.runTransaction(async tx=>{
