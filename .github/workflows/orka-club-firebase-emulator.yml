@@ -1,0 +1,27 @@
+name: ORKA CLUB Firebase emulator authorization
+on:
+  pull_request:
+    paths:
+      - 'firestore.rules'
+      - 'previews/orka-club-firestore-emulator.test.cjs'
+      - 'previews/orka-club-firebase-emulator.json'
+      - '.github/workflows/orka-club-firebase-emulator.yml'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  rules-emulator:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - name: Install test-only Firebase dependencies
+        run: npm install --no-save --package-lock=false @firebase/rules-unit-testing firebase firebase-tools
+      - name: Test Firestore authorization in emulator
+        run: npx firebase emulators:exec --only firestore --project orka-club-rules-test --config previews/orka-club-firebase-emulator.json "node previews/orka-club-firestore-emulator.test.cjs"
