@@ -1,17 +1,18 @@
 'use strict';
 // Real Firestore Emulator integration; no production project or credentials.
 const assert=require('node:assert/strict');
-const admin=require('firebase-admin');
+const {initializeApp}=require('firebase-admin/app');
+const {getFirestore,Timestamp}=require('firebase-admin/firestore');
 const {createFirestoreWalletGrantService}=require('./orka-club-firestore-grant-service.cjs');
 const {createFirestoreWalletRedeemService}=require('./orka-club-firestore-redeem-service.cjs');
 if(!process.env.FIRESTORE_EMULATOR_HOST)throw Error('FIRESTORE_EMULATOR_HOST required; refusing live Firestore');
-admin.initializeApp({projectId:'orka-club-rules-test'});
-const db=admin.firestore();
+const app=initializeApp({projectId:'orka-club-rules-test'});
+const db=getFirestore(app);
 (async()=>{
  const orderId='delivery-test';
  await db.doc('orders/'+orderId).set({
   uid:'alice',status:'delivered',deliveryVerifiedByServer:true,
-  eligibleSubtotalPiastres:100000,deliveredAt:admin.firestore.Timestamp.fromDate(new Date('2026-11-01T00:00:00Z')),
+  eligibleSubtotalPiastres:100000,deliveredAt:Timestamp.fromDate(new Date('2026-11-01T00:00:00Z')),
   fullPrice:true,usedWallet:false
  });
  const grant=createFirestoreWalletGrantService(db);
