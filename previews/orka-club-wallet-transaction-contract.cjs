@@ -12,12 +12,14 @@ async function grantForDelivery(store,{uid,order}){
  assertIdentity(uid);assertTrustedOrder(order,uid);
  if(typeof order.id!=='string'||!order.id)throw Error('Order ID required');
  return store.transaction(async tx=>{
-  const key='grant:'+order.id,existing=tx.operation(key);
-  if(existing){if(existing.uid!==uid)throw Error('Order ownership conflict');return existing.result}
+  const key='grant:'+order.id;
+  const signature=JSON.stringify({uid,orderId:order.id,eligibleSubtotalPiastres:order.eligibleSubtotalPiastres,deliveredAt:order.deliveredAt,fullPrice:order.fullPrice,usedWallet:order.usedWallet});
+  const existing=tx.operation(key);
+  if(existing){if(existing.signature!==signature)throw Error('Delivery idempotency conflict');return existing.result}
   const amount=order.usedWallet||!order.fullPrice?0:earn(order.eligibleSubtotalPiastres);
   if(amount)tx.putCredit(uid,grant({id:key,amount,issuedAt:order.deliveredAt}));
   const result={amount,orderId:order.id};
-  tx.putOperation(key,{uid,result});return result;
+  tx.putOperation(key,{uid,signature,result});return result;
  });
 }
 async function redeemOneUnit(store,{uid,redemptionId,orderId,unitId,unitPricePiastres,now}){
