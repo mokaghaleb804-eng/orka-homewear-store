@@ -26,8 +26,10 @@ const adminAuth={verifyIdToken:async(token,revoked)=>{
 }};
 (async()=>{
  const backend=createOrkaClubCheckoutBackend({adminAuth,firestore});
- const req={identityToken:'valid',orderId:'ord1',items:[{unitId:'u1',productId:'sku1'}],shippingAddress:{zoneId:'giza'},walletUnitId:'u1'};
+ const req={identityToken:'valid',orderId:'ord1',items:[{unitId:'u1',productId:'sku1'}],shippingAddress:{zoneId:'giza'},walletUnitId:'u1',deliveryDetails:{recipientName:'Test Customer',phone:'01012345678',governorate:'Giza',streetAddress:'Example Street 12',building:'12'}};
+ await assert.rejects(backend.createCheckout({...req,orderId:'missing-delivery',deliveryDetails:undefined}),/Delivery details required/);
  const result=await backend.createCheckout(req);
+ assert.equal(result.order.deliveryDetails.phone,'01012345678');
  assert.equal(result.order.totalPiastres,91000);
  assert.equal(result.order.walletRedemptionUnit.pricePiastres,85000);
  assert.equal(result.order.uid,'alice');
