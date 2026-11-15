@@ -7,8 +7,8 @@ function cartToCheckoutUnits(cart,{resolveVariantId}={}){
  const units=[];
  for(let line=0;line<cart.length;line++){
   const item=cart[line];
-  if(!item||typeof item!=='object'||!Number.isSafeInteger(item.qty)||item.qty<1||item.qty>50||!safeId(item.productId)||typeof item.size!=='string'||!item.size.trim()||typeof item.color!=='string'||!item.color.trim())throw Error('Invalid cart line');
-  const variantId=resolveVariantId({productId:item.productId,size:item.size,color:item.color});
+  if(!item||typeof item!=='object'||!Number.isSafeInteger(item.qty)||item.qty<1||item.qty>50||!safeId(item.productId)||typeof item.size!=='string'||!['2','4','6','8','10','12'].includes(item.size.trim())||typeof item.color!=='string'||!item.color.trim()||item.color.trim().length>80)throw Error('Invalid cart line');
+  const variantId=resolveVariantId({productId:item.productId,size:item.size.trim(),color:item.color.trim()});
   if(!safeId(variantId))throw Error('Unmapped catalog variant');
   for(let n=0;n<item.qty;n++){
    const unitId='line'+line+'-unit'+n;
