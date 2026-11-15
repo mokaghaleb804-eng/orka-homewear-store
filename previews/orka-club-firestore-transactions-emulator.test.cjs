@@ -40,7 +40,7 @@ const db=getFirestore(app);
  await assert.rejects(redeem.redeemTrustedUnit({
   uid:'alice',operationId:'first',orderId:'checkout-first',unitId:'unit1',
   unitPricePiastres:9000,now:'2026-11-15T00:00:00Z'
- }),/Idempotency conflict/);
+ }),/Untrusted checkout or price/);
  const returns=createFirestoreWalletReturnService(db);
  await db.doc('verifiedWalletReturns/return-half').set({verifiedByServer:true,uid:'alice',orderId,cumulativeReturnedEligiblePiastres:50000});
  const half=await returns.reconcileVerifiedReturn({orderId,returnId:'return-half'});
