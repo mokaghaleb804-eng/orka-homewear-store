@@ -58,6 +58,8 @@ const db=getFirestore(app);
  await db.doc('verifiedWalletReturns/return-tampered').set({verifiedByServer:true,uid:'alice',orderId,cumulativeReturnedEligiblePiastres:50000});
  await assert.rejects(returns.reconcileVerifiedReturn({orderId,returnId:'return-tampered'}),/Original grant subtotal mismatch/);
  await db.doc('orders/'+orderId).update({eligibleSubtotalPiastres:100000});
+ await db.doc('verifiedWalletReturns/return-over').set({verifiedByServer:true,uid:'alice',orderId,cumulativeReturnedEligiblePiastres:100001});
+ await assert.rejects(returns.reconcileVerifiedReturn({orderId,returnId:'return-over'}),/Invalid returned subtotal/);
  await db.doc('verifiedWalletReturns/return-half').set({verifiedByServer:true,uid:'alice',orderId,cumulativeReturnedEligiblePiastres:50000});
  const half=await returns.reconcileVerifiedReturn({orderId,returnId:'return-half'});
  assert.equal(half.revokedPiastres,0);
