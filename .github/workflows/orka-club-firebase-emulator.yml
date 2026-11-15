@@ -24,7 +24,7 @@ jobs:
           distribution: temurin
           java-version: '21'
       - name: Install test-only Firebase dependencies
-        run: npm install --no-save --package-lock=false @firebase/rules-unit-testing firebase firebase-tools
+        run: npm install --no-save --package-lock=false @firebase/rules-unit-testing firebase firebase-admin firebase-tools
       - name: Test Firestore transactional wallet operations in emulator
         run: npx firebase emulators:exec --only firestore --project orka-club-rules-test --config previews/orka-club-firebase-emulator.json "node previews/orka-club-firestore-transactions-emulator.test.cjs"
       - name: Test Firestore authorization in emulator
