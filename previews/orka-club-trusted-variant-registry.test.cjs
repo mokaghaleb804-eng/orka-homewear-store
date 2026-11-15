@@ -15,5 +15,8 @@ assert.throws(()=>trustedCartToCheckoutUnits([{productId:'whale',size:'4',color:
 assert.throws(()=>createTrustedVariantResolver([...records,records[0]]),/Duplicate/);
 assert.throws(()=>createTrustedVariantResolver([{...records[0],variantId:'../orders'}]),/Invalid/);
 assert.throws(()=>createTrustedVariantResolver([{...records[0],size:'14'}]),/Invalid/);
+assert.throws(()=>createTrustedVariantResolver([records[0],{...records[1],variantId:'whale-4-navy'}]),/Duplicate trusted variant ID/);
+assert.throws(()=>createTrustedVariantResolver([{...records[0],color:'navy\\n'}]),/Invalid/);
+assert.throws(()=>createTrustedVariantResolver([{...records[0],color:'x'.repeat(81)}]),/Invalid/);
 assert.equal(createTrustedVariantResolver(records)({productId:'whale',size:'4',color:'navy'}),'whale-4-navy');
 console.log('Trusted ORKA catalog variant registry tests passed');
