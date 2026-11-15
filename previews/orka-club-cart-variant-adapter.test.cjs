@@ -1,0 +1,12 @@
+'use strict';
+const assert=require('node:assert/strict');
+const {cartToCheckoutUnits}=require('./orka-club-cart-variant-adapter.cjs');
+const map={'sku1|4|navy':'sku1-4-navy','sku1|6|navy':'sku1-6-navy'};
+const resolveVariantId=({productId,size,color})=>map[[productId,size,color].join('|')];
+const units=cartToCheckoutUnits([{productId:'sku1',size:'4',color:'navy',qty:2,price:1,total:1},{productId:'sku1',size:'6',color:'navy',qty:1,price:0}],{resolveVariantId});
+assert.deepEqual(units,[{unitId:'line0-unit0',productId:'sku1-4-navy'},{unitId:'line0-unit1',productId:'sku1-4-navy'},{unitId:'line1-unit0',productId:'sku1-6-navy'}]);
+assert.throws(()=>cartToCheckoutUnits([{productId:'sku1',size:'4',color:'red',qty:1}],{resolveVariantId}),/Unmapped/);
+assert.throws(()=>cartToCheckoutUnits([{productId:'sku1',size:'4',color:'navy',qty:51}],{resolveVariantId}),/Invalid cart line/);
+assert.throws(()=>cartToCheckoutUnits([{productId:'sku1',size:'4',color:'navy',qty:50},{productId:'sku1',size:'4',color:'navy',qty:1}],{resolveVariantId}),/limit/);
+assert.throws(()=>cartToCheckoutUnits([{productId:'../orders',size:'4',color:'navy',qty:1}],{resolveVariantId}),/Invalid cart line/);
+console.log('ORKA CLUB cart-to-trusted-variant adapter tests passed');
