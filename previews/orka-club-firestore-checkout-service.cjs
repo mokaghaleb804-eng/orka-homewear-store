@@ -28,7 +28,7 @@ function createFirestoreTrustedCheckoutService(db,{verifyIdentity,resolveShippin
    const catalog=Object.create(null);
    for(let i=0;i<productIds.length;i++){
     if(!snapshots[i].exists)throw Error('Catalog product missing');
-    catalog[productIds[i]]=snapshots[i+1].data();
+    catalog[productIds[i]]=snapshots[i].data();
    }
    let order=buildTrustedCheckout({authenticatedUid:identity.uid,orderId,items:requested,catalog,shippingPiastres});
    if(walletUnitId!==undefined&&walletUnitId!==null)order=selectWalletUnit(order,walletUnitId);
