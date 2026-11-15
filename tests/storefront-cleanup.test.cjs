@@ -1,0 +1,11 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const html=fs.readFileSync('index.html','utf8');
+assert.match(html,/async function submitOrder\(e\)\s*\{\s*e\.preventDefault\(\);\s*toast\('نسخة تجريبية فقط — إرسال الطلبات الحقيقية معطّل\.'\);\s*\}/);
+assert.doesNotMatch(html,/window\.saveOrkaOrder\s*=/);
+assert.doesNotMatch(html,/addDoc\(collection\(db,\s*['"]orders['"]\)/);
+assert.match(html,/function updateCart\(/);
+assert.match(html,/function addToCart\(/);
+assert.match(html,/firebaseConfig\s*=/);
+console.log('Storefront cleanup static safety gates passed');
