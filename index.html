@@ -1268,6 +1268,8 @@ let heroIndex=0;const heroSlides=[...document.querySelectorAll('.hero-slideshow 
  });
  const pause=()=>{paused=true;clearTimer();const v=centerVideo();if(v)v.pause();};
  const resume=()=>{paused=false;schedule();};
+ // Keep native image/text dragging from cancelling the carousel pointer gesture.
+ stage.addEventListener('dragstart',e=>e.preventDefault());
  stage.addEventListener('pointerdown',e=>{
   if(e.pointerType==='mouse'&&e.button!==0)return;
   startX=e.clientX;startY=e.clientY;dragging=true;moved=false;pause();
