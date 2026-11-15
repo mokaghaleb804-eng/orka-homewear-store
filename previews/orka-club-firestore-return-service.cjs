@@ -14,7 +14,7 @@ function createFirestoreWalletReturnService(db){
    const o=orderSnap.data(),r=returnSnap.data();
    if(r.verifiedByServer!==true||r.orderId!==orderId||!id(o.uid)||r.uid!==o.uid)throw Error('Unverified return');
    if(!Number.isSafeInteger(o.eligibleSubtotalPiastres)||o.eligibleSubtotalPiastres<=0)throw Error('Invalid original subtotal');
-   if(!Number.isSafeInteger(r.cumulativeReturnedEligiblePiastres)||r.cumulativeReturnedEligiblePiastres<0)throw Error('Invalid returned subtotal');
+   if(!Number.isSafeInteger(r.cumulativeReturnedEligiblePiastres)||r.cumulativeReturnedEligiblePiastres<0||r.cumulativeReturnedEligiblePiastres>o.eligibleSubtotalPiastres)throw Error('Invalid returned subtotal');
    const opRef=db.doc('walletOperations/return_'+returnId);
    const creditRef=db.doc('wallets/'+o.uid+'/credits/grant_'+orderId);
    const [opSnap,creditSnap]=await Promise.all([tx.get(opRef),tx.get(creditRef)]);
