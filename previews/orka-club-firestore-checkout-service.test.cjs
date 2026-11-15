@@ -9,9 +9,10 @@ const db={doc:path=>({path}),runTransaction:async fn=>{
  for(const [path,value] of writes){if(docs.has(path))throw Error('Already exists');docs.set(path,value)}
  return result;
 }};
+let shippingRate=6000;
 const service=createFirestoreTrustedCheckoutService(db,{
  verifyIdentity:async token=>token==='verified-token'?{uid:'alice'}:null,
- resolveShipping:async()=>6000
+ resolveShipping:async()=>shippingRate
 });
 (async()=>{
  const input={identityToken:'verified-token',orderId:'order1',items:[{unitId:'u1',productId:'sku1',pricePiastres:1,totalPiastres:1}],walletUnitId:'u1'};
@@ -21,6 +22,11 @@ const service=createFirestoreTrustedCheckoutService(db,{
  assert.equal(first.order.totalPiastres,91000);
  assert.equal(first.order.walletRedemptionUnit.pricePiastres,85000);
  assert.equal((await service.createCheckout(input)).duplicate,true);
+ shippingRate=9000;
+ const replay=await service.createCheckout(input);
+ assert.equal(replay.duplicate,true);
+ assert.equal(replay.order.totalPiastres,91000);
+ await assert.rejects(service.createCheckout({...input,shippingAddress:{governorate:'Giza'}}),/idempotency conflict/);
  await assert.rejects(service.createCheckout({...input,identityToken:'invalid',orderId:'order2'}),/Invalid authenticated checkout/);
  await assert.rejects(service.createCheckout({...input,orderId:'order1',items:[{unitId:'u1',productId:'sku1'},{unitId:'u2',productId:'sku1'}]}),/idempotency conflict/);
  await assert.rejects(service.createCheckout({...input,orderId:'order3',items:[{unitId:'u1',productId:'missing'}]}),/Catalog product missing/);
