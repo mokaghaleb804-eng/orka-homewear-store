@@ -32,5 +32,9 @@ function fake(){
  await assert.rejects(createFirestoreWalletRedeemService(db,{clock:()=>new Date('2027-01-01T00:00:00Z')}).redeemTrustedUnit({...input,orderId:'ord-empty',operationId:'red-empty'}),/No eligible wallet credit/);
  assert.equal(docs.get('orders/ord-empty').usedWallet,false);
  assert.equal(docs.has('walletOperations/redeem_red-empty'),false);
+ docs.set('orders/ord-time-spoof',{uid:'alice',status:'pending',checkoutValidatedByServer:true,usedWallet:false,fullPrice:true,walletRedemptionUnit:{id:'unit1',pricePiastres:8000}});
+ await assert.rejects(createFirestoreWalletRedeemService(db,{clock:()=>new Date('2027-01-01T00:00:00Z')}).redeemTrustedUnit({...input,orderId:'ord-time-spoof',operationId:'red-time-spoof',now:'2026-11-01T00:00:00Z'}),/No eligible wallet credit/);
+ assert.equal(docs.get('orders/ord-time-spoof').usedWallet,false);
+ assert.equal(docs.has('walletOperations/redeem_red-time-spoof'),false);
  console.log('Firestore redeem service mock contract tests passed; emulator concurrency remains required');
 })().catch(e=>{console.error(e);process.exitCode=1});
