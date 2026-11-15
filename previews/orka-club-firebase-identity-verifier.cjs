@@ -1,6 +1,6 @@
 'use strict';
 // SERVER-ONLY: pass a Firebase Admin Auth instance, never a client SDK.
-// Reject revoked sessions and require a verified email or phone identity.
+// Reject revoked sessions and anonymous sign-in; no email/phone verification policy yet.
 function createFirebaseIdentityVerifier(adminAuth){
  if(!adminAuth||typeof adminAuth.verifyIdToken!=='function')throw Error('Firebase Admin Auth required');
  return async function verifyIdentity(idToken){
