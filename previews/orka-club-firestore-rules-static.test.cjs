@@ -1,0 +1,13 @@
+'use strict';
+const assert=require('node:assert/strict');
+const fs=require('node:fs');
+const rules=fs.readFileSync('firestore.rules','utf8');
+assert.match(rules,/match \/wallets\/\{uid\} \{/);
+assert.match(rules,/match \/credits\/\{creditId\} \{/);
+assert.match(rules,/match \/events\/\{eventId\} \{/);
+assert.match(rules,/match \/walletOperations\/\{operationId\} \{/);
+const wallet=rules.slice(rules.indexOf('match /wallets/{uid}'),rules.indexOf('match /walletOperations/{operationId}'));
+assert.match(wallet,/allow write: if false;/);
+assert.match(wallet,/request\.auth\.uid == uid/);
+assert.match(rules,/match \/orders\/\{orderId\}[\s\S]*?allow create: if false;/);
+console.log('Wallet rules static guard checks passed; emulator authorization tests still required');
