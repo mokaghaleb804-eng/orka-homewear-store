@@ -2310,4 +2310,33 @@ window.addEventListener("pagehide", () => window.orkaPresenceStop());
  document.addEventListener('click',e=>{const img=e.target.closest?.('.orka-card-gallery img.product-img');if(img?.parentElement?.dataset.justSwiped==='1'){e.preventDefault();e.stopImmediatePropagation();delete img.parentElement.dataset.justSwiped}},true);
 })();
 </script>
+<style id="orka-editorial-mobile-final">
+/* Final mobile override: intentionally after all legacy styles */
+@media(max-width:767px){
+body .header.orka-signature-header{height:76px!important;min-height:76px!important;padding:0!important;position:sticky!important;top:0!important}
+body .header.orka-signature-header nav.nav{position:relative!important;display:flex!important;flex-wrap:nowrap!important;justify-content:space-between!important;align-items:center!important;width:100%!important;max-width:none!important;height:76px!important;min-height:76px!important;margin:0!important;padding:8px 13px!important;gap:0!important}
+body .header.orka-signature-header nav.nav>.orka-menu-trigger{position:relative!important;display:flex!important;flex:0 0 38px!important;order:0!important;align-items:center!important;justify-content:center!important;margin:0!important;padding:5px!important;top:auto!important;left:auto!important;right:auto!important;transform:none!important}
+body .header.orka-signature-header nav.nav>.orka-new-header-logo{position:absolute!important;left:50%!important;top:50%!important;right:auto!important;transform:translate(-50%,-50%)!important;display:flex!important;width:132px!important;max-width:132px!important;height:62px!important;min-width:0!important;margin:0!important;padding:0!important;z-index:1!important;justify-content:center!important;align-items:center!important}
+body .header.orka-signature-header .orka-new-header-logo img.orka-header-full-logo{display:block!important;width:132px!important;max-width:132px!important;height:58px!important;object-fit:contain!important}
+body .header.orka-signature-header nav.nav>.nav-actions{position:relative!important;display:flex!important;flex:0 0 auto!important;order:2!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:flex-end!important;gap:3px!important;margin:0 0 0 auto!important;padding:0!important;width:auto!important;min-width:0!important;transform:none!important;top:auto!important;left:auto!important;right:auto!important}
+body .header.orka-signature-header .nav-actions>.iconbtn{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 34px!important;width:34px!important;min-width:34px!important;height:36px!important;padding:5px!important;margin:0!important}
+body .header.orka-signature-header .nav-actions>#accountBtn,body .header.orka-signature-header .nav-actions>.orka-favorites-nav{display:none!important}
+body .header.orka-signature-header .nav-actions>.orka-header-language{display:none!important}
+body .header.orka-signature-header .signature-nav-links{display:none!important}
+body main>.orka-signature-hero#home{position:relative!important;display:block!important;width:100%!important;height:calc(100svh - 76px)!important;min-height:510px!important;max-height:780px!important;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;background:#14263b!important}
+body #home .signature-hero-visual,body #home .signature-hero-stage,body #home #orkaModelCarousel{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;min-height:0!important;max-width:none!important;margin:0!important;padding:0!important;overflow:hidden!important;perspective:none!important;transform:none!important;border:0!important;border-radius:0!important}
+body #home #orkaModelCarousel>.orka-model-card{position:absolute!important;inset:0!important;display:block!important;left:0!important;top:0!important;width:100%!important;max-width:none!important;height:100%!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;opacity:0!important;visibility:hidden!important;transform:none!important;box-shadow:none!important;pointer-events:none!important}
+body #home #orkaModelCarousel>.orka-model-card.is-center{opacity:1!important;visibility:visible!important;z-index:1!important;pointer-events:auto!important}
+body #home #orkaModelCarousel .orka-model-card-image{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;overflow:hidden!important;border-radius:0!important}
+body #home #orkaModelCarousel .orka-model-card-image img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center 30%!important;border-radius:0!important;filter:none!important}
+body #home #orkaModelCarousel .orka-model-card-copy{display:none!important}
+body #home:after{position:absolute!important;inset:0!important;z-index:2!important;background:linear-gradient(to bottom,rgba(0,0,0,.04) 0%,rgba(0,0,0,.04) 32%,rgba(0,0,0,.72) 100%)!important;pointer-events:none!important}
+body #home>.signature-hero-copy{position:absolute!important;left:24px!important;right:24px!important;top:auto!important;bottom:54px!important;z-index:3!important;display:block!important;width:auto!important;max-width:none!important;height:auto!important;margin:0!important;padding:0!important;background:none!important;text-align:left!important;transform:none!important}
+body #home .signature-hero-copy h1{font-size:clamp(31px,8vw,44px)!important;line-height:1.12!important;letter-spacing:-.04em!important;font-weight:700!important;color:#fff!important;text-shadow:0 1px 9px #0005!important;margin:12px 0!important}
+body #home .signature-hero-copy p{font-size:12px!important;line-height:1.6!important;color:#fff!important;opacity:.96!important;margin:0 0 16px!important}
+body #home .signature-hero-copy .signature-eyebrow{font-size:10px!important;color:#fff!important;letter-spacing:.15em!important}
+body #home .signature-hero-copy .signature-cta{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:0!important;max-width:100%!important;padding:13px 17px!important;margin:0!important;border-radius:0!important;background:#fff!important;color:#10294a!important;font-size:11px!important;letter-spacing:.07em!important}
+body #home .signature-drag-caption{position:absolute!important;z-index:3!important;right:12px!important;bottom:10px!important;font-size:9px!important}
+}
+</style>
 </body></html>
