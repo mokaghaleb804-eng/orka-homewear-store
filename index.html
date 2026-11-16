@@ -2360,10 +2360,13 @@ body #home #orkaModelCarousel .orka-model-card-image{background:#d7cfca!importan
 body #home:after{background:linear-gradient(to bottom,transparent 45%,rgba(0,0,0,.12) 63%,rgba(0,0,0,.73) 100%)!important}
 }
 </style>
-<style id="orka-hero-image-scale-adjustment">
+
+<style id="orka-navy-card-only-adjustment">
+/* Only the navy/green Available Colors carousel card; other hero images untouched. */
 @media(max-width:767px){
-body #home #orkaModelCarousel .orka-model-card-image{background:#d7cfca!important;overflow:hidden!important}
-body #home #orkaModelCarousel .orka-model-card-image img{width:100%!important;height:100%!important;object-fit:contain!important;object-position:center bottom!important;transform:scale(1.19) translateY(-1.5%)!important;transform-origin:center bottom!important;background:transparent!important}
+body #home #orkaModelCarousel>.orka-model-card:nth-child(2) .orka-model-card-image img{
+object-fit:cover!important;object-position:center bottom!important;transform:none!important;background:#d7cfca!important;
+}
 }
 </style>
 </body></html>
