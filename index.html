@@ -2210,4 +2210,13 @@ window.addEventListener("pagehide", () => window.orkaPresenceStop());
  document.addEventListener('click',e=>{const img=e.target.closest?.('.orka-card-gallery img.product-img');if(img?.parentElement?.dataset.justSwiped==='1'){e.preventDefault();e.stopImmediatePropagation();delete img.parentElement.dataset.justSwiped}},true);
 })();
 </script>
+<style id="orka-milano-face-visible-production">
+@media(max-width:767px){
+/* Isolated MILANO baby-blue carousel card adjustment */
+#home #orkaModelCarousel>.orka-model-card:nth-child(5) .orka-model-card-image img{
+object-fit:contain!important;object-position:center top!important;
+transform:scale(.82)!important;transform-origin:center top!important;
+}
+}
+</style>
 </body></html>
