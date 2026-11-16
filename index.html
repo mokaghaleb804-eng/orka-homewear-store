@@ -2448,4 +2448,16 @@ body #home .signature-hero-copy h1{font-size:clamp(37px,4.3vw,64px)!important;li
 <script id="orka-all-hero-slides-backdrops-20261116">
 (function(){function apply(){document.querySelectorAll('#orkaModelCarousel .orka-model-card-image').forEach(function(wrap){var img=wrap.querySelector('img');if(img){wrap.style.setProperty('--orka-slide-photo','url("'+img.getAttribute('src').replace(/"/g,'%22')+'")')}})}if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',apply);else apply()})();
 </script>
+
+<style id="orka-category-boys-girls-visibility-fix-20261116">
+/* Make category images, labels and CTAs legible in desktop and desktop-mode browsers. */
+@media(min-width:768px){
+body .sports-editorial-categories .signature-categories{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:18px!important}
+body .sports-editorial-categories .signature-categories>a.sports-category-card{position:relative!important;display:flex!important;flex-direction:column!important;align-items:center!important;justify-content:flex-end!important;min-height:360px!important;height:clamp(360px,39vw,510px)!important;padding:24px!important;overflow:hidden!important;border-radius:12px!important;background:#dce4e8!important;isolation:isolate}
+body .sports-editorial-categories .sports-category-card img{position:absolute!important;inset:0!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center 30%!important;opacity:1!important;z-index:-2!important}
+body .sports-editorial-categories .sports-category-card:after{content:""!important;position:absolute!important;inset:0!important;background:linear-gradient(to bottom,transparent 25%,rgba(10,25,43,.15) 50%,rgba(10,25,43,.82) 100%)!important;z-index:-1!important;pointer-events:none}
+body .sports-editorial-categories .sports-category-card strong{display:block!important;position:relative!important;z-index:2!important;color:#fff!important;font-size:clamp(26px,3.1vw,42px)!important;font-weight:800!important;letter-spacing:.09em!important;text-shadow:0 2px 8px #0009!important}
+body .sports-editorial-categories .sports-category-card small{display:inline-flex!important;position:relative!important;z-index:2!important;color:#fff!important;background:#10294a!important;border:1px solid #ffffffb8!important;padding:12px 20px!important;font-size:12px!important;letter-spacing:.06em!important;opacity:1!important}
+}
+</style>
 </body></html>
