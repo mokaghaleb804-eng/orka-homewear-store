@@ -2353,30 +2353,24 @@ body #home .signature-drag-caption{display:none!important}
 body .orka-whatsapp-float,body a[href*="wa.me"].floating-whatsapp{bottom:84px!important;right:12px!important}
 }
 </style>
-<style id="orka-hero-show-full-outfit">
-@media(max-width:767px){
-body #home #orkaModelCarousel .orka-model-card-image img{object-fit:contain!important;object-position:center bottom!important;background:#d7cfca!important}
-body #home #orkaModelCarousel .orka-model-card-image{background:#d7cfca!important}
-body #home:after{background:linear-gradient(to bottom,transparent 45%,rgba(0,0,0,.12) 63%,rgba(0,0,0,.73) 100%)!important}
-}
-</style>
 
-<style id="orka-navy-card-only-adjustment">
-/* Only the navy/green Available Colors carousel card; other hero images untouched. */
+
+
+
+<style id="orka-mobile-hero-clean-layout">
 @media(max-width:767px){
-body #home #orkaModelCarousel>.orka-model-card:nth-child(2) .orka-model-card-image img{
-object-fit:cover!important;object-position:center bottom!important;transform:none!important;background:#d7cfca!important;
-}
-}
-</style>
-<style id="orka-navy-back-view-fill-only">
-/* Only navy animated/back-view slide: remove unused top space without changing other carousel images. */
-@media(max-width:767px){
-body #home #orkaModelCarousel>.orka-model-card:nth-child(2) .orka-model-card-image{background:#d7cfca!important;overflow:hidden!important}
-body #home #orkaModelCarousel>.orka-model-card:nth-child(2) .orka-model-card-image img{
-width:100%!important;height:100%!important;object-fit:cover!important;object-position:center bottom!important;
-transform:translateY(-15%) scale(1.42)!important;transform-origin:center center!important;
-}
+/* Make the hero a single image canvas with no external blank area */
+body main>#home.orka-signature-hero{height:calc(100svh - 190px)!important;min-height:490px!important;max-height:650px!important;background:#e9e2dc!important}
+body #home .signature-hero-visual,body #home .signature-hero-stage,body #home #orkaModelCarousel{inset:0!important;height:100%!important;background:transparent!important}
+body #home #orkaModelCarousel>.orka-model-card,body #home #orkaModelCarousel .orka-model-card-image{inset:0!important;height:100%!important;background:transparent!important}
+body #home #orkaModelCarousel .orka-model-card-image img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center center!important;transform:none!important;background:transparent!important}
+body #home #orkaModelCarousel>.orka-model-card:nth-child(2) .orka-model-card-image{overflow:hidden!important}
+body #home #orkaModelCarousel>.orka-model-card:nth-child(2) .orka-model-card-image img{position:absolute!important;top:-32%!important;left:0!important;width:100%!important;height:132%!important;max-height:none!important;object-fit:cover!important;object-position:center bottom!important;transform:none!important}
+/* Keep the text and shopping action clear of the child's face */
+body #home>.signature-hero-copy{bottom:35px!important;left:20px!important;right:20px!important}
+body #home .signature-hero-copy h1{font-size:clamp(25px,6.7vw,35px)!important;line-height:1.12!important;max-width:285px!important}
+body #home .signature-hero-copy p{font-size:11px!important;max-width:260px!important}
+body #home:after{background:linear-gradient(to bottom,transparent 35%,rgba(0,0,0,.12) 53%,rgba(0,0,0,.78) 100%)!important}
 }
 </style>
 </body></html>
