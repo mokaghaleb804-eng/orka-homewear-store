@@ -459,6 +459,75 @@ body,button,input,select,textarea{font-family:'Manrope','IBM Plex Sans Arabic',T
 .orka-club-intro{max-width:1120px;margin:70px auto 36px;padding:clamp(24px,5vw,54px);border:1px solid #E8DCC8;border-radius:24px;background:linear-gradient(135deg,#FFFAF1,#fff);color:#10294A;scroll-margin-top:110px;box-shadow:0 12px 42px rgba(16,41,74,.06)}
 .orka-club-intro h2{font-weight:800;letter-spacing:-.025em;font-size:clamp(25px,3.3vw,39px);line-height:1.5}.orka-club-intro h3{font-size:clamp(18px,2vw,24px);font-weight:800}.orka-club-intro p,.orka-club-intro li{font-size:clamp(14px,1.4vw,16px);line-height:2}.orka-club-intro li{padding:3px 0}.orka-club-intro ul{margin-bottom:22px}.orka-club-intro .btn{margin-top:12px}
 @media(max-width:700px){.orka-club-intro{margin:42px 16px 24px;padding:24px 20px;border-radius:18px}}
+
+/* Sports Club-inspired editorial storefront — preview only. Existing product, cart, auth and checkout behavior retained. */
+:root{--sports-paper:#f3f3f2;--sports-ink:#1c2430}
+body{background:var(--sports-paper);color:var(--sports-ink)}
+.topbar{background:#10294a;letter-spacing:.08em}
+.header.orka-signature-header{background:#ffffffed;border-bottom:1px solid #e6e6e6}
+.header .nav{max-width:1480px;min-height:82px;justify-content:space-between}
+.header .orka-new-header-logo{position:absolute;left:50%;transform:translateX(-50%);min-width:0;margin:0}
+.header .orka-header-full-logo{width:auto;max-width:175px;height:60px;object-fit:contain}
+.header .signature-nav-links{display:none}
+.header .nav-actions{margin-left:auto}
+.header .nav-actions .iconbtn{border-radius:0}
+.orka-signature-hero{position:relative;display:block!important;width:100%;min-height:min(820px,90svh);height:min(820px,90svh);overflow:hidden;background:#10294a;color:#fff}
+.orka-signature-hero .signature-hero-visual{position:absolute!important;inset:0;width:100%;height:100%;max-width:none;margin:0;padding:0}
+.orka-signature-hero .signature-hero-stage,.orka-signature-hero .orka-model-carousel{height:100%!important;width:100%!important;max-width:none!important;min-height:0!important}
+.orka-signature-hero .orka-model-card{height:100%!important;min-height:100%!important;aspect-ratio:auto!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:hidden!important}
+.orka-signature-hero .orka-model-card-image{display:block;height:100%!important;width:100%!important;border-radius:0!important}
+.orka-signature-hero .orka-model-card-image img{height:100%!important;width:100%!important;object-fit:cover!important;object-position:center 30%!important}
+.orka-signature-hero .orka-model-card-copy{display:none!important}
+.orka-signature-hero:after{content:"";pointer-events:none;position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.10) 20%,rgba(0,0,0,.57) 100%);z-index:1}
+.orka-signature-hero .signature-hero-copy{position:absolute!important;z-index:2;left:clamp(24px,7vw,110px);bottom:clamp(55px,10vh,130px);top:auto!important;max-width:740px;padding:0!important;text-align:left;color:#fff}
+.orka-signature-hero .signature-hero-copy h1{font-family:Manrope,'IBM Plex Sans Arabic',sans-serif;font-weight:600;font-size:clamp(42px,7vw,90px);line-height:1.08;letter-spacing:-.055em;color:#fff;margin:14px 0}
+.orka-signature-hero .signature-hero-copy p,.orka-signature-hero .signature-eyebrow{color:#fff}
+.orka-signature-hero .signature-cta{background:#fff!important;color:#10294a!important;border:1px solid #fff!important;border-radius:0!important;padding:16px 24px!important;letter-spacing:.08em}
+.orka-signature-hero .signature-drag-caption{position:absolute;right:24px;bottom:22px;z-index:2;color:#fff}
+.sports-editorial-categories{padding:90px max(24px,calc((100vw - 1240px)/2))!important;background:#f3f3f2;text-align:center}
+.sports-editorial-categories .signature-eyebrow{letter-spacing:.25em;font-size:12px}
+.sports-editorial-categories h2{font-size:clamp(28px,4vw,48px)!important;font-weight:500!important;letter-spacing:.16em!important;margin:18px 0 38px!important}
+.sports-editorial-categories .signature-categories{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.sports-editorial-categories .sports-category-card{position:relative;display:flex!important;flex-direction:column;align-items:center;justify-content:flex-end;min-height:510px;overflow:hidden;background:#ddd;padding:40px 15px!important;color:#fff!important;text-decoration:none;border:0!important;border-radius:0!important}
+.sports-category-card:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,.55))}
+.sports-category-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.sports-category-card:hover img{transform:scale(1.04)}
+.sports-category-card strong,.sports-category-card small{position:relative;z-index:1;color:#fff!important}
+.sports-category-card strong{font-size:clamp(24px,3vw,40px);font-weight:500;letter-spacing:.14em}
+.sports-category-card small{font-size:12px;letter-spacing:.16em;margin-top:14px;border:1px solid #fff;padding:11px 17px}
+#shop{max-width:1280px!important;margin:auto;padding-top:70px!important}
+#shop .section-head{display:block;text-align:center;margin-bottom:38px}
+#shop .section-head h2{font-weight:500;font-size:clamp(27px,4vw,44px);letter-spacing:.16em}
+#shop .section-head p{max-width:650px;margin:16px auto;font-size:14px;line-height:1.9}
+#shop .eyebrow{letter-spacing:.18em}
+#shop .products{gap:30px 18px!important}
+#shop .product{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible}
+#shop .product-img-wrap{background:#eaeaea;border-radius:0!important;overflow:hidden}
+#shop .product-img{object-fit:cover;transition:transform .4s}
+#shop .product:hover .product-img{transform:scale(1.025)}
+#shop .product-info{text-align:center;padding:15px 8px 26px}
+#shop .product-info h3{font-family:Manrope,'IBM Plex Sans Arabic',sans-serif;font-weight:600;letter-spacing:.055em;line-height:1.55}
+#shop .product-info p{line-height:1.7}
+#shop .filter{border-radius:0!important}
+.orka-club-intro{background:#fff}
+@media(max-width:700px){
+.header .nav{min-height:72px;padding:8px 14px}
+.header .orka-header-full-logo{max-width:128px;height:48px}
+.header .nav-actions{gap:4px}
+.orka-signature-hero{height:77svh;min-height:580px;max-height:800px}
+.orka-signature-hero .signature-hero-copy{left:24px;right:24px;bottom:66px;max-width:none}
+.orka-signature-hero .signature-hero-copy h1{font-size:clamp(36px,9vw,56px)}
+.orka-signature-hero .signature-hero-copy p{font-size:14px}
+.sports-editorial-categories{padding:60px 18px!important}
+.sports-editorial-categories .signature-categories{grid-template-columns:1fr;gap:16px}
+.sports-editorial-categories .sports-category-card{min-height:420px}
+#shop{padding:55px 15px!important}
+#shop .products{gap:24px 12px!important}
+#shop .product-info{padding:12px 2px 20px}
+#shop .product-info h3{font-size:13px;letter-spacing:0}
+#shop .section-head p{font-size:13px}
+}
+
 </style>
 
 <style id="orka-final-logo-style">
@@ -971,7 +1040,7 @@ html[data-product-columns="1"] #shop #products .product-img-wrap .product-img{bo
       
       
       
-    </div></div><div class="signature-drag-caption">DRAG / SWIPE TO EXPLORE</div></div></section><section class="signature-collection-intro" aria-label="تصفح تشكيلة ORKA Kids"><div class="signature-eyebrow">ORKA KIDS COLLECTION</div><h2>تصميمات تليق بكل حركة.</h2><div class="signature-categories"><a href="#shop" onclick="document.querySelector('[data-filter=boys]')?.click()"><strong>موديلات الأولاد</strong><small>اكتشف التشكيلة ←</small></a><a href="#shop" onclick="document.querySelector('[data-filter=girls]')?.click()"><strong>موديلات البنات</strong><small>اكتشف التشكيلة ←</small></a></div></section><section class="section" id="shop"><div class="section-head"><div><div class="eyebrow">ORKA KIDS / THE COLLECTION</div><h2>اكتشف تشكيلة ORKA Kids</h2></div><p>اكتشف أول كولكشن من ORKA Kids، بتصميمات مميزة وألوان مختارة بعناية، تجمع بين الأناقة والراحة في كل تفصيلة. تصفّح موديلاتنا، واكتشف الألوان والتفاصيل اللي بتخلي كل طقم مختلف. ORKA HOMEWEAR — حكاية كل بيت</p></div>
+    </div></div><div class="signature-drag-caption">DRAG / SWIPE TO EXPLORE</div></div></section><section class="signature-collection-intro sports-editorial-categories" aria-label="Shop by category"><div class="signature-eyebrow">THE WINTER EDITION / 2027</div><h2>SHOP BY CATEGORY</h2><div class="signature-categories"><a class="sports-category-card" href="#shop" onclick="document.querySelector('[data-filter=boys]')?.click()"><img src="file_00000000512c81f48d81e1d074c34ab7.jpg" alt="ORKA Kids boys collection" loading="lazy"><strong>BOYS</strong><small>VIEW COLLECTION</small></a><a class="sports-category-card" href="#shop" onclick="document.querySelector('[data-filter=girls]')?.click()"><img src="file_00000000725481f4a5374088365422b2.webp" alt="ORKA Kids girls Explorer collection" loading="lazy"><strong>GIRLS</strong><small>VIEW COLLECTION</small></a></div></section><section class="section" id="shop"><div class="section-head"><div><div class="eyebrow">WINTER 2027 / ORKA KIDS</div><h2>THE COLLECTION</h2></div><p>اكتشف أول كولكشن من ORKA Kids، بتصميمات مميزة وألوان مختارة بعناية، تجمع بين الأناقة والراحة في كل تفصيلة. تصفّح موديلاتنا، واكتشف الألوان والتفاصيل اللي بتخلي كل طقم مختلف. ORKA HOMEWEAR — حكاية كل بيت</p></div>
 <div class="filters"><button class="filter active" data-filter="all">كل المنتجات</button><button class="filter" data-filter="boys">أولاد</button><button class="filter" data-filter="girls">بنات</button><button class="filter" data-filter="sets">أطقم شتوي</button><button class="filter" data-filter="favorites">❤️ المختارات <span id="favoriteCount">0</span></button></div>
 <div class="orka-grid-toolbar"><span id="orkaGridLabel">طريقة العرض</span><div class="orka-grid-options" role="group" aria-labelledby="orkaGridLabel">
 <button type="button" class="orka-grid-option" data-product-columns="1" aria-controls="products" aria-pressed="false" aria-label="منتج واحد في الصف"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"/></svg><span>منتج واحد</span></button>
