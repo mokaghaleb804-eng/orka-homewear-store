@@ -459,6 +459,106 @@ body,button,input,select,textarea{font-family:'Manrope','IBM Plex Sans Arabic',T
 .orka-club-intro{max-width:1120px;margin:70px auto 36px;padding:clamp(24px,5vw,54px);border:1px solid #E8DCC8;border-radius:24px;background:linear-gradient(135deg,#FFFAF1,#fff);color:#10294A;scroll-margin-top:110px;box-shadow:0 12px 42px rgba(16,41,74,.06)}
 .orka-club-intro h2{font-weight:800;letter-spacing:-.025em;font-size:clamp(25px,3.3vw,39px);line-height:1.5}.orka-club-intro h3{font-size:clamp(18px,2vw,24px);font-weight:800}.orka-club-intro p,.orka-club-intro li{font-size:clamp(14px,1.4vw,16px);line-height:2}.orka-club-intro li{padding:3px 0}.orka-club-intro ul{margin-bottom:22px}.orka-club-intro .btn{margin-top:12px}
 @media(max-width:700px){.orka-club-intro{margin:42px 16px 24px;padding:24px 20px;border-radius:18px}}
+
+/* Sports Club-inspired editorial storefront — preview only. Existing product, cart, auth and checkout behavior retained. */
+:root{--sports-paper:#f3f3f2;--sports-ink:#1c2430}
+body{background:var(--sports-paper);color:var(--sports-ink)}
+.topbar{background:#10294a;letter-spacing:.08em}
+.header.orka-signature-header{background:#ffffffed;border-bottom:1px solid #e6e6e6}
+.header .nav{max-width:1480px;min-height:82px;justify-content:space-between}
+.header .orka-new-header-logo{position:absolute;left:50%;transform:translateX(-50%);min-width:0;margin:0}
+.header .orka-header-full-logo{width:auto;max-width:175px;height:60px;object-fit:contain}
+.header .signature-nav-links{display:none}
+.header .nav-actions{margin-left:auto}
+.header .nav-actions .iconbtn{border-radius:0}
+.orka-signature-hero{position:relative;display:block!important;width:100%;min-height:min(820px,90svh);height:min(820px,90svh);overflow:hidden;background:#10294a;color:#fff}
+.orka-signature-hero .signature-hero-visual{position:absolute!important;inset:0;width:100%;height:100%;max-width:none;margin:0;padding:0}
+.orka-signature-hero .signature-hero-stage,.orka-signature-hero .orka-model-carousel{height:100%!important;width:100%!important;max-width:none!important;min-height:0!important}
+.orka-signature-hero .orka-model-card{height:100%!important;min-height:100%!important;aspect-ratio:auto!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:hidden!important}
+.orka-signature-hero .orka-model-card-image{display:block;height:100%!important;width:100%!important;border-radius:0!important}
+.orka-signature-hero .orka-model-card-image img{height:100%!important;width:100%!important;object-fit:cover!important;object-position:center 30%!important}
+.orka-signature-hero .orka-model-card-copy{display:none!important}
+.orka-signature-hero:after{content:"";pointer-events:none;position:absolute;inset:0;background:linear-gradient(180deg,rgba(0,0,0,.10) 20%,rgba(0,0,0,.57) 100%);z-index:1}
+.orka-signature-hero .signature-hero-copy{position:absolute!important;z-index:2;left:clamp(24px,7vw,110px);bottom:clamp(55px,10vh,130px);top:auto!important;max-width:740px;padding:0!important;text-align:left;color:#fff}
+.orka-signature-hero .signature-hero-copy h1{font-family:Manrope,'IBM Plex Sans Arabic',sans-serif;font-weight:600;font-size:clamp(42px,7vw,90px);line-height:1.08;letter-spacing:-.055em;color:#fff;margin:14px 0}
+.orka-signature-hero .signature-hero-copy p,.orka-signature-hero .signature-eyebrow{color:#fff}
+.orka-signature-hero .signature-cta{background:#fff!important;color:#10294a!important;border:1px solid #fff!important;border-radius:0!important;padding:16px 24px!important;letter-spacing:.08em}
+.orka-signature-hero .signature-drag-caption{position:absolute;right:24px;bottom:22px;z-index:2;color:#fff}
+.sports-editorial-categories{padding:90px max(24px,calc((100vw - 1240px)/2))!important;background:#f3f3f2;text-align:center}
+.sports-editorial-categories .signature-eyebrow{letter-spacing:.25em;font-size:12px}
+.sports-editorial-categories h2{font-size:clamp(28px,4vw,48px)!important;font-weight:500!important;letter-spacing:.16em!important;margin:18px 0 38px!important}
+.sports-editorial-categories .signature-categories{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px}
+.sports-editorial-categories .sports-category-card{position:relative;display:flex!important;flex-direction:column;align-items:center;justify-content:flex-end;min-height:510px;overflow:hidden;background:#ddd;padding:40px 15px!important;color:#fff!important;text-decoration:none;border:0!important;border-radius:0!important}
+.sports-category-card:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 40%,rgba(0,0,0,.55))}
+.sports-category-card img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform .5s}
+.sports-category-card:hover img{transform:scale(1.04)}
+.sports-category-card strong,.sports-category-card small{position:relative;z-index:1;color:#fff!important}
+.sports-category-card strong{font-size:clamp(24px,3vw,40px);font-weight:500;letter-spacing:.14em}
+.sports-category-card small{font-size:12px;letter-spacing:.16em;margin-top:14px;border:1px solid #fff;padding:11px 17px}
+#shop{max-width:1280px!important;margin:auto;padding-top:70px!important}
+#shop .section-head{display:block;text-align:center;margin-bottom:38px}
+#shop .section-head h2{font-weight:500;font-size:clamp(27px,4vw,44px);letter-spacing:.16em}
+#shop .section-head p{max-width:650px;margin:16px auto;font-size:14px;line-height:1.9}
+#shop .eyebrow{letter-spacing:.18em}
+#shop .products{gap:30px 18px!important}
+#shop .product{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;overflow:visible}
+#shop .product-img-wrap{background:#eaeaea;border-radius:0!important;overflow:hidden}
+#shop .product-img{object-fit:cover;transition:transform .4s}
+#shop .product:hover .product-img{transform:scale(1.025)}
+#shop .product-info{text-align:center;padding:15px 8px 26px}
+#shop .product-info h3{font-family:Manrope,'IBM Plex Sans Arabic',sans-serif;font-weight:600;letter-spacing:.055em;line-height:1.55}
+#shop .product-info p{line-height:1.7}
+#shop .filter{border-radius:0!important}
+.orka-club-intro{background:#fff}
+@media(max-width:700px){
+.header .nav{min-height:72px;padding:8px 14px}
+.header .orka-header-full-logo{max-width:128px;height:48px}
+.header .nav-actions{gap:4px}
+.orka-signature-hero{height:77svh;min-height:580px;max-height:800px}
+.orka-signature-hero .signature-hero-copy{left:24px;right:24px;bottom:66px;max-width:none}
+.orka-signature-hero .signature-hero-copy h1{font-size:clamp(36px,9vw,56px)}
+.orka-signature-hero .signature-hero-copy p{font-size:14px}
+.sports-editorial-categories{padding:60px 18px!important}
+.sports-editorial-categories .signature-categories{grid-template-columns:1fr;gap:16px}
+.sports-editorial-categories .sports-category-card{min-height:420px}
+#shop{padding:55px 15px!important}
+#shop .products{gap:24px 12px!important}
+#shop .product-info{padding:12px 2px 20px}
+#shop .product-info h3{font-size:13px;letter-spacing:0}
+#shop .section-head p{font-size:13px}
+}
+
+
+/* Mobile editorial refinement — keep hero carousel functional without stacked cards */
+.orka-signature-hero .orka-model-carousel{position:relative!important;perspective:none!important;overflow:hidden!important;touch-action:pan-y}
+.orka-signature-hero .orka-model-card{position:absolute!important;inset:0!important;left:0!important;top:0!important;width:100%!important;height:100%!important;min-height:0!important;max-width:none!important;opacity:0!important;visibility:hidden!important;transform:none!important;transition:opacity .55s ease,visibility .55s ease!important;pointer-events:none!important}
+.orka-signature-hero .orka-model-card.is-center{opacity:1!important;visibility:visible!important;transform:none!important;z-index:1!important;pointer-events:auto!important}
+.orka-signature-hero .orka-model-card-image{height:100%!important}
+.orka-signature-hero .signature-hero-copy{pointer-events:none}
+.orka-signature-hero .signature-hero-copy .signature-cta{pointer-events:auto}
+.orka-signature-hero .signature-hero-copy h1{color:#fff!important;text-shadow:0 2px 20px rgba(0,0,0,.25)}
+.orka-signature-hero .signature-hero-copy p{color:#fff!important;text-shadow:0 1px 8px rgba(0,0,0,.3)}
+.header .nav{position:relative;display:grid!important;grid-template-columns:1fr auto 1fr;align-items:center;gap:10px}
+.header .orka-menu-trigger{grid-column:1;grid-row:1;justify-self:start;display:flex!important}
+.header .orka-new-header-logo{position:static!important;transform:none!important;grid-column:2;grid-row:1;justify-self:center;z-index:1}
+.header .nav-actions{grid-column:3;grid-row:1;justify-self:end;margin-left:0;display:flex;align-items:center}
+@media(max-width:700px){
+.header .nav{grid-template-columns:minmax(36px,1fr) auto minmax(76px,1fr);padding:8px 14px!important;gap:5px}
+.header .orka-header-full-logo{max-width:132px!important;height:49px!important}
+.header .nav-actions{gap:5px!important}
+.header .nav-actions .iconbtn{padding:4px!important;width:31px!important;height:36px!important;min-width:0!important}
+.header .nav-actions .orka-favorites-nav,.header .nav-actions #accountBtn{display:none!important}
+.header .nav-actions .orka-header-language{position:absolute;right:12px;top:-34px;z-index:12;padding:3px 8px!important;font-size:11px!important;min-height:26px!important;border-radius:5px!important;background:#fff!important;color:#10294a!important}
+.orka-signature-hero{height:72svh!important;min-height:490px!important;max-height:730px!important}
+.orka-signature-hero .signature-hero-copy{left:22px!important;right:22px!important;bottom:56px!important;max-width:calc(100% - 44px)!important;text-align:left!important}
+.orka-signature-hero .signature-hero-copy h1{font-size:clamp(29px,7.4vw,44px)!important;line-height:1.15!important;letter-spacing:-.035em!important;max-width:370px!important;margin:12px 0!important}
+.orka-signature-hero .signature-hero-copy p{font-size:12px!important;line-height:1.5!important;max-width:310px!important;margin:0 0 17px!important}
+.orka-signature-hero .signature-eyebrow{font-size:10px!important;letter-spacing:.12em!important}
+.orka-signature-hero .signature-cta{font-size:11px!important;padding:13px 16px!important;display:inline-flex!important;width:auto!important;min-width:0!important}
+.orka-signature-hero .signature-drag-caption{font-size:9px!important;right:16px!important;bottom:14px!important}
+.orka-signature-hero .orka-model-card-image img{object-position:center 25%!important}
+}
+
 </style>
 
 <style id="orka-final-logo-style">
@@ -945,7 +1045,7 @@ html[data-product-columns="1"] #shop #products .product-img-wrap .product-img{bo
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
 
-<header class="header orka-signature-header"><nav class="nav"><a class="brand brand-image orka-new-header-logo" href="#home" aria-label="ORKA HOMEWEAR"><img class="orka-header-full-logo" src="orka_logo_transparent.png" alt="ORKA HOMEWEAR" fetchpriority="high"></a><div class="signature-nav-links"><a href="#shop">New In</a><a href="#shop" onclick="document.querySelector('[data-filter=boys]')?.click()">Boys</a><a href="#shop" onclick="document.querySelector('[data-filter=girls]')?.click()">Girls</a><a href="#orkaStory">Our Story</a><a href="#orkaClub" aria-label="ORKA CLUB loyalty program">ORKA CLUB</a></div><div class="nav-actions"><button class="language-toggle orka-header-language" id="orkaLanguageToggle" type="button" onclick="toggleOrkaLanguage()" aria-label="Switch to Arabic">العربية</button><button class="iconbtn" aria-label="Search" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button><button class="iconbtn" onclick="openAccount()" id="accountBtn" aria-label="Account"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5.5 20c.25-4.1 2.65-6.3 6.5-6.3s6.25 2.2 6.5 6.3"/><circle cx="12" cy="12" r="10.2" opacity=".55"/></svg></button><button class="iconbtn orka-favorites-nav" type="button" onclick="openFavorites()" aria-label="Favorites"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.3 4.3 12.8C.4 8.9 3 3.6 7.5 3.6c2 0 3.5 1 4.5 2.3 1-1.3 2.5-2.3 4.5-2.3 4.5 0 7.1 5.3 3.2 9.2L12 20.3Z"/></svg><span class="cart-count" id="favoriteNavCount">0</span></button><button class="iconbtn orka-cart-nav" type="button" onclick="openCart()" aria-label="Shopping bag"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h16l-1 13H5L4 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span class="cart-count" id="cartCount">0</span></button><button class="orka-menu-trigger iconbtn" id="orkaMenuOpen" type="button" aria-label="Menu" aria-controls="orkaSideMenu" aria-expanded="false"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button></div></nav></header>
+<header class="header orka-signature-header"><nav class="nav"><button class="orka-menu-trigger iconbtn" id="orkaMenuOpen" type="button" aria-label="Menu" aria-controls="orkaSideMenu" aria-expanded="false"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button><a class="brand brand-image orka-new-header-logo" href="#home" aria-label="ORKA HOMEWEAR"><img class="orka-header-full-logo" src="orka_logo_transparent.png" alt="ORKA HOMEWEAR" fetchpriority="high"></a><div class="signature-nav-links"><a href="#shop">New In</a><a href="#shop" onclick="document.querySelector('[data-filter=boys]')?.click()">Boys</a><a href="#shop" onclick="document.querySelector('[data-filter=girls]')?.click()">Girls</a><a href="#orkaStory">Our Story</a><a href="#orkaClub" aria-label="ORKA CLUB loyalty program">ORKA CLUB</a></div><div class="nav-actions"><button class="language-toggle orka-header-language" id="orkaLanguageToggle" type="button" onclick="toggleOrkaLanguage()" aria-label="Switch to Arabic">العربية</button><button class="iconbtn" aria-label="Search" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button><button class="iconbtn" onclick="openAccount()" id="accountBtn" aria-label="Account"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5.5 20c.25-4.1 2.65-6.3 6.5-6.3s6.25 2.2 6.5 6.3"/><circle cx="12" cy="12" r="10.2" opacity=".55"/></svg></button><button class="iconbtn orka-favorites-nav" type="button" onclick="openFavorites()" aria-label="Favorites"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.3 4.3 12.8C.4 8.9 3 3.6 7.5 3.6c2 0 3.5 1 4.5 2.3 1-1.3 2.5-2.3 4.5-2.3 4.5 0 7.1 5.3 3.2 9.2L12 20.3Z"/></svg><span class="cart-count" id="favoriteNavCount">0</span></button><button class="iconbtn orka-cart-nav" type="button" onclick="openCart()" aria-label="Shopping bag"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h16l-1 13H5L4 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span class="cart-count" id="cartCount">0</span></button></div></nav></header>
 <div class="orka-menu-overlay" id="orkaMenuOverlay" aria-hidden="true">
   <aside class="orka-side-menu" id="orkaSideMenu" role="dialog" aria-modal="true" aria-label="قائمة الموقع" dir="rtl">
     <div class="orka-side-menu-head"><strong>ORKA HOMEWEAR</strong><button type="button" class="orka-menu-close" id="orkaMenuClose" aria-label="إغلاق القائمة">×</button></div>
@@ -972,7 +1072,7 @@ html[data-product-columns="1"] #shop #products .product-img-wrap .product-img{bo
       
       
       
-    </div></div><div class="signature-drag-caption">DRAG / SWIPE TO EXPLORE</div></div></section><section class="signature-collection-intro" aria-label="تصفح تشكيلة ORKA Kids"><div class="signature-eyebrow">ORKA KIDS COLLECTION</div><h2>تصميمات تليق بكل حركة.</h2><div class="signature-categories"><a href="#shop" onclick="document.querySelector('[data-filter=boys]')?.click()"><strong>موديلات الأولاد</strong><small>اكتشف التشكيلة ←</small></a><a href="#shop" onclick="document.querySelector('[data-filter=girls]')?.click()"><strong>موديلات البنات</strong><small>اكتشف التشكيلة ←</small></a></div></section><section class="section" id="shop"><div class="section-head"><div><div class="eyebrow">ORKA KIDS / THE COLLECTION</div><h2>اكتشف تشكيلة ORKA Kids</h2></div><p>اكتشف أول كولكشن من ORKA Kids، بتصميمات مميزة وألوان مختارة بعناية، تجمع بين الأناقة والراحة في كل تفصيلة. تصفّح موديلاتنا، واكتشف الألوان والتفاصيل اللي بتخلي كل طقم مختلف. ORKA HOMEWEAR — حكاية كل بيت</p></div>
+    </div></div><div class="signature-drag-caption">DRAG / SWIPE TO EXPLORE</div></div></section><section class="signature-collection-intro sports-editorial-categories" aria-label="Shop by category"><div class="signature-eyebrow">THE WINTER EDITION / 2027</div><h2>SHOP BY CATEGORY</h2><div class="signature-categories"><a class="sports-category-card" href="#shop" onclick="document.querySelector('[data-filter=boys]')?.click()"><img src="file_00000000512c81f48d81e1d074c34ab7.jpg" alt="ORKA Kids boys collection" loading="lazy"><strong>BOYS</strong><small>VIEW COLLECTION</small></a><a class="sports-category-card" href="#shop" onclick="document.querySelector('[data-filter=girls]')?.click()"><img src="file_00000000725481f4a5374088365422b2.webp" alt="ORKA Kids girls Explorer collection" loading="lazy"><strong>GIRLS</strong><small>VIEW COLLECTION</small></a></div></section><section class="section" id="shop"><div class="section-head"><div><div class="eyebrow">WINTER 2027 / ORKA KIDS</div><h2>THE COLLECTION</h2></div><p>اكتشف أول كولكشن من ORKA Kids، بتصميمات مميزة وألوان مختارة بعناية، تجمع بين الأناقة والراحة في كل تفصيلة. تصفّح موديلاتنا، واكتشف الألوان والتفاصيل اللي بتخلي كل طقم مختلف. ORKA HOMEWEAR — حكاية كل بيت</p></div>
 <div class="filters"><button class="filter active" data-filter="all">كل المنتجات</button><button class="filter" data-filter="boys">أولاد</button><button class="filter" data-filter="girls">بنات</button><button class="filter" data-filter="sets">أطقم شتوي</button><button class="filter" data-filter="favorites">❤️ المختارات <span id="favoriteCount">0</span></button></div>
 <div class="orka-grid-toolbar"><span id="orkaGridLabel">طريقة العرض</span><div class="orka-grid-options" role="group" aria-labelledby="orkaGridLabel">
 <button type="button" class="orka-grid-option" data-product-columns="1" aria-controls="products" aria-pressed="false" aria-label="منتج واحد في الصف"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><rect x="6" y="3" width="12" height="18" rx="2"/></svg><span>منتج واحد</span></button>
@@ -2211,12 +2311,98 @@ window.addEventListener("pagehide", () => window.orkaPresenceStop());
  document.addEventListener('click',e=>{const img=e.target.closest?.('.orka-card-gallery img.product-img');if(img?.parentElement?.dataset.justSwiped==='1'){e.preventDefault();e.stopImmediatePropagation();delete img.parentElement.dataset.justSwiped}},true);
 })();
 </script>
-<style id="orka-milano-face-visible-production">
+<style id="orka-editorial-mobile-final">
+/* Final mobile override: intentionally after all legacy styles */
 @media(max-width:767px){
-/* Isolated MILANO baby-blue carousel card adjustment */
-#home #orkaModelCarousel>.orka-model-card:nth-child(1) .orka-model-card-image img{
-object-fit:contain!important;object-position:center top!important;
-transform:scale(.82)!important;transform-origin:center top!important;
+body .header.orka-signature-header{height:76px!important;min-height:76px!important;padding:0!important;position:sticky!important;top:0!important}
+body .header.orka-signature-header nav.nav{position:relative!important;display:flex!important;flex-wrap:nowrap!important;justify-content:space-between!important;align-items:center!important;width:100%!important;max-width:none!important;height:76px!important;min-height:76px!important;margin:0!important;padding:8px 13px!important;gap:0!important}
+body .header.orka-signature-header nav.nav>.orka-menu-trigger{position:relative!important;display:flex!important;flex:0 0 38px!important;order:0!important;align-items:center!important;justify-content:center!important;margin:0!important;padding:5px!important;top:auto!important;left:auto!important;right:auto!important;transform:none!important}
+body .header.orka-signature-header nav.nav>.orka-new-header-logo{position:absolute!important;left:50%!important;top:50%!important;right:auto!important;transform:translate(-50%,-50%)!important;display:flex!important;width:132px!important;max-width:132px!important;height:62px!important;min-width:0!important;margin:0!important;padding:0!important;z-index:1!important;justify-content:center!important;align-items:center!important}
+body .header.orka-signature-header .orka-new-header-logo img.orka-header-full-logo{display:block!important;width:132px!important;max-width:132px!important;height:58px!important;object-fit:contain!important}
+body .header.orka-signature-header nav.nav>.nav-actions{position:relative!important;display:flex!important;flex:0 0 auto!important;order:2!important;flex-wrap:nowrap!important;align-items:center!important;justify-content:flex-end!important;gap:3px!important;margin:0 0 0 auto!important;padding:0!important;width:auto!important;min-width:0!important;transform:none!important;top:auto!important;left:auto!important;right:auto!important}
+body .header.orka-signature-header .nav-actions>.iconbtn{display:flex!important;align-items:center!important;justify-content:center!important;flex:0 0 34px!important;width:34px!important;min-width:34px!important;height:36px!important;padding:5px!important;margin:0!important}
+body .header.orka-signature-header .nav-actions>#accountBtn,body .header.orka-signature-header .nav-actions>.orka-favorites-nav{display:none!important}
+body .header.orka-signature-header .nav-actions>.orka-header-language{display:none!important}
+body .header.orka-signature-header .signature-nav-links{display:none!important}
+body main>.orka-signature-hero#home{position:relative!important;display:block!important;width:100%!important;height:calc(100svh - 76px)!important;min-height:510px!important;max-height:780px!important;margin:0!important;padding:0!important;border:0!important;overflow:hidden!important;background:#14263b!important}
+body #home .signature-hero-visual,body #home .signature-hero-stage,body #home #orkaModelCarousel{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;min-height:0!important;max-width:none!important;margin:0!important;padding:0!important;overflow:hidden!important;perspective:none!important;transform:none!important;border:0!important;border-radius:0!important}
+body #home #orkaModelCarousel>.orka-model-card{position:absolute!important;inset:0!important;display:block!important;left:0!important;top:0!important;width:100%!important;max-width:none!important;height:100%!important;min-height:0!important;margin:0!important;padding:0!important;border:0!important;border-radius:0!important;opacity:0!important;visibility:hidden!important;transform:none!important;box-shadow:none!important;pointer-events:none!important}
+body #home #orkaModelCarousel>.orka-model-card.is-center{opacity:1!important;visibility:visible!important;z-index:1!important;pointer-events:auto!important}
+body #home #orkaModelCarousel .orka-model-card-image{position:absolute!important;inset:0!important;display:block!important;width:100%!important;height:100%!important;margin:0!important;padding:0!important;overflow:hidden!important;border-radius:0!important}
+body #home #orkaModelCarousel .orka-model-card-image img{display:block!important;width:100%!important;height:100%!important;object-fit:cover!important;object-position:center 30%!important;border-radius:0!important;filter:none!important}
+body #home #orkaModelCarousel .orka-model-card-copy{display:none!important}
+body #home:after{position:absolute!important;inset:0!important;z-index:2!important;background:linear-gradient(to bottom,rgba(0,0,0,.04) 0%,rgba(0,0,0,.04) 32%,rgba(0,0,0,.72) 100%)!important;pointer-events:none!important}
+body #home>.signature-hero-copy{position:absolute!important;left:24px!important;right:24px!important;top:auto!important;bottom:54px!important;z-index:3!important;display:block!important;width:auto!important;max-width:none!important;height:auto!important;margin:0!important;padding:0!important;background:none!important;text-align:left!important;transform:none!important}
+body #home .signature-hero-copy h1{font-size:clamp(31px,8vw,44px)!important;line-height:1.12!important;letter-spacing:-.04em!important;font-weight:700!important;color:#fff!important;text-shadow:0 1px 9px #0005!important;margin:12px 0!important}
+body #home .signature-hero-copy p{font-size:12px!important;line-height:1.6!important;color:#fff!important;opacity:.96!important;margin:0 0 16px!important}
+body #home .signature-hero-copy .signature-eyebrow{font-size:10px!important;color:#fff!important;letter-spacing:.15em!important}
+body #home .signature-hero-copy .signature-cta{display:inline-flex!important;align-items:center!important;justify-content:center!important;width:auto!important;min-width:0!important;max-width:100%!important;padding:13px 17px!important;margin:0!important;border-radius:0!important;background:#fff!important;color:#10294a!important;font-size:11px!important;letter-spacing:.07em!important}
+body #home .signature-drag-caption{position:absolute!important;z-index:3!important;right:12px!important;bottom:10px!important;font-size:9px!important}
+}
+</style>
+<style id="orka-hero-mobile-visibility-fix">
+@media(max-width:767px){
+body main>#home.orka-signature-hero{height:calc(100svh - 190px)!important;min-height:490px!important;max-height:650px!important}
+body #home>.signature-hero-copy{bottom:40px!important;left:20px!important;right:20px!important;max-width:calc(100% - 40px)!important}
+body #home .signature-hero-copy h1{font-size:clamp(27px,7vw,37px)!important;line-height:1.12!important;max-width:300px!important;margin:7px 0 9px!important}
+body #home .signature-hero-copy p{font-size:11px!important;line-height:1.45!important;max-width:290px!important;margin:0 0 11px!important}
+body #home .signature-hero-copy .signature-eyebrow{font-size:9px!important;line-height:1.3!important}
+body #home .signature-hero-copy .signature-cta{padding:12px 15px!important;font-size:10px!important;max-width:260px!important}
+body #home #orkaModelCarousel .orka-model-card-image img{object-position:center 24%!important}
+body #home:after{background:linear-gradient(to bottom,transparent 28%,rgba(0,0,0,.08) 43%,rgba(0,0,0,.75) 100%)!important}
+body #home .signature-drag-caption{display:none!important}
+body .orka-whatsapp-float,body a[href*="wa.me"].floating-whatsapp{bottom:84px!important;right:12px!important}
+}
+</style>
+
+
+
+
+<style id="orka-mobile-hero-clean-layout">
+@media(max-width:767px){
+/* Make the hero a single image canvas with no external blank area */
+body main>#home.orka-signature-hero{height:calc(100svh - 190px)!important;min-height:490px!important;max-height:650px!important;background:#e9e2dc!important}
+body #home .signature-hero-visual,body #home .signature-hero-stage,body #home #orkaModelCarousel{inset:0!important;height:100%!important;background:transparent!important}
+body #home #orkaModelCarousel>.orka-model-card,body #home #orkaModelCarousel .orka-model-card-image{inset:0!important;height:100%!important;background:transparent!important}
+body #home #orkaModelCarousel .orka-model-card-image img{width:100%!important;height:100%!important;object-fit:cover!important;object-position:center center!important;transform:none!important;background:transparent!important}
+body #home #orkaModelCarousel>.orka-model-card:nth-child(2) .orka-model-card-image{overflow:hidden!important}
+body #home #orkaModelCarousel>.orka-model-card:nth-child(2) .orka-model-card-image img{position:absolute!important;top:-32%!important;left:0!important;width:100%!important;height:132%!important;max-height:none!important;object-fit:cover!important;object-position:center bottom!important;transform:none!important}
+/* Keep the text and shopping action clear of the child's face */
+body #home>.signature-hero-copy{bottom:35px!important;left:20px!important;right:20px!important}
+body #home .signature-hero-copy h1{font-size:clamp(25px,6.7vw,35px)!important;line-height:1.12!important;max-width:285px!important}
+body #home .signature-hero-copy p{font-size:11px!important;max-width:260px!important}
+body #home:after{background:linear-gradient(to bottom,transparent 35%,rgba(0,0,0,.12) 53%,rgba(0,0,0,.78) 100%)!important}
+}
+</style>
+<style id="orka-mobile-language-toggle-visible">
+@media(max-width:767px){
+body .header.orka-signature-header .nav-actions>.orka-header-language{
+display:inline-flex!important;position:relative!important;top:auto!important;right:auto!important;left:auto!important;order:0!important;
+flex:0 0 30px!important;width:30px!important;min-width:30px!important;max-width:30px!important;
+height:34px!important;min-height:34px!important;padding:0!important;margin:0!important;
+border:1px solid #d8dce4!important;border-radius:6px!important;background:#fff!important;
+font-size:0!important;line-height:1!important;color:#10294a!important;align-items:center!important;justify-content:center!important;
+}
+body .header.orka-signature-header .nav-actions>.orka-header-language:after{content:"ع";font:700 15px 'IBM Plex Sans Arabic',Arial,sans-serif!important}
+html[lang="ar"] body .header.orka-signature-header .nav-actions>.orka-header-language:after{content:"EN";font:700 10px Manrope,Arial,sans-serif!important}
+body .header.orka-signature-header nav.nav>.nav-actions{gap:1px!important}
+body .header.orka-signature-header .nav-actions>.iconbtn{flex:0 0 30px!important;width:30px!important;min-width:30px!important;padding:4px!important}
+}
+</style>
+<style id="orka-babyblue-slide-slight-reduction">
+@media(max-width:767px){
+/* Only MILANO baby-blue slide: show top of original photograph, including face. */
+body #home #orkaModelCarousel>.orka-model-card:nth-child(1) .orka-model-card-image{background:#e7d8ce!important;overflow:hidden!important}
+body #home #orkaModelCarousel>.orka-model-card:nth-child(1) .orka-model-card-image img{
+display:block!important;width:100%!important;height:100%!important;object-fit:contain!important;object-position:center top!important;
+transform:scale(.82)!important;transform-origin:center top!important;background:#e7d8ce!important;
+}
+}
+</style>
+<style id="orka-milano-first-face-framing">
+@media(max-width:767px){
+body #home #orkaModelCarousel>.orka-model-card:first-child .orka-model-card-image img{
+object-fit:contain!important;object-position:center top!important;transform:scale(.82)!important;transform-origin:center top!important;
 }
 }
 </style>
