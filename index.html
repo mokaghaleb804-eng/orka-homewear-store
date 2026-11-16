@@ -1041,6 +1041,20 @@ html[data-product-columns="1"] #shop #products .product-img-wrap .product-img{bo
 .orka-sample-launch .orka-sample-inner>.btn{display:inline-flex!important;align-self:center!important;justify-content:center!important;max-width:100%!important;padding:13px 24px!important;font-size:14px!important;white-space:normal!important;margin:0!important}
 }
 </style>
+
+<style id="orka-desktop-hero-layout-fix-20261116">
+/* Desktop-only: keep model imagery prominent and copy readable, without changing mobile. */
+@media (min-width: 1024px) {
+ body main>.orka-signature-hero#home {height: min(720px, calc(100svh - 110px))!important;min-height:540px!important;max-height:720px!important;background:#e8e4df!important;}
+ body #home #orkaModelCarousel>.orka-model-card {background:#e8e4df!important;}
+ body #home #orkaModelCarousel .orka-model-card-image img {width:100%!important;height:100%!important;object-fit:cover!important;object-position:center 24%!important;}
+ body #home #orkaModelCarousel>.orka-model-card:nth-child(2) .orka-model-card-image img {top:0!important;left:0!important;width:100%!important;height:100%!important;max-height:100%!important;object-fit:cover!important;object-position:center 24%!important;}
+ body #home:after {background:linear-gradient(90deg,rgba(10,25,44,.76) 0%,rgba(10,25,44,.53) 34%,rgba(10,25,44,.08) 68%,transparent 100%)!important;}
+ body #home>.signature-hero-copy {left:clamp(36px,6vw,110px)!important;right:auto!important;top:50%!important;bottom:auto!important;transform:translateY(-50%)!important;width:min(44%,540px)!important;max-width:540px!important;text-align:left!important;}
+ body #home .signature-hero-copy h1 {font-size:clamp(38px,4.2vw,66px)!important;line-height:1.12!important;max-width:540px!important;text-wrap:balance!important;}
+ body #home .signature-hero-copy p {font-size:clamp(13px,1.1vw,16px)!important;max-width:460px!important;line-height:1.7!important;}
+}
+</style>
 </head>
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
