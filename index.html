@@ -2,13 +2,13 @@
 <html lang="en" dir="ltr">
 <head>
 <!-- Google Analytics 4: ORKA HOMEWEAR -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RK8VY1JCSG"></script>
+
 <script>
   window.dataLayer = window.dataLayer || [];
   function gtag(){dataLayer.push(arguments);}
   gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});
   gtag('js', new Date());
-  gtag('config', 'G-RK8VY1JCSG');
+  // Analytics loads only after explicit opt-in.
 </script>
 
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -1511,108 +1511,6 @@ window.loadOrkaCustomerOrders = async(uid) => {
  }
 };
 
-window.openOrkaAdminPanel = async() => {
- try {
-  const host=document.getElementById('orkaAdminOrders');
-  const modal=document.getElementById('orkaAdminModal');
-  if(!modal){alert('لوحة الإدارة غير موجودة في نسخة الموقع الحالية. حدّث الصفحة بعد دقيقة.');return;}
-  // Verify role before revealing any administrative UI.
-
-  const uid=window.orkaCurrentUid||'';
-  const allowed=uid&&window.checkOrkaAdminAccess?await window.checkOrkaAdminAccess(uid):false;
-  if(!allowed){
-   alert('غير مصرح بفتح لوحة الإدارة.');
-   return;
-  }
-  modal.classList.add('show');
-  document.body.style.overflow='hidden';
-  if(host)host.innerHTML='<p>جاري تحميل الطلبات...</p>';
-  await window.loadOrkaAdminOrders();
- } catch(err) {
-  console.error('ORKA admin panel open failed:',err);
-  alert('تعذر فتح لوحة الإدارة: '+(err?.message||'خطأ غير معروف'));
- }
-};
-window.closeOrkaAdminPanel = () => {
- const modal=document.getElementById('orkaAdminModal');
- if(modal)modal.classList.remove('show');
- document.body.style.overflow='';
-};
-window.loadOrkaAdminOrders = async() => {
- const host=document.getElementById('orkaAdminOrders');
- if(!host)return;
- // Defense in depth only: Firestore security rules must deny unauthorized reads independently.
- const uid=window.orkaCurrentUid||'';
- const allowed=uid&&window.checkOrkaAdminAccess?await window.checkOrkaAdminAccess(uid):false;
- if(!allowed){host.textContent='غير مصرح بعرض الطلبات.';return;}
- host.innerHTML='<p>جاري تحميل الطلبات...</p>';
- try{
-  const snap=await getDocs(collection(db,'orders'));
-  if(snap.empty){host.innerHTML='<p>لا توجد طلبات مسجلة في قاعدة البيانات حتى الآن.</p>';return;}
-  const rows=snap.docs.map(d=>({id:d.id,...d.data()})).sort((a,b)=>(b.createdAt?.seconds||0)-(a.createdAt?.seconds||0));
-  host.innerHTML=rows.map(o=>{
-   const items=Array.isArray(o.items)?o.items.map(i=>escapeAdminText(i.name||'منتج')+' — '+escapeAdminText(i.color||'')+' — '+escapeAdminText(i.size||'')+' × '+Number(i.qty||1)).join('<br>'):'';
-   const isDone=o.status==='delivered'&&o.pointsAwarded===true;
-   return '<article style="border:1px solid #e8e4dc;border-radius:10px;padding:14px;margin:12px 0">'+
-    '<div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap"><strong>طلب #'+escapeAdminText(o.id)+'</strong><strong>'+escapeAdminText(o.status||'pending')+'</strong></div>'+
-    '<p><b>العميل:</b> '+escapeAdminText(o.customer||'')+' · '+escapeAdminText(o.phone||'')+'<br><b>المحافظة:</b> '+escapeAdminText(o.gov||'')+'<br><b>العنوان:</b> '+escapeAdminText(o.address||'')+'</p>'+
-    '<p><b>المنتجات:</b><br>'+items+'</p><p><b>قيمة المنتجات:</b> '+Number(o.productSubtotal??o.total??0).toLocaleString('ar-EG')+' جنيه<br><b>خصم العضوية:</b> '+Number(o.membershipDiscount||0).toLocaleString('ar-EG')+' جنيه<br><b>رصيد المكافآت المستخدم:</b> '+Number(o.rewardCreditUsed||0).toLocaleString('ar-EG')+' جنيه<br><b>خصم نقاط قديم:</b> '+(o.loyaltyVersion===2?0:Number(o.discount||0)).toLocaleString('ar-EG')+' جنيه<br><b>الإجمالي بعد الخصم وقبل الشحن:</b> '+Number(o.payableTotal??o.total??0).toLocaleString('ar-EG')+' جنيه</p>'+
-    (isDone?'<p style="color:#16845b;font-weight:800">تم تأكيد التسليم وتحديث مكافآت الولاء.</p>':(o.status==='pending'?'<button class="btn" onclick="window.deliverOrkaOrder(\''+escapeAdminText(o.id)+'\')">تأكيد الاستلام وتحديث المكافآت</button>':'<p>حالة الطلب: '+escapeAdminText(o.status||'')+'</p>'))+
-   '</article>';
-  }).join('');
- }catch(err){console.error('ORKA orders load failed:',err);host.innerHTML='<p style="color:#a60f36">تعذر تحميل الطلبات. تأكد من نشر قواعد Firestore وأن حسابك الإداري صحيح.</p>';}
-};
-function escapeAdminText(v){return String(v??'').replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
-window.deliverOrkaOrder = async(orderId) => {
- if(!window.orkaIsAdmin){window.toast?.('غير مصرح لك بتنفيذ العملية.');return;}
- if(!confirm('هل تأكدت أن العميل استلم الطلب فعليًا؟ سيتم اعتماد مكافآت الطلب مرة واحدة فقط.'))return;
- try{
-  const orderRef=doc(db,'orders',orderId);
-  const result=await runTransaction(db,async(tx)=>{
-   const orderSnap=await tx.get(orderRef);
-   if(!orderSnap.exists())throw new Error('الطلب غير موجود.');
-   const order=orderSnap.data();
-   if(order.status!=='pending'||order.pointsAwarded===true)throw new Error('تم اعتماد هذا الطلب من قبل أو تغيرت حالته.');
-   if(!order.uid)throw new Error('الطلب لا يحتوي على حساب عميل مرتبط.');
-   const customerRef=doc(db,'customers',order.uid);
-   const customerSnap=await tx.get(customerRef);
-   if(!customerSnap.exists())throw new Error('ملف العميل غير موجود.');
-   const profile=customerSnap.data();
-   if(Number(order.loyaltyVersion)===2){
-    const currentCredit=Math.max(0,Number(profile.rewardCredit)||0);
-    const creditUsed=Math.max(0,Number(order.rewardCreditUsed)||0);
-    if(creditUsed>currentCredit+0.001)throw new Error('رصيد المكافآت غير كافٍ لهذا الطلب. راجع الطلبات المعلقة قبل تأكيد التسليم.');
-    const subtotal=Math.max(0,Number(order.productSubtotal??order.total)||0);
-    const rate=Math.max(0,Math.min(0.10,Number(order.membershipDiscountRate)||0));
-    const expectedMembershipDiscount=orkaRoundMoney(subtotal*rate);
-    if(Math.abs(expectedMembershipDiscount-Math.max(0,Number(order.membershipDiscount)||0))>0.02)throw new Error('خصم العضوية لا يطابق الحساب المسجل للطلب.');
-    const eligibleSpend=Math.max(0,Number(order.eligibleSpend)||0);
-    if(Math.abs(eligibleSpend-orkaRoundMoney(subtotal-expectedMembershipDiscount))>0.02)throw new Error('قيمة المشتريات المؤهلة غير مطابقة للحساب.');
-    const earnedCredit=orkaRoundMoney(eligibleSpend*0.02);
-    if(Math.abs(earnedCredit-Math.max(0,Number(order.rewardCreditEarned)||0))>0.02)throw new Error('رصيد المكافآت المضاف لا يطابق سياسة 2%.');
-    const lifetimeSpend=Math.max(0,Number(profile.lifetimeSpend)||0);
-    const nextCredit=orkaRoundMoney(Math.max(0,currentCredit-creditUsed)+earnedCredit);
-    tx.update(customerRef,{rewardCredit:nextCredit,lifetimeSpend:orkaRoundMoney(lifetimeSpend+eligibleSpend),updatedAt:serverTimestamp()});
-    tx.update(orderRef,{status:'delivered',pointsAwarded:true,loyaltyProcessed:true,loyaltyProcessedAt:serverTimestamp(),rewardCreditAdded:earnedCredit,rewardCreditRedeemed:creditUsed,eligibleSpend,pointsAwardedAt:serverTimestamp()});
-    return {version:2,earnedCredit,creditUsed,nextCredit,lifetimeSpend:orkaRoundMoney(lifetimeSpend+eligibleSpend)};
-   }
-   const currentPoints=Number.isInteger(profile.points)?profile.points:0;
-   const redeemedPoints=Math.max(0,Math.floor(Number(order.redeemPoints)||0));
-   if(redeemedPoints>currentPoints)throw new Error('رصيد النقاط غير كافٍ لهذا الطلب. راجع الخصم مع العميل قبل تأكيد التسليم.');
-   const productSubtotal=Math.max(0,Number(order.productSubtotal??order.total)||0);
-   const expectedDiscount=redeemedPoints*2.5;
-   if(Math.abs(Math.max(0,Number(order.discount)||0)-expectedDiscount)>0.01)throw new Error('قيمة خصم النقاط غير مطابقة للسياسة القديمة.');
-   const addedPoints=Math.floor(productSubtotal/50);
-   tx.update(customerRef,{points:currentPoints-redeemedPoints+addedPoints});
-   tx.update(orderRef,{status:'delivered',pointsAwarded:true,pointsRedeemed:true,pointsRedeemedAt:redeemedPoints?serverTimestamp():null,pointsAwardedAt:serverTimestamp(),pointsAdded:addedPoints});
-   return {version:1,addedPoints,redeemedPoints};
-  });
-  if(result.version===2){window.toast?.('تم تأكيد التسليم. أُضيف '+money(result.earnedCredit)+' رصيد مكافآت، وأصبح رصيد العميل '+money(result.nextCredit)+'.');}
-  else{window.toast?.('تم تأكيد التسليم. النقاط المضافة: '+result.addedPoints+'، والنقاط المستخدمة: '+result.redeemedPoints+'.');}
-  await window.loadOrkaAdminOrders();
- }catch(err){console.error('ORKA delivery award failed:',err);window.toast?.('تعذر اعتماد الطلب: '+(err.message||'خطأ غير معروف'));}
-};
-
 window.saveOrkaCustomerProfile = async(user, displayName) => {
  if(!user?.uid) throw new Error('لا يوجد حساب مسجّل لحفظ بيانات العميل.');
  const profileRef=doc(db,'customers',user.uid);
@@ -2409,4 +2307,4 @@ object-fit:contain!important;object-position:center top!important;transform:scal
 </style>
 <style id="orka-consent-styles">#orkaConsent{position:fixed;bottom:12px;left:12px;right:12px;max-width:620px;margin:auto;z-index:99999;background:#fff;color:#10294a;border:1px solid #d8dce4;border-radius:14px;padding:18px;box-shadow:0 8px 35px #10294a35;font:14px/1.8 Arial,sans-serif;direction:rtl}#orkaConsent[hidden]{display:none}#orkaConsent button{padding:10px 14px;margin:4px;border:1px solid #10294a;border-radius:7px;background:#fff;color:#10294a;cursor:pointer}#orkaConsent button.primary{background:#10294a;color:white}#orkaConsent a{color:#a60f36}</style>
 <div id="orkaConsent" hidden role="dialog" aria-label="اختيارات الخصوصية"><strong>خصوصيتك مهمة عند ORKA</strong><p>بنستخدم التخزين الضروري لتشغيل الموقع والسلة والحساب. تحليلات الزيارات اختيارية، ومش هنفعّلها إلا بموافقتك. <a href="privacy.html">سياسة الخصوصية</a></p><div id="orkaConsentOptions" hidden><label><input id="orkaAnalyticsOpt" type="checkbox"> السماح بتحليلات الزيارات (Google Analytics)</label><p>التخزين الضروري لتشغيل الموقع لا يمكن تعطيله من هنا.</p></div><button type="button" id="orkaConsentReject">رفض الاختياري</button><button type="button" id="orkaConsentCustomize">تخصيص</button><button type="button" id="orkaConsentAccept" class="primary">موافقة</button></div>
-<script id="orka-consent-script">(()=>{const key='orka-consent-v1';let saved=null;try{saved=JSON.parse(localStorage.getItem(key)||'null')}catch(e){};const apply=v=>{if(typeof gtag==='function')gtag('consent','update',{analytics_storage:v.analytics?'granted':'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'})};if(saved&&typeof saved.analytics==='boolean')apply(saved);else document.getElementById('orkaConsent').hidden=false;const save=analytics=>{const v={analytics,updatedAt:new Date().toISOString()};try{localStorage.setItem(key,JSON.stringify(v))}catch(e){}apply(v);document.getElementById('orkaConsent').hidden=true};document.getElementById('orkaConsentReject').onclick=()=>save(false);document.getElementById('orkaConsentAccept').onclick=()=>save(document.getElementById('orkaConsentOptions').hidden?true:document.getElementById('orkaAnalyticsOpt').checked);document.getElementById('orkaConsentCustomize').onclick=()=>{document.getElementById('orkaConsentOptions').hidden=false;document.getElementById('orkaConsentAccept').textContent='حفظ اختياراتي'};window.orkaOpenPrivacySettings=()=>{document.getElementById('orkaConsent').hidden=false;document.getElementById('orkaConsentOptions').hidden=false;document.getElementById('orkaAnalyticsOpt').checked=!!(saved&&saved.analytics)};})();</script><div style="text-align:center;padding:12px"><button type="button" onclick="window.orkaOpenPrivacySettings&&window.orkaOpenPrivacySettings()" style="background:transparent;border:1px solid #aaa;padding:8px;border-radius:7px">إعدادات الخصوصية</button></div></body></html>
+<script id="orka-consent-script">(()=>{const key='orka-consent-v1';let saved=null;try{saved=JSON.parse(localStorage.getItem(key)||'null')}catch(e){};const apply=v=>{if(typeof gtag==='function')gtag('consent','update',{analytics_storage:v.analytics?'granted':'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied'});if(v.analytics&&!document.getElementById('orkaAnalyticsLoader')){const t=document.createElement('script');t.id='orkaAnalyticsLoader';t.async=true;t.src='https://www.googletagmanager.com/gtag/js?id=G-RK8VY1JCSG';document.head.appendChild(t);gtag('config','G-RK8VY1JCSG')}};if(saved&&typeof saved.analytics==='boolean')apply(saved);else document.getElementById('orkaConsent').hidden=false;const save=analytics=>{saved={analytics,updatedAt:new Date().toISOString()};const v=saved;try{localStorage.setItem(key,JSON.stringify(v))}catch(e){}apply(v);document.getElementById('orkaConsent').hidden=true};document.getElementById('orkaConsentReject').onclick=()=>save(false);document.getElementById('orkaConsentAccept').onclick=()=>save(document.getElementById('orkaConsentOptions').hidden?true:document.getElementById('orkaAnalyticsOpt').checked);document.getElementById('orkaConsentCustomize').onclick=()=>{document.getElementById('orkaConsentOptions').hidden=false;document.getElementById('orkaConsentAccept').textContent='حفظ اختياراتي'};window.orkaOpenPrivacySettings=()=>{document.getElementById('orkaConsent').hidden=false;document.getElementById('orkaConsentOptions').hidden=false;document.getElementById('orkaAnalyticsOpt').checked=!!(saved&&saved.analytics)};})();</script><div style="text-align:center;padding:12px"><button type="button" onclick="window.orkaOpenPrivacySettings&&window.orkaOpenPrivacySettings()" style="background:transparent;border:1px solid #aaa;padding:8px;border-radius:7px">إعدادات الخصوصية</button></div></body></html>
