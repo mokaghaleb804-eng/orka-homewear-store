@@ -1,0 +1,17 @@
+{
+  "name": "ORKA HOMEWEAR",
+  "short_name": "ORKA",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FFFAF1",
+  "theme_color": "#10294A",
+  "icons": [
+    {
+      "src": "/orka_logo_transparent.png",
+      "type": "image/png",
+      "sizes": "any",
+      "purpose": "any"
+    }
+  ]
+}
