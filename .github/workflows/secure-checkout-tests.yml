@@ -1,0 +1,43 @@
+name: Secure checkout isolated emulator tests
+on:
+  pull_request:
+    branches: [main]
+    paths:
+      - 'functions/**'
+      - 'checkout/**'
+      - 'tests/**'
+      - 'firestore.rules.secure-draft'
+      - 'firebase.emulator.json'
+      - 'package*.json'
+      - '.github/workflows/secure-checkout-tests.yml'
+  push:
+    branches: [feature/secure-checkout-backend-draft]
+    paths:
+      - 'functions/**'
+      - 'checkout/**'
+      - 'tests/**'
+      - 'firestore.rules.secure-draft'
+      - 'firebase.emulator.json'
+      - 'package*.json'
+      - '.github/workflows/secure-checkout-tests.yml'
+permissions:
+  contents: read
+jobs:
+  isolated-checkout:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '21'
+      - run: npm ci --ignore-scripts --no-audit --no-fund
+      - run: npm ci --prefix functions --ignore-scripts --no-audit --no-fund
+      - run: npm run check --prefix functions
+      - run: npm test
+      # Demo-only tests. No credentials, Firebase deploy, Vercel deploy, or production writes.
