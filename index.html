@@ -1072,33 +1072,30 @@ html[lang="en"] .orka-offer-money-ar,html[lang="ar"] .orka-offer-money-en{displa
 }
 </style>
 <style id="orka-launch-bar-style">
-.topbar.orka-launch-bar{display:flex;align-items:center;gap:6px;padding:2px 10px;min-height:38px;font-size:clamp(11px,3.1vw,14px);letter-spacing:normal}
-.orka-launch-window{flex:1;min-inline-size:0;overflow:hidden}
-.orka-launch-track{direction:ltr;display:flex;inline-size:max-content;min-inline-size:200%;animation:orka-launch-scroll 14s linear infinite}
-.orka-launch-message{flex:1 0 auto;display:grid;place-items:center;padding-inline:20px;white-space:nowrap}
-.orka-launch-bar b{color:#fff}
-.orka-launch-motion{display:grid;place-items:center;flex:none;inline-size:34px;block-size:34px;border:0;border-radius:5px;background:transparent;color:#fff}
-.orka-launch-motion:focus-visible{outline:2px solid #fff;outline-offset:-3px}
-.orka-launch-motion span{inline-size:10px;block-size:11px;border-inline:3px solid currentColor}
-.orka-launch-motion[aria-pressed="true"] span{inline-size:0;block-size:0;border:0;border-block:6px solid transparent;border-left:9px solid currentColor}
-.orka-launch-bar.is-paused .orka-launch-track{animation-play-state:paused}
+.topbar.orka-launch-bar{padding:4px 0;min-height:54px;font-size:clamp(12px,3.5vw,16px);letter-spacing:normal}
+.orka-launch-window{overflow:hidden}
+.orka-launch-window:focus-visible{outline:2px solid #fff;outline-offset:-2px}
+.orka-launch-track{direction:ltr;display:flex;inline-size:max-content;min-inline-size:200%;animation:orka-launch-scroll 8s linear infinite}
+.orka-launch-message{flex:1 0 auto;display:flex;justify-content:center;align-items:center;gap:10px;padding-inline:24px;white-space:nowrap;font-weight:800}
+html[lang="ar"] .orka-launch-message{direction:rtl}
+.orka-launch-burst{--burst:polygon(50% 0%,58% 16%,73% 4%,76% 22%,93% 19%,88% 35%,100% 50%,88% 63%,93% 81%,76% 78%,73% 96%,58% 84%,50% 100%,42% 84%,27% 96%,24% 78%,7% 81%,12% 63%,0% 50%,12% 35%,7% 19%,24% 22%,27% 4%,42% 16%);flex:none;display:grid;place-items:center;min-inline-size:52px;min-block-size:44px;padding:8px;color:#10294a;background:#ffe4a9;clip-path:var(--burst);font-size:14px;font-weight:900;line-height:1}
+.orka-launch-window:hover .orka-launch-track,.orka-launch-window:focus .orka-launch-track{animation-play-state:paused}
 @keyframes orka-launch-scroll{to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){
  .orka-launch-track{inline-size:100%;min-inline-size:0;animation:none}
- .orka-launch-message{white-space:normal;padding-inline:4px}
- .orka-launch-copy,.orka-launch-motion{display:none}
+ .orka-launch-message{white-space:normal;padding-inline:6px}
+ .orka-launch-copy{display:none}
 }
 </style>
 </head>
 <body>
 <div class="topbar orka-launch-bar" id="orkaLaunchBar">
- <div class="orka-launch-window">
+ <div class="orka-launch-window" tabindex="0" aria-label="عرض الإطلاق">
   <div class="orka-launch-track">
-   <div class="orka-launch-message"><b><bdi>خصم ٢٥٪ بمناسبة إطلاق الموقع</bdi></b></div>
-   <div class="orka-launch-message orka-launch-copy" aria-hidden="true"><b><bdi>خصم ٢٥٪ بمناسبة إطلاق الموقع</bdi></b></div>
+   <div class="orka-launch-message"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
+   <div class="orka-launch-message orka-launch-copy" aria-hidden="true"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
   </div>
  </div>
- <button class="orka-launch-motion" id="orkaLaunchMotion" type="button" aria-pressed="false" aria-label="إيقاف حركة شريط العرض"><span aria-hidden="true"></span></button>
 </div>
 
 <header class="header orka-signature-header"><nav class="nav"><button class="orka-menu-trigger iconbtn" id="orkaMenuOpen" type="button" aria-label="Menu" aria-controls="orkaSideMenu" aria-expanded="false"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button><a class="brand brand-image orka-new-header-logo" href="#home" aria-label="ORKA HOMEWEAR"><img class="orka-header-full-logo" src="orka_logo_transparent.png" alt="ORKA HOMEWEAR" fetchpriority="high"></a><div class="signature-nav-links"><a href="#shop">New In</a><a href="#shop" onclick="document.querySelector('[data-filter=boys]')?.click()">Boys</a><a href="#shop" onclick="document.querySelector('[data-filter=girls]')?.click()">Girls</a><a href="#orkaStory">Our Story</a><a href="#orkaClub" aria-label="ORKA CLUB loyalty program">ORKA CLUB</a></div><div class="nav-actions"><button class="language-toggle orka-header-language" id="orkaLanguageToggle" type="button" onclick="toggleOrkaLanguage()" aria-label="Switch to Arabic">العربية</button><button class="iconbtn" aria-label="Search" onclick="document.getElementById('shop').scrollIntoView({behavior:'smooth'})"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5"/></svg></button><button class="iconbtn" onclick="openAccount()" id="accountBtn" aria-label="Account"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.4"/><path d="M5.5 20c.25-4.1 2.65-6.3 6.5-6.3s6.25 2.2 6.5 6.3"/><circle cx="12" cy="12" r="10.2" opacity=".55"/></svg></button><button class="iconbtn orka-favorites-nav" type="button" onclick="openFavorites()" aria-label="Favorites"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20.3 4.3 12.8C.4 8.9 3 3.6 7.5 3.6c2 0 3.5 1 4.5 2.3 1-1.3 2.5-2.3 4.5-2.3 4.5 0 7.1 5.3 3.2 9.2L12 20.3Z"/></svg><span class="cart-count" id="favoriteNavCount">0</span></button><button class="iconbtn orka-cart-nav" type="button" onclick="openCart()" aria-label="Shopping bag"><svg viewBox="0 0 24 24" width="21" height="21" fill="none" stroke="currentColor" stroke-width="1.55" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h16l-1 13H5L4 8Z"/><path d="M9 9V6a3 3 0 0 1 6 0v3"/></svg><span class="cart-count" id="cartCount">0</span></button></div></nav></header>
@@ -1825,8 +1822,9 @@ window.orkaAuthReady=new Promise(resolve=>{
 <script>
 (function(){
  const translations = {
- "خصم ٢٥٪ بمناسبة إطلاق الموقع":"25% off to celebrate our website launch",
- "إيقاف حركة شريط العرض":"Pause the offer banner",
+ "٢٥٪":"25%",
+ "خصم بمناسبة إطلاق الموقع":"off to celebrate our website launch",
+ "عرض الإطلاق":"Website launch offer",
  "المحفظة الجديدة قيد التجهيز، ولا يظهر رصيد فعلي قبل تفعيل الخادم الآمن.":"The new wallet is in development. Live credit will appear after the secure service is enabled.",
  "10% من قيمة المنتجات المؤهلة بالسعر الكامل، بعد تأكيد التسليم، وصلاحية الرصيد 30 يومًا. استخدام الرصيد حتى قيمة قطعة واحدة في الطلب، والباقي يظل متاحًا حتى انتهاء صلاحيته الأصلية. الرصيد شخصي وغير قابل للتحويل، ولا يُكتسب رصيد على الطلبات المخفضة أو المستخدمة فيها المحفظة.":"Earn 10% on eligible full-price items after delivery is confirmed. Credit lasts 30 days and applies to one item per order. The remainder keeps its original expiry date. Credit is personal and non-transferable. Discounted or wallet-paid orders do not earn credit.",
  "عنوان الشحن المحفوظ":"Saved delivery address",
@@ -2755,12 +2753,4 @@ body .sports-editorial-categories .sports-category-card:hover img{transform:none
 body .sports-editorial-categories .sports-category-card:after{background:linear-gradient(to bottom,transparent 43%,rgba(10,25,43,.08) 62%,rgba(10,25,43,.82) 100%)!important}
 }
 </style>
-<script>
-const launchMotionButton=document.getElementById('orkaLaunchMotion');
-launchMotionButton.addEventListener('click',()=>{
- const paused=launchMotionButton.getAttribute('aria-pressed')!=='true';
- document.getElementById('orkaLaunchBar').classList.toggle('is-paused',paused);
- launchMotionButton.setAttribute('aria-pressed',String(paused));
-});
-</script>
 </body></html>
