@@ -1262,12 +1262,12 @@ let cart=[];try{const savedCart=JSON.parse(localStorage.getItem('orka-cart')||'[
 
 function money(n){return new Intl.NumberFormat('ar-EG',{maximumFractionDigits:2}).format(n)+' ج.م'}
 const previewOffersBySize = {
-  2: {old: 899, price: 535},
-  4: {old: 899, price: 535},
-  6: {old: 899, price: 535},
-  8: {old: 899, price: 635},
-  10: {old: 899, price: 635},
-  12: {old: 899, price: 705}
+  2: {old: 720, price: 535},
+  4: {old: 720, price: 535},
+  6: {old: 720, price: 535},
+  8: {old: 850, price: 635},
+  10: {old: 899, price: 674.25},
+  12: {old: 899, price: 674.25}
 };
 
 function renderOfferMoney(amount) {
