@@ -1075,16 +1075,18 @@ html[lang="en"] .orka-offer-money-ar,html[lang="ar"] .orka-offer-money-en{displa
 .topbar.orka-launch-bar{padding:4px 0;min-height:54px;font-size:clamp(12px,3.5vw,16px);letter-spacing:normal}
 .orka-launch-window{overflow:hidden}
 .orka-launch-window:focus-visible{outline:2px solid #fff;outline-offset:-2px}
-.orka-launch-track{direction:ltr;display:flex;inline-size:max-content;min-inline-size:200%;animation:orka-launch-scroll 8s linear infinite}
-.orka-launch-message{flex:1 0 auto;display:flex;justify-content:center;align-items:center;gap:10px;padding-inline:24px;white-space:nowrap;font-weight:800}
+.orka-launch-track{direction:ltr;display:flex;inline-size:max-content;min-inline-size:200%;animation:orka-launch-scroll 14s linear infinite}
+.orka-launch-group{flex:1 0 auto;display:flex;justify-content:space-around;align-items:center;gap:20px;padding-inline:10px}
+.orka-launch-message{flex:none;display:flex;justify-content:center;align-items:center;gap:10px;white-space:nowrap;font-weight:800}
 html[lang="ar"] .orka-launch-message{direction:rtl}
 .orka-launch-burst{--burst:polygon(50% 0%,58% 16%,73% 4%,76% 22%,93% 19%,88% 35%,100% 50%,88% 63%,93% 81%,76% 78%,73% 96%,58% 84%,50% 100%,42% 84%,27% 96%,24% 78%,7% 81%,12% 63%,0% 50%,12% 35%,7% 19%,24% 22%,27% 4%,42% 16%);flex:none;display:grid;place-items:center;min-inline-size:52px;min-block-size:44px;padding:8px;color:#10294a;background:#ffe4a9;clip-path:var(--burst);font-size:14px;font-weight:900;line-height:1}
 .orka-launch-window:hover .orka-launch-track,.orka-launch-window:focus .orka-launch-track{animation-play-state:paused}
 @keyframes orka-launch-scroll{to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){
  .orka-launch-track{inline-size:100%;min-inline-size:0;animation:none}
- .orka-launch-message{white-space:normal;padding-inline:6px}
- .orka-launch-copy{display:none}
+ .orka-launch-group{min-inline-size:0;padding-inline:6px}
+ .orka-launch-message{flex:1;min-inline-size:0;white-space:normal}
+ .orka-launch-repeat{display:none}
 }
 </style>
 </head>
@@ -1092,8 +1094,18 @@ html[lang="ar"] .orka-launch-message{direction:rtl}
 <div class="topbar orka-launch-bar" id="orkaLaunchBar">
  <div class="orka-launch-window" tabindex="0" aria-label="عرض الإطلاق">
   <div class="orka-launch-track">
-   <div class="orka-launch-message"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
-   <div class="orka-launch-message orka-launch-copy" aria-hidden="true"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
+   <div class="orka-launch-group">
+    <div class="orka-launch-message"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
+    <div class="orka-launch-message orka-launch-repeat" aria-hidden="true"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
+    <div class="orka-launch-message orka-launch-repeat" aria-hidden="true"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
+    <div class="orka-launch-message orka-launch-repeat" aria-hidden="true"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
+   </div>
+   <div class="orka-launch-group orka-launch-repeat" aria-hidden="true">
+    <div class="orka-launch-message"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
+    <div class="orka-launch-message"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
+    <div class="orka-launch-message"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
+    <div class="orka-launch-message"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
+   </div>
   </div>
  </div>
 </div>
