@@ -67,7 +67,7 @@
 <div class="field"><label for="orderNo">رقم الأوردر *</label><input id="orderNo" name="orderNo" required maxlength="40" placeholder="مثال: ORKA-1234"></div>
 <div class="field"><label for="phone">رقم الموبايل المستخدم في الطلب *</label><input id="phone" name="phone" required inputmode="tel" maxlength="25" placeholder="01xxxxxxxxx"></div>
 <div class="field"><label for="email">البريد الإلكتروني (اختياري)</label><input id="email" name="email" type="email" maxlength="100" placeholder="name@example.com"></div>
-<div class="field"><label for="requestType">نوع الطلب *</label><select id="requestType" name="requestType" required><option value="">اختار نوع الطلب</option><option>استبدال منتج (Exchange)</option><option>استرجاع منتج ورد المبلغ (Refund)</option><option>منتج ناقص أو تالف أو مختلف</option></select></div>
+<div class="field"><label for="requestType">نوع الطلب *</label><select id="requestType" name="requestType" required><option value="">اختار نوع الطلب</option><option value="exchange">استبدال منتج (Exchange)</option><option value="refund">استرجاع منتج ورد المبلغ (Refund)</option><option value="issue">منتج ناقص أو تالف أو مختلف</option></select></div>
 <div class="field full"><label for="items">المنتج/المنتجات المطلوبة *</label><input id="items" name="items" required maxlength="300" placeholder="اسم المنتج، اللون، المقاس والكمية"></div>
 <div class="field full"><label for="details">تفاصيل إضافية (اختياري)</label><textarea id="details" name="details" maxlength="1000" placeholder="وضح سبب الطلب أو وصف المشكلة"></textarea></div>
 </div>
@@ -82,18 +82,104 @@ document.getElementById('returnForm').addEventListener('submit',function(event){
  event.preventDefault();
  const form=new FormData(event.currentTarget);
  const value=name=>String(form.get(name)||'').trim();
- const message=[
+ const inEnglish=document.documentElement.lang==='en';
+ const requestTypeLabels={
+   exchange:inEnglish?'Exchange':'استبدال منتج',
+   refund:inEnglish?'Return and refund':'استرجاع منتج ورد المبلغ',
+   issue:inEnglish?'Missing, damaged, or incorrect item':'منتج ناقص أو تالف أو مختلف'
+ };
+ const requestType=requestTypeLabels[value('requestType')];
+ const message=(inEnglish?[
+  'New exchange or return request — ORKA HOMEWEAR',
+  'Order: '+value('orderNo'),
+  'Mobile: '+value('phone'),
+  'Email: '+(value('email')||'Not provided'),
+  'Request type: '+requestType,
+  'Items: '+value('items'),
+  'Details: '+(value('details')||'No additional details'),
+  'These details are for my order. Please review my request under the ORKA HOMEWEAR policy.'
+ ]:[
   'طلب استبدال/استرجاع جديد — ORKA HOMEWEAR',
   'رقم الأوردر: '+value('orderNo'),
   'رقم الموبايل: '+value('phone'),
   'البريد الإلكتروني: '+(value('email')||'غير مذكور'),
-  'نوع الطلب: '+value('requestType'),
+  'نوع الطلب: '+requestType,
   'المنتجات: '+value('items'),
   'التفاصيل: '+(value('details')||'لا توجد تفاصيل إضافية'),
   'أقر بأن البيانات أعلاه تخص طلبي، وأطلب مراجعة الطلب وفق سياسة ORKA HOMEWEAR.'
- ].join('\n');
+ ]).join('\n');
  window.open('https://wa.me/201021006006?text='+encodeURIComponent(message),'_blank','noopener,noreferrer');
 });
+</script>
+<script>
+(()=>{
+ const english={
+  "الاستبدال والاسترجاع | ORKA HOMEWEAR": "Returns and exchanges | ORKA HOMEWEAR",
+  "ORKA HOMEWEAR — حكاية كل بيت": "ORKA HOMEWEAR — A story in every home",
+  "← الرجوع للمتجر": "← Back to the store",
+  "سياسة الاستبدال والاسترجاع": "Returns and exchanges policy",
+  "رضاك عن مشترياتك يهمنا. راجع الشروط التالية، ولو محتاج استبدال أو استرجاع املأ الطلب وسنفتح لك رسالة واتساب لإرساله لفريق خدمة العملاء.": "We want you to be happy with your purchase. Review the terms below. To request an exchange or return, fill in the form to open a WhatsApp message for customer service.",
+  "مدة طلب الاستبدال أو الاسترجاع: 14 يومًا من الاستلام": "Exchange or return requests: within 14 days of delivery",
+  "إزاي تطلب استبدال أو استرجاع؟": "How to request an exchange or return",
+  "املأ بيانات الطلب في النموذج الموجود بالصفحة.": "Enter your order details in the form on this page.",
+  "اضغط «إرسال الطلب عبر واتساب» لمشاركة التفاصيل مع خدمة العملاء.": "Select “Send via WhatsApp” to share your details with customer service.",
+  "هنراجع رقم الأوردر والمنتجات وننسق معاك خطوات الاستلام والبديل أو رد المبلغ.": "We’ll review the order number and items and arrange collection, replacement, or a refund with you.",
+  "في حالة الاستبدال، لا تعمل أوردر جديد قبل ما خدمة العملاء تأكد لك طريقة الاستبدال والتنسيق.": "For exchanges, wait for customer service to confirm the arrangements before placing a new order.",
+  "شروط الاستبدال والاسترجاع": "Exchange and return conditions",
+  "يمكن تقديم طلب الاستبدال أو الاسترجاع خلال": "You may request an exchange or return within",
+  "14 يومًا من تاريخ استلام الطلب": "14 days of receiving your order",
+  "، مع مراعاة الحقوق القانونية للمستهلك.": ", subject to your legal rights as a consumer.",
+  "يشترط أن يكون المنتج غير مستخدم أو مغسول، وبحالته الأصلية وبكامل ملحقاته وتغليفه قدر الإمكان، مع إثبات الشراء.": "The item must be unused, unwashed and in its original condition, with accessories and packaging where possible and proof of purchase.",
+  "لا تُقبل طلبات إرجاع الملابس الداخلية والمنتجات المماثلة ذات الطبيعة الصحية، مثل الفوط والليجين والبرمودا الحريمي وأطقم التدفئة الداخلية، إلا بالقدر الذي يسمح به القانون، ولا يسري الاستثناء عند وجود عيب أو عدم مطابقة متى أوجب القانون خلاف ذلك.": "We do not accept returns of underwear and similar hygiene-sensitive items, such as towels, leggings, women’s Bermuda shorts and thermal underwear sets, except to the extent permitted by law. The exception does not apply to defects or nonconformity where the law requires otherwise.",
+  "المنتجات المشتراة ضمن العروض والخصومات تخضع للحقوق والشروط القانونية ذات الصلة؛ ولا يُمنع الاستبدال أو الاسترجاع لمجرد أن المنتج كان ضمن عرض.": "Discounted products are subject to applicable consumer rights and terms. Being on sale does not by itself make an item ineligible for exchange or return.",
+  "مصاريف الشحن": "Shipping charges",
+  "إذا أرسلنا منتجًا مختلفًا عن الطلب أو ثبت وجود عيب تصنيع، تتحمل ORKA HOMEWEAR مصاريف الشحن اللازمة لمعالجة المشكلة.": "If we sent the wrong item or confirm a manufacturing defect, ORKA HOMEWEAR covers the shipping needed to resolve the issue.",
+  "في حالات تغيير الرأي أو عدم ملاءمة المقاس، يتحمل العميل مصاريف الشحن إذا كان ذلك متوافقًا مع القانون، وسيتم توضيح أي تكلفة قبل إتمام الإجراء.": "For a change of mind or a sizing issue, the customer pays shipping where permitted by law. We will explain any charges before proceeding.",
+  "المنتجات الناقصة أو التالفة": "Missing or damaged items",
+  "لو وصل الطلب وفيه قطعة ناقصة أو منتج تالف أو مختلف عن المطلوب، برجاء التواصل معنا خلال": "If an item is missing, damaged or different from what you ordered, please contact us within",
+  "48 ساعة من الاستلام": "48 hours of delivery",
+  "وإرسال رقم الطلب وصور واضحة إن أمكن، لمساعدتنا في مراجعة المشكلة بسرعة. مرور 48 ساعة لا يسقط أي حق قانوني للمستهلك.": "and share the order number and clear photos if possible so we can review it quickly. The 48-hour period does not affect any legal consumer right.",
+  "استرداد الأموال": "Refunds",
+  "بعد مراجعة الطلب واعتماد الاسترجاع، يتم رد المبلغ بالطريقة المناسبة والمتفق عليها، مع توضيح المدة المتوقعة وفقًا لوسيلة الدفع وإجراءات المعالجة.": "Once we review and approve the return, we will refund the amount using an appropriate, agreed method. We will explain the expected timing based on the payment method and processing steps.",
+  "تهدف هذه السياسة إلى توضيح إجراءات ORKA HOMEWEAR، ولا تنتقص من أي حق إلزامي مقرر للمستهلك بموجب القوانين المصرية.": "This policy explains ORKA HOMEWEAR procedures and does not limit mandatory consumer rights under Egyptian law.",
+  "طلب استبدال أو استرجاع": "Request an exchange or return",
+  "اكتب البيانات بدقة. عند الضغط على زر الإرسال، هتتفتح واتساب برسالة جاهزة لخدمة العملاء، ولازم تضغط إرسال داخل واتساب لإتمام التواصل.": "Enter your details. The button opens a prepared WhatsApp message for customer service. Select Send inside WhatsApp to contact us.",
+  "رقم الأوردر *": "Order number *",
+  "رقم الموبايل المستخدم في الطلب *": "Mobile number used for the order *",
+  "البريد الإلكتروني (اختياري)": "Email (optional)",
+  "نوع الطلب *": "Request type *",
+  "اختار نوع الطلب": "Choose a request type",
+  "استبدال منتج (Exchange)": "Exchange an item",
+  "استرجاع منتج ورد المبلغ (Refund)": "Return an item for a refund",
+  "منتج ناقص أو تالف أو مختلف": "Missing, damaged, or incorrect item",
+  "المنتج/المنتجات المطلوبة *": "Item(s) involved *",
+  "تفاصيل إضافية (اختياري)": "Additional details (optional)",
+  "إرسال الطلب عبر واتساب ↗": "Send via WhatsApp ↗",
+  "هذا النموذج لا يحفظ الطلب داخل الموقع؛ يجهز رسالة واتساب لإرسالها يدويًا إلى خدمة العملاء. سيتم مراجعة الطلب وتأكيد الخطوات قبل تنفيذ الاستبدال أو رد المبلغ.": "This form prepares a WhatsApp message for you to send manually. We will review the request and confirm the next steps before issuing an exchange or refund.",
+  "راحة واهتمام في كل تفصيلة ❤️ ·": "Comfort and care in every detail ❤️ ·",
+  "سياسة الخصوصية": "Privacy policy",
+  "مثال: ORKA-1234": "Example: ORKA-1234",
+  "اسم المنتج، اللون، المقاس والكمية": "Product name, color, size and quantity",
+  "وضح سبب الطلب أو وصف المشكلة": "Explain the reason or describe the issue"
+};
+ let language='en';
+ try{language=localStorage.getItem('orka-language')==='ar'?'ar':'en'}catch(e){}
+ function localizeText(s){return s.replace(/\S(?:[\s\S]*\S)?/,key=>english[key]||key)}
+ document.documentElement.lang=language;
+ document.documentElement.dir=language==='ar'?'rtl':'ltr';
+ if(language==='ar')return;
+ document.title=localizeText(document.title);
+ const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+ let node;
+ while((node=walker.nextNode())){
+  if(!node.parentElement.closest('script,style'))node.nodeValue=localizeText(node.nodeValue);
+ }
+ for(const element of document.querySelectorAll('[placeholder],[aria-label],[title]')){
+  for(const key of ['placeholder','aria-label','title']){
+   if(element.hasAttribute(key))element.setAttribute(key,localizeText(element.getAttribute(key)));
+  }
+ }
+})();
 </script>
 </body>
 </html>

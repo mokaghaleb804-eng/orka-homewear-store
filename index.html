@@ -1071,6 +1071,11 @@ html[lang="en"] .orka-offer-money-ar,html[lang="ar"] .orka-offer-money-en{displa
  body #home .signature-hero-copy p {font-size:clamp(13px,1.1vw,16px)!important;max-width:460px!important;line-height:1.7!important;}
 }
 </style>
+<style id="orka-language-direction">
+html[lang="ar"] body #home .signature-hero-copy,
+html[lang="ar"] body #home .signature-hero-copy h1{text-align:start!important;letter-spacing:normal!important}
+html[lang="ar"] body #home .signature-hero-copy{align-items:flex-start}
+</style>
 </head>
 <body>
 <div class="topbar">ORKA HOMEWEAR للأطفال 🐳 — <b>بنجهّز أول مجموعة شتوية</b> · قريبًا</div>
@@ -1181,7 +1186,7 @@ function renderAccount(){
   host.innerHTML='<div class="eyebrow">ORKA CLUB</div><h3>ادخل لحسابك بسهولة ♡</h3><p>اختار الدخول بحساب Google أو Facebook. مش محتاجين كود SMS لتسجيل الدخول.</p><button class="btn btn-gold" type="button" style="width:100%;margin-top:12px" onclick="loginOrkaSocial(\'google\')">🌐 المتابعة باستخدام Google</button><button class="btn btn-outline" type="button" style="width:100%;margin-top:10px" onclick="loginOrkaSocial(\'facebook\')">f المتابعة باستخدام Facebook</button><p class="account-warning">رقم الموبايل هيتطلب عند إتمام طلب الشراء، علشان شركة الشحن تتواصل معاك.</p>';
   return;
  }
- host.innerHTML='<div class="eyebrow">ORKA CLUB</div><h3 id="orkaCustomerGreeting">أهلًا يا '+escapeAccountText(c.name)+' ♡</h3><p>طريقة الدخول: '+escapeAccountText(c.email||c.phone||'Google / Facebook')+(c.phone?' · رقم الهاتف: '+escapeAccountText(c.phone):' · رقم الهاتف هيتطلب عند الشراء')+'</p><div class="points-card"><strong>ORKA CLUB · محفظة المكافآت الجديدة</strong><p style="font-size:12px;line-height:1.9">10% من قيمة المنتجات المؤهلة بالسعر الكامل، بعد تأكيد التسليم، وصلاحية الرصيد 30 يومًا. استخدام الرصيد حتى قيمة قطعة واحدة في الطلب، والباقي يظل متاحًا حتى انتهاء صلاحيته الأصلية. الرصيد شخصي وغير قابل للتحويل، ولا يُكتسب رصيد على الطلبات المخفضة أو المستخدمة فيها المحفظة.</p><small>المحفظة الجديدة قيد التجهيز، ولا يظهر رصيد فعلي قبل تفعيل الخادم الآمن.</small></div><section style="margin-top:18px"><h4 style="color:var(--navy);margin:0 0 8px">عنوان الشحن المحفوظ</h4><form class="account-form" onsubmit="saveOrkaAddress(event)"><label>المحافظة<select name="gov" required><option value="">اختار المحافظة</option>'+['القاهرة','الجيزة','الإسكندرية','القليوبية','الشرقية','الدقهلية','البحيرة','الغربية','المنوفية','كفر الشيخ','دمياط','بورسعيد','الإسماعيلية','السويس','الفيوم','بني سويف','المنيا','أسيوط','سوهاج','قنا','الأقصر','أسوان','البحر الأحمر','مطروح','شمال سيناء','جنوب سيناء','الوادي الجديد'].map(g=>'<option>'+g+'</option>').join('')+'</select></label><label>العنوان بالتفصيل<textarea name="address" required maxlength="500" placeholder="المنطقة، الشارع، رقم العقار، علامة مميزة"></textarea></label><button class="btn btn-outline" type="submit">حفظ عنوان الشحن</button></form></section><section style="margin-top:20px"><h4 style="color:var(--navy);margin:0 0 10px">طلباتي</h4><div id="orkaCustomerOrderList"><p class="notice">جاري تحميل طلباتك...</p></div></section><p>ORKA CLUB قريبًا: 10% كاش باك من قيمة مشترياتك المؤهلة بالسعر الكامل، بيتضاف بعد استلام الطلب، وتقدر تستخدمه خلال 30 يوم كخصم على مشترياتك الجاية. البرنامج لسه مش مفعّل.</p><button id="orkaAdminButton" class="btn" style="width:100%;margin-top:10px;display:none" onclick="window.openOrkaAdminPanel()">لوحة إدارة الطلبات</button><button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="logoutOrka()">تسجيل الخروج</button>';
+ host.innerHTML='<div class="eyebrow">ORKA CLUB</div><h3 id="orkaCustomerGreeting">أهلًا يا '+escapeAccountText(c.name)+' ♡</h3><p>طريقة الدخول: '+escapeAccountText(c.email||c.phone||'Google / Facebook')+(c.phone?' · رقم الهاتف: '+escapeAccountText(c.phone):' · رقم الهاتف هيتطلب عند الشراء')+'</p><div class="points-card"><strong>ORKA CLUB · محفظة المكافآت الجديدة</strong><p style="font-size:12px;line-height:1.9">10% من قيمة المنتجات المؤهلة بالسعر الكامل، بعد تأكيد التسليم، وصلاحية الرصيد 30 يومًا. استخدام الرصيد حتى قيمة قطعة واحدة في الطلب، والباقي يظل متاحًا حتى انتهاء صلاحيته الأصلية. الرصيد شخصي وغير قابل للتحويل، ولا يُكتسب رصيد على الطلبات المخفضة أو المستخدمة فيها المحفظة.</p><small>المحفظة الجديدة قيد التجهيز، ولا يظهر رصيد فعلي قبل تفعيل الخادم الآمن.</small></div><section style="margin-top:18px"><h4 style="color:var(--navy);margin:0 0 8px">عنوان الشحن المحفوظ</h4><form class="account-form" onsubmit="saveOrkaAddress(event)"><label>المحافظة<select name="gov" required><option value="">اختار المحافظة</option>'+['القاهرة','الجيزة','الإسكندرية','القليوبية','الشرقية','الدقهلية','البحيرة','الغربية','المنوفية','كفر الشيخ','دمياط','بورسعيد','الإسماعيلية','السويس','الفيوم','بني سويف','المنيا','أسيوط','سوهاج','قنا','الأقصر','أسوان','البحر الأحمر','مطروح','شمال سيناء','جنوب سيناء','الوادي الجديد'].map(g=>'<option value="'+g+'">'+g+'</option>').join('')+'</select></label><label>العنوان بالتفصيل<textarea name="address" required maxlength="500" placeholder="المنطقة، الشارع، رقم العقار، علامة مميزة"></textarea></label><button class="btn btn-outline" type="submit">حفظ عنوان الشحن</button></form></section><section style="margin-top:20px"><h4 style="color:var(--navy);margin:0 0 10px">طلباتي</h4><div id="orkaCustomerOrderList"><p class="notice">جاري تحميل طلباتك...</p></div></section><p>ORKA CLUB قريبًا: 10% كاش باك من قيمة مشترياتك المؤهلة بالسعر الكامل، بيتضاف بعد استلام الطلب، وتقدر تستخدمه خلال 30 يوم كخصم على مشترياتك الجاية. البرنامج لسه مش مفعّل.</p><button id="orkaAdminButton" class="btn" style="width:100%;margin-top:10px;display:none" onclick="window.openOrkaAdminPanel()">لوحة إدارة الطلبات</button><button class="btn btn-outline" style="width:100%;margin-top:10px" onclick="logoutOrka()">تسجيل الخروج</button>';
  if(currentCustomerUid&&window.loadOrkaCustomerPoints)window.loadOrkaCustomerPoints(currentCustomerUid);
  const btn=document.getElementById('accountBtn');if(btn)btn.textContent='♙ حسابي';
 }
@@ -1295,13 +1300,14 @@ function updateDetailOffer() {
 
   const link = document.getElementById('detailWhatsapp');
   const url = new URL(link.href);
-  const message = [
-    'أهلًا ORKA، عايز أتأكد من توفر الموديل ده ومصاريف الشحن.',
-    `الموديل: ${product.name}`,
-    `الكود: ${product.sku}`
-  ];
-  if (offer) {
-    message.push(`المقاس: ${size} سنوات`, `سعر الترينج: ${money(offer.price)}`);
+  const inEnglish=document.documentElement.lang==='en';
+  const name=window.orkaLocalize?window.orkaLocalize(product.name):product.name;
+  const message=inEnglish
+    ? ['Hi ORKA, please confirm availability and shipping fees.',`Style: ${name}`,`SKU: ${product.sku}`]
+    : ['أهلًا ORKA، عايز أتأكد من توفر الموديل ده ومصاريف الشحن.',`الموديل: ${name}`,`الكود: ${product.sku}`];
+  if(offer){
+    if(inEnglish)message.push(`Size: ${size} years`,`Item price: EGP ${offer.price}`);
+    else message.push(`المقاس: ${size} سنوات`,`سعر الترينج: ${money(offer.price)}`);
   }
   url.searchParams.set('text', message.join('\n'));
   link.href = url.href;
@@ -1322,7 +1328,7 @@ window.openProductDetails=openProductDetails;
 window.toggleFavorite=toggleFavorite;
 
 let detailProductId=null;
-function openProductDetails(id){const p=products.find(x=>x.id===id);if(!p)return;trackOrkaEvent('view_item',{currency:'EGP',value:Number(p.price)||0,items:[orkaAnalyticsItem(p,'')]});detailProductId=id;document.getElementById('detailImage').src=p.img;const brandLogo=document.querySelector('.header .logo img')||document.querySelector('.brand img');const detailBrandLogo=document.querySelector('.detail-brand-mark img');if(detailBrandLogo&&brandLogo){detailBrandLogo.src=brandLogo.src;}else if(detailBrandLogo){detailBrandLogo.closest('.detail-brand-mark')?.remove();}document.getElementById('detailImage').alt=p.name;document.getElementById('detailName').textContent=p.name;document.getElementById('detailDesc').textContent=p.desc+' — طقم مصمم للراحة في البيت والأيام الشتوية.';const detailMaterial=document.getElementById('detailMaterial');detailMaterial.textContent=p.material||'';detailMaterial.hidden=!p.material;document.getElementById('detailPrice').textContent='السعر قريبًا';const galleryHost=document.getElementById('orkaMilanoGallery')||(()=>{const el=document.createElement('div');el.id='orkaMilanoGallery';el.style.cssText='display:flex;gap:8px;overflow-x:auto;margin:12px 0;padding:6px 0;max-width:100%';document.getElementById('detailImage').parentElement.insertAdjacentElement('afterend',el);return el})();galleryHost.replaceChildren();galleryHost.style.display=p.gallery?'flex':'none';if(p.gallery){p.gallery.forEach((src,i)=>{const btn=document.createElement('button');btn.type='button';btn.setAttribute('aria-label','عرض صورة '+(i+1));btn.style.cssText='flex:0 0 68px;width:68px;height:78px;padding:2px;background:#fff;border:1px solid #ddd;border-radius:8px;cursor:pointer';const img=document.createElement('img');img.src=src;img.alt=p.name+' — صورة '+(i+1);img.loading='lazy';img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:6px';btn.appendChild(img);btn.addEventListener('click',()=>{document.getElementById('detailImage').src=src;document.getElementById('detailImage').alt=img.alt});galleryHost.appendChild(btn)})}const detailAdd=document.getElementById('detailAdd');if(detailAdd){detailAdd.hidden=!!p.comingSoon;detailAdd.disabled=!!p.comingSoon;detailAdd.setAttribute('aria-disabled',String(!!p.comingSoon));detailAdd.textContent=p.comingSoon?'الشراء غير متاح حاليًا':'أضف للسلة'}const sizes=p.comingSoon?Object.keys(previewOffersBySize):p.sizes;document.getElementById('detailSize').innerHTML='<option value="">اختار المقاس</option>'+sizes.map(size=>`<option value="${size}">${size}</option>`).join('');document.getElementById('detailWhatsapp').href='https://wa.me/201021006006';updateDetailOffer();document.getElementById('productModal').classList.add('show');document.body.style.overflow='hidden';if(window.orkaPresenceStart)window.orkaPresenceStart(id)}
+function openProductDetails(id){const p=products.find(x=>x.id===id);if(!p)return;trackOrkaEvent('view_item',{currency:'EGP',value:Number(p.price)||0,items:[orkaAnalyticsItem(p,'')]});detailProductId=id;document.getElementById('detailImage').src=p.img;const brandLogo=document.querySelector('.header .logo img')||document.querySelector('.brand img');const detailBrandLogo=document.querySelector('.detail-brand-mark img');if(detailBrandLogo&&brandLogo){detailBrandLogo.src=brandLogo.src;}else if(detailBrandLogo){detailBrandLogo.closest('.detail-brand-mark')?.remove();}document.getElementById('detailImage').alt=p.name;document.getElementById('detailName').textContent=p.name;document.getElementById('detailDesc').textContent=p.desc;const detailMaterial=document.getElementById('detailMaterial');detailMaterial.textContent=p.material||'';detailMaterial.hidden=!p.material;document.getElementById('detailPrice').textContent='السعر قريبًا';const galleryHost=document.getElementById('orkaMilanoGallery')||(()=>{const el=document.createElement('div');el.id='orkaMilanoGallery';el.style.cssText='display:flex;gap:8px;overflow-x:auto;margin:12px 0;padding:6px 0;max-width:100%';document.getElementById('detailImage').parentElement.insertAdjacentElement('afterend',el);return el})();galleryHost.replaceChildren();galleryHost.style.display=p.gallery?'flex':'none';if(p.gallery){p.gallery.forEach((src,i)=>{const btn=document.createElement('button');btn.type='button';btn.setAttribute('aria-label','عرض صورة '+(i+1));btn.style.cssText='flex:0 0 68px;width:68px;height:78px;padding:2px;background:#fff;border:1px solid #ddd;border-radius:8px;cursor:pointer';const img=document.createElement('img');img.src=src;img.alt=p.name+' — صورة '+(i+1);img.loading='lazy';img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:6px';btn.appendChild(img);btn.addEventListener('click',()=>{document.getElementById('detailImage').src=src;document.getElementById('detailImage').alt=img.alt});galleryHost.appendChild(btn)})}const detailAdd=document.getElementById('detailAdd');if(detailAdd){detailAdd.hidden=!!p.comingSoon;detailAdd.disabled=!!p.comingSoon;detailAdd.setAttribute('aria-disabled',String(!!p.comingSoon));detailAdd.textContent=p.comingSoon?'الشراء غير متاح حاليًا':'أضف للسلة'}const sizes=p.comingSoon?Object.keys(previewOffersBySize):p.sizes;document.getElementById('detailSize').innerHTML='<option value="">اختار المقاس</option>'+sizes.map(size=>`<option value="${size}">${size}</option>`).join('');document.getElementById('detailWhatsapp').href='https://wa.me/201021006006';updateDetailOffer();document.getElementById('productModal').classList.add('show');document.body.style.overflow='hidden';if(window.orkaPresenceStart)window.orkaPresenceStart(id)}
 function closeProductDetails(){if(window.orkaPresenceStop)window.orkaPresenceStop();document.getElementById('productModal').classList.remove('show');document.body.style.overflow='';detailProductId=null}
 let zoomScale=1,zoomX=0,zoomY=0,zoomPointers=new Map(),zoomStartDistance=0,zoomStartScale=1,zoomDragStart=null;
 function openImageZoom(){const src=document.getElementById('detailImage').src;if(!src)return;const im=document.getElementById('zoomImage');im.src=src;im.alt=document.getElementById('detailImage').alt+' مكبرة';document.getElementById('imageZoom').classList.add('show');resetZoom();}
@@ -1346,9 +1352,9 @@ function updateCart(){
  const summary=document.getElementById('cartSummary');
  const checkout=document.getElementById('checkoutArea');
  if(!cart.length){items.innerHTML='<div class="empty">سلتك لسه فاضية.<br>اختار طقم يفرّح طفلك ♡</div>';summary.innerHTML='';checkout.innerHTML='';return;}
- items.innerHTML=cart.map(x=>'<div class="cart-item"><img src="'+x.img+'" alt="رمز حوت ORKA وحرف O"><div><strong>'+x.name+'</strong><small>المقاس: '+x.size+'</small><small>'+money(x.price)+'</small><div class="qty"><button onclick="changeQty('+x.id+',\''+x.size+'\',-1)">−</button><span>'+x.qty+'</span><button onclick="changeQty('+x.id+',\''+x.size+'\',1)">+</button></div></div><button class="close" onclick="removeItem('+x.id+',\''+x.size+'\')">×</button></div>').join('');
+ items.innerHTML=cart.map(x=>'<div class="cart-item"><img src="'+x.img+'" alt="رمز حوت ORKA وحرف O"><div><strong>'+x.name+'</strong><small>المقاس: '+x.size+'</small><small>' +renderOfferMoney(x.price)+'</small><div class="qty"><button onclick="changeQty('+x.id+',\''+x.size+'\',-1)">−</button><span>'+x.qty+'</span><button onclick="changeQty('+x.id+',\''+x.size+'\',1)">+</button></div></div><button class="close" onclick="removeItem('+x.id+',\''+x.size+'\')">×</button></div>').join('');
  const total=cart.reduce((sum,item)=>sum+item.price*item.qty,0);
- summary.innerHTML='<div class="cart-total"><span>إجمالي المنتجات (أسعار معاينة)</span><strong>'+money(total)+'</strong></div>'+
+ summary.innerHTML='<div class="cart-total"><span>إجمالي المنتجات (أسعار معاينة)</span><strong>' +renderOfferMoney(total)+'</strong></div>'+
  '<div style="border:1px solid #E8DCC8;border-radius:10px;padding:12px;margin:10px 0;background:#FFFAF1"><strong style="color:#10294A">ORKA CLUB · المحفظة الجديدة (قريبًا)</strong><p style="margin:8px 0;font-size:12px">10% رصيد على مشتريات المنتجات بالسعر الكامل بعد تأكيد التسليم، صالح 30 يومًا. يمكن استخدام الرصيد على قطعة واحدة في الطلب، والباقي يحتفظ بتاريخ صلاحيته الأصلي. الرصيد شخصي وغير قابل للتحويل. الطلب المستخدم فيه رصيد لا يكتسب رصيدًا جديدًا.</p><small>المحفظة غير مفعّلة حاليًا، ولا يُحسب أي خصم أو رصيد من المتصفح.</small></div>'+
  '<p class="notice" style="background:#fff4f3;border:1px solid #f1d0d0;padding:12px;border-radius:8px;color:#80313a;font-weight:800">الأسعار تجريبية والطلبات غير متاحة حتى اعتماد الأسعار والشحن وربط نظام الدفع الآمن.</p>';
  // Development-only entry point to the redesigned checkout; preserves existing cart and order controls.
@@ -1798,6 +1804,110 @@ window.orkaAuthReady=new Promise(resolve=>{
 <script>
 (function(){
  const translations = {
+ "المحفظة الجديدة قيد التجهيز، ولا يظهر رصيد فعلي قبل تفعيل الخادم الآمن.":"The new wallet is in development. Live credit will appear after the secure service is enabled.",
+ "10% من قيمة المنتجات المؤهلة بالسعر الكامل، بعد تأكيد التسليم، وصلاحية الرصيد 30 يومًا. استخدام الرصيد حتى قيمة قطعة واحدة في الطلب، والباقي يظل متاحًا حتى انتهاء صلاحيته الأصلية. الرصيد شخصي وغير قابل للتحويل، ولا يُكتسب رصيد على الطلبات المخفضة أو المستخدمة فيها المحفظة.":"Earn 10% on eligible full-price items after delivery is confirmed. Credit lasts 30 days and applies to one item per order. The remainder keeps its original expiry date. Credit is personal and non-transferable. Discounted or wallet-paid orders do not earn credit.",
+ "عنوان الشحن المحفوظ":"Saved delivery address",
+ "حفظ عنوان الشحن":"Save shipping address",
+ "طلباتي":"My orders",
+ "جاري تحميل طلباتك...":"Loading your orders…",
+ "لوحة إدارة الطلبات":"Order management dashboard",
+ "إغلاق القائمة":"Close menu",
+ "روابط الموقع":"Site navigation",
+ "ORKA CLUB قريبًا: 10% كاش باك من قيمة مشترياتك المؤهلة بالسعر الكامل، بيتضاف بعد استلام الطلب، وتقدر تستخدمه خلال 30 يوم كخصم على مشترياتك الجاية. البرنامج لسه مش مفعّل.":"ORKA CLUB is coming soon. Earn 10% on eligible full-price purchases after delivery and use the credit within 30 days. The program is currently inactive.",
+ "· قريبًا":"· Coming soon",
+ "ORKA CLUB · نادي أوركا":"ORKA CLUB · ORKA Rewards",
+ "طقم شتوي لبني":"Light blue winter set",
+ "طقم ORKA Kids الأخضر الغامق":"ORKA Kids dark green set",
+ "طقم ORKA Kids الكحلي":"ORKA Kids navy set",
+ "تفاصيل الموديل الأولادي اللبني":"Details of the light blue boys’ set",
+ "طقم Explorer لبني للبنات":"Light blue Explorer girls’ set",
+ "❤️ المختارات":"❤️ Favorites",
+ "دليل المقاسات وقياسات السنتيمتر　＋":"Size guide and measurements in cm　＋",
+ "دليل العمر استرشادي فقط. قياسات الصدر وطول القطعة وطول البنطلون بالسنتيمتر قيد القياس على العينات الفعلية، ولم تُعتمد بعد.":"Use ages as a guide. Chest width, top length and trouser length are being measured on the samples and are pending approval.",
+ "المطلوب لكل مقاس: عرض الصدر (سم)، طول القطعة (سم)، طول الكم (سم)، وطول البنطلون (سم).":"Each size lists chest width, top length, sleeve length and trouser length in cm.",
+ "لو محتار في المقاس، اسأل خدمة العملاء على واتساب قبل الطلب.":"Ask us on WhatsApp if you need help choosing a size.",
+ "تابع ORKA أو تواصل مع خدمة العملاء.":"Follow ORKA or contact customer service.",
+ "فيسبوك":"Facebook",
+ "واتساب":"WhatsApp",
+ "يمكن طلب الاستبدال أو الاسترجاع خلال 14 يومًا من الاستلام، وفقًا لشروط السياسة والحقوق القانونية للمستهلك.":"You may request an exchange or return within 14 days of delivery, subject to the policy and consumer rights.",
+ "الأسعار والصور الحالية تجريبية، وإرسال طلبات الشراء الحقيقية متوقف حاليًا. يستخدم الموقع Firebase للحسابات وبعض بيانات الاستخدام، ويحتفظ ببعض بيانات السلة والحساب محليًا على جهازك. راجع سياسة الخصوصية للتفاصيل.":"Prices and photos are for preview. The site uses Firebase for accounts and some usage data and stores some cart and account data on your device. See the privacy policy for details. Direct ordering is currently unavailable.",
+ "مثال بسيط:":"Example:",
+ "لو اشتريت بـ":"If you spend",
+ "10,000 جنيه":"EGP 10,000",
+ "، بعد استلام الشحنة هيتضاف لمحفظتك":"your wallet is credited after delivery with",
+ "1,000 جنيه كاش باك":"EGP 1,000 cashback",
+ "شروط وأحكام ORKA CLUB":"ORKA CLUB terms",
+ "لازم يكون عندك حساب مسجل على موقع ORKA.":"You need an ORKA account.",
+ "بتكسب كاش باك بقيمة 10% من مشترياتك المؤهلة بالسعر الكامل.":"Earn 10% cashback on eligible full-price purchases.",
+ "الرصيد بيتضاف بعد تأكيد استلام الطلب.":"Credit is added after delivery is confirmed.",
+ "الكاش باك صالح لمدة 30 يوم من تاريخ إضافته، وبعدها أي رصيد غير مستخدم بتنتهي صلاحيته.":"Unused cashback expires 30 days after it is credited.",
+ "تقدر تستخدم رصيد المحفظة كخصم يصل إلى 100% من سعر قطعة واحدة فقط في كل طلب جديد.":"Use wallet credit for up to the full price of one item per new order.",
+ "لو رصيدك أكبر من سعر القطعة، بيتخصم سعر القطعة فقط، والباقي بيفضل في المحفظة لحد انتهاء صلاحيته الأصلية.":"If your credit exceeds the item price, the remainder keeps its original expiry date.",
+ "تقدر تجمع كاش باك من أكتر من طلب مؤهل، وكل رصيد جديد له مدة صلاحية مستقلة.":"You can earn cashback on multiple eligible orders. Each credit expires separately.",
+ "الرصيد شخصي لصاحب الحساب، ومينفعش تحويله أو إهداؤه.":"Wallet credit is personal and cannot be transferred.",
+ "الطلبات المخفضة أو اللي استخدمت فيها رصيد المحفظة مش بتكسب كاش باك جديد.":"Discounted orders or orders paid with wallet credit do not earn cashback.",
+ "الكاش باك للخصم على المشتريات القادمة فقط، ومينفعش سحبه أو استبداله بفلوس.":"Cashback can only be applied to future purchases and cannot be withdrawn or exchanged for cash.",
+ "النظام ده بيحل محل نظام خصومات العضوية والنقاط القديم.":"This program replaces the previous membership discounts and points.",
+ "قريبًا: البرنامج قيد التجهيز، ولسه مفيش أرصدة بتتحسب أو بتتخصم فعليًا.":"Coming soon. Wallet credits are currently inactive.",
+ "حسابي في ORKA CLUB":"My ORKA CLUB account",
+ "ORKA CLUB — اشتري واكسب 10% كاش باك!":"ORKA CLUB — Earn 10% cashback when you shop!",
+ "مع كل عملية شراء مؤهلة بالسعر الكامل من ORKA، 10% من قيمة مشترياتك بترجعلك رصيد كاش باك في محفظتك بعد استلام الشحنة وتأكيد التسليم. تقدر تستخدم الرصيد كخصم على مشترياتك الجاية خلال 30 يوم من تاريخ إضافته.":"Earn 10% wallet credit on eligible full-price purchases once delivery is confirmed. Use the credit on a future purchase within 30 days of receiving it.",
+ "☏ واتساب ORKA":"☏ ORKA WhatsApp",
+ "غير متاح للطلب حاليًا":"Currently unavailable to order",
+ "الشراء غير متاح حاليًا":"Purchasing is currently unavailable",
+ "دي صورة إلهام مبدئية وليست منتجًا معروضًا للبيع. الأسعار والمقاسات للمعاينة. اسأل على واتساب لتأكيد التوفر ومصاريف الشحن.":"Product image, price and sizes are for preview. Ask us on WhatsApp to confirm availability and shipping.",
+ "— إنشاء الحساب لا يشترك تلقائيًا في العروض.":"— Creating an account does not subscribe you to offers.",
+ "إدارة الطلبات للمسؤولين فقط. نظام ORKA CLUB الجديد (10% كاش باك بعد التسليم) قيد التجهيز وغير مفعّل؛ لا يتم إضافة أي رصيد من هذه اللوحة.":"Order management is for administrators only. The new ORKA CLUB program (10% cashback after delivery) is inactive and no credit is awarded here.",
+ "أهلاً بيكم في عالم ORKA":"Welcome to ORKA",
+ "بكل حب، بنرحّب بيكم في أول خطوة من حكايتنا معاكم.":"Welcome to the first chapter of our story together.",
+ "ابدأوا الحكاية":"Start the story",
+ "لسه مفيش منتجات في المختارات ❤️":"No favorites yet ❤️",
+ "اضغط على القلب في أي تصميم علشان تحفظه هنا.":"Tap the heart on a style to save it here.",
+ "عرض التفاصيل":"View details",
+ "أضف للسلة":"Add to cart",
+ "الأسعار قيد الاعتماد":"Prices pending approval",
+ "إجمالي المنتجات (أسعار معاينة)":"Items subtotal (preview prices)",
+ "ORKA CLUB · المحفظة الجديدة (قريبًا)":"ORKA CLUB · New wallet (coming soon)",
+ "10% رصيد على مشتريات المنتجات بالسعر الكامل بعد تأكيد التسليم، صالح 30 يومًا. يمكن استخدام الرصيد على قطعة واحدة في الطلب، والباقي يحتفظ بتاريخ صلاحيته الأصلي. الرصيد شخصي وغير قابل للتحويل. الطلب المستخدم فيه رصيد لا يكتسب رصيدًا جديدًا.":"Earn 10% credit on full-price products after delivery. Credit is valid for 30 days and applies to one item per order. The balance keeps its original expiry date. Credit is personal and non-transferable. Orders that use credit do not earn more credit.",
+ "المحفظة غير مفعّلة حاليًا، ولا يُحسب أي خصم أو رصيد من المتصفح.":"The wallet is inactive. No discount or credit is calculated in the browser.",
+ "الأسعار تجريبية والطلبات غير متاحة حتى اعتماد الأسعار والشحن وربط نظام الدفع الآمن.":"Prices are for preview. Orders will be available after prices and shipping are approved and secure payment is connected.",
+ "متابعة إلى صفحة إتمام الطلب":"Continue to checkout",
+ "الطلبات غير متاحة حاليًا حتى اعتماد الأسعار والشحن.":"Ordering will be available after prices and shipping are approved.",
+ "f المتابعة باستخدام Facebook":"f Continue with Facebook",
+ "رقم الموبايل هيتطلب عند إتمام طلب الشراء، علشان شركة الشحن تتواصل معاك.":"Your delivery courier will need your mobile number when you order.",
+ "ORKA CLUB · محفظة المكافآت الجديدة":"ORKA CLUB · New rewards wallet",
+ "المحفظة قيد التجهيز":"Wallet coming soon",
+ "تسجيل الخروج":"Sign out",
+ "اتشال من المختارات":"Removed from favorites",
+ "اتضاف للمختارات ❤️":"Added to favorites ❤️",
+ "اختار المقاس الأول":"Choose a size first",
+ "اتضاف المنتج للسلة بنجاح":"Added to cart",
+ "نسخة تجريبية فقط — إرسال الطلبات الحقيقية معطّل.":"Preview only. Order submission is disabled.",
+ "تم تسجيل الدخول بنجاح ♡":"Signed in successfully ♡",
+ "تعذر حفظ بيانات الحساب على هذا الجهاز":"Account details could not be saved on this device",
+ "راجع الاسم ورقم الموبايل المصري":"Check your name and Egyptian mobile number",
+ "تم حفظ عنوان الشحن في حسابك":"Shipping address saved",
+ "غير مصرح بعرض الطلبات.":"You do not have permission to view orders.",
+ "الصورة غير متاحة حاليًا":"Image currently unavailable",
+ "الصورة السابقة":"Previous image",
+ "الصورة التالية":"Next image",
+ "لوجو ORKA":"ORKA logo",
+ "عرض صورة":"View image",
+ "تأكيد رقم الموبايل":"Verify your mobile number",
+ "أدخل كود التحقق المكوّن من 6 أرقام الذي وصلك برسالة SMS.":"Enter the six-digit verification code sent by SMS.",
+ "إرسال كود التحقق":"Send verification code",
+ "رقم الموبايل المصري":"Egyptian mobile number",
+ "اختيارات مريحة لأيام البيت":"Comfort for days at home",
+ "دفا وراحة طول الشتاء":"Warm and comfortable all winter",
+ "ألوان شتوية لكل شخصية":"Winter colors for every personality",
+ "ORKA Kids · طقم بناتي هودي وبنطلون جوجر · وردي · طباعة EXPLORER كحلي · صور تصميمية للمعاينة وليست تصوير المنتج الفعلي · كود ORK-K07-PK":"Girls’ pink hoodie and joggers with a navy EXPLORER print. Design preview. Style ORK-K07-PK.",
+ "ORKA Kids · طقم بناتي هودي وبنطلون جوجر · بيبي بلو · طباعة EXPLORER كحلي · صور تصميمية للمعاينة وليست تصوير المنتج الفعلي · كود ORK-K07-BL":"Girls’ baby blue hoodie and joggers with a navy EXPLORER print. Design preview. Style ORK-K07-BL.",
+ "ORKA Kids · طقم بناتي هودي وبنطلون وايد ليج · موف ليلكي · طباعة حرف A بالورود · صور تصميمية للمعاينة وليست صور المنتج الفعلي · كود ORK-K06-LV":"Girls’ lilac hoodie and wide-leg trousers with a floral A print. Design preview. Style ORK-K06-LV.",
+ "ORKA Kids · طقم أولادي رمادي قطعتان · صور مولّدة للمعاينة تحتاج مراجعة مطابقة الخامة والطباعة والتيكت قبل الاعتماد · كود ORK-K05-GR":"Grey two-piece boys’ set. Preview imagery, pending approval of fabric, print and labels. Style ORK-K05-GR.",
+ "ORKA Kids · هودي ساج بطباعة CALIFORNIA والموتوسيكل · بنطلون كحلي ورباط أبيض · كود ORK-K04-CA · صور عرض مولّدة":"Sage hoodie with a CALIFORNIA motorcycle print and navy trousers with a white drawstring. Design preview. Style ORK-K04-CA.",
+ "ORKA Kids · طقم أولادي هودي وبنطلون · أخضر غامق · طباعة الحوت Take care! · بدون جيب خلفي · كود ORK-K03-DG":"Dark green boys’ hoodie and trousers with a Take care! whale print. No rear pocket. Style ORK-K03-DG.",
+ "ORKA Kids · طقم بناتي هودي وبنطلون · اللون Sage Green · كود ORK-K02-SG":"Sage green girls’ hoodie and trousers. Style ORK-K02-SG.",
+ "ORKA Kids · طقم أولادي قطعتان · اللون Baby Blue · كود ORK-K01-BL":"Baby blue two-piece boys’ set. Style ORK-K01-BL.",
  "ميلتون إسفنجي، قطن ١٠٠٪، معالج للحد من تكوّن الوبرة والانكماش.":"100% cotton brushed fleece, treated to help reduce pilling and shrinkage.",
  "يبدأ من":"From",
  "وفّر":"Save",
@@ -1877,6 +1987,33 @@ window.orkaAuthReady=new Promise(resolve=>{
  "طريقة الدخول: ":"Sign-in method: ","رقم الموبايل: ":"Mobile number: "
  };
  const attrTranslations = {
+ "القاهرة":"Cairo",
+ "الجيزة":"Giza",
+ "الإسكندرية":"Alexandria",
+ "القليوبية":"Qalyubia",
+ "الشرقية":"Sharqia",
+ "الدقهلية":"Dakahlia",
+ "الغربية":"Gharbia",
+ "المنوفية":"Monufia",
+ "البحيرة":"Beheira",
+ "كفر الشيخ":"Kafr El Sheikh",
+ "دمياط":"Damietta",
+ "بورسعيد":"Port Said",
+ "الإسماعيلية":"Ismailia",
+ "السويس":"Suez",
+ "شمال سيناء":"North Sinai",
+ "جنوب سيناء":"South Sinai",
+ "الفيوم":"Fayoum",
+ "بني سويف":"Beni Suef",
+ "المنيا":"Minya",
+ "أسيوط":"Asyut",
+ "سوهاج":"Sohag",
+ "قنا":"Qena",
+ "الأقصر":"Luxor",
+ "أسوان":"Aswan",
+ "البحر الأحمر":"Red Sea",
+ "الوادي الجديد":"New Valley",
+ "مطروح":"Matrouh",
  "منتج واحد في الصف":"One product per row","منتجين في الصف":"Two products per row",
  "اختار المقاس":"Choose a size","بريدك الإلكتروني":"Your email address","اسم العميل":"Customer name",
  "01xxxxxxxxx":"01xxxxxxxxx","المنطقة، الشارع، رقم العقار، علامة مميزة":"Area, street, building number, nearby landmark",
@@ -1892,6 +2029,36 @@ window.orkaAuthReady=new Promise(resolve=>{
 
  // Translate the new English-first Signature storefront as well as legacy Arabic-first content.
  const signatureArabic={
+ "Warm winters,":"شتا دافي،",
+ "and a story":"وحكاية",
+ "in every home":"في كل بيت",
+ "ORKA Kids / Boys":"أوركا كيدز / أولاد",
+ "ORKA Kids / Green":"أوركا كيدز / أخضر",
+ "ORKA Kids / Navy":"أوركا كيدز / كحلي",
+ "ORKA Kids / Details":"أوركا كيدز / التفاصيل",
+ "ORKA Kids / Explorer":"أوركا كيدز / إكسبلورر",
+ "DRAG / SWIPE TO EXPLORE":"اسحب لاستكشاف الموديلات",
+ "THE WINTER EDITION / 2027":"مجموعة شتاء ٢٠٢٧",
+ "SHOP BY CATEGORY":"تسوّق حسب الفئة",
+ "BOYS":"أولاد",
+ "GIRLS":"بنات",
+ "VIEW COLLECTION":"شاهد المجموعة",
+ "WINTER 2027 / ORKA KIDS":"شتاء ٢٠٢٧ / أوركا كيدز",
+ "THE COLLECTION":"التشكيلة",
+ "THE ORKA DIFFERENCE":"تفاصيل تميّز أوركا",
+ "WE'RE HERE FOR YOU":"إحنا موجودين لمساعدتك",
+ "HELP & SUPPORT":"المساعدة والدعم",
+ "ORKA WINTER EDIT":"مجموعة أوركا الشتوية",
+ "A NEW STORY BEGINS":"بداية حكاية جديدة",
+ "ORKA ADMIN":"إدارة أوركا",
+ "EXPLORER — Pink":"إكسبلورر — وردي",
+ "EXPLORER — Baby Blue":"إكسبلورر — لبني",
+ "Floral A — Lilac Wide Leg":"فلورال A — موف فاتح بقصّة واسعة",
+ "MILANO ITALIA — Grey":"ميلانو إيطاليا — رمادي",
+ "California — Sage & Navy":"كاليفورنيا — أخضر ساج وكحلي",
+ "ORKA Whale — Dark Green":"حوت أوركا — أخضر غامق",
+ "Be Kind — Sage Green":"بي كايند — أخضر ساج",
+ "MILANO ITALIA — Baby Blue":"ميلانو إيطاليا — لبني",
   'New In':'الجديد','Boys':'الأولاد','Girls':'البنات','Our Story':'حكايتنا',
   'ORKA KIDS / WINTER EDITION':'أوركا كيدز / المجموعة الشتوية',
   'Little':'إطلالات','Looks.':'صغيرة.','Big Stories.':'وحكايات كبيرة.',
@@ -1907,32 +2074,56 @@ window.orkaAuthReady=new Promise(resolve=>{
  const englishToArabic=Object.fromEntries(Object.entries(translations).map(([ar,en])=>[en,ar]));
  const englishAttrToArabic=Object.fromEntries(Object.entries(attrTranslations).map(([ar,en])=>[en,ar]));
  const textOriginals = new WeakMap(), attrOriginals = new WeakMap();
- function translateTextNode(node, lang){
-   if(node.parentElement && node.parentElement.closest('.signature-hero-copy'))return;
-   if(!textOriginals.has(node)) textOriginals.set(node,node.nodeValue);
-   const original=textOriginals.get(node);
-   const key=original.trim();
-   if(!key)return;
-   const translated=lang==='en'?(translations[key]||translations[key.replace(/\s+$/,'')]||null):(signatureArabic[key]||englishToArabic[key]||original);
-   if(translated!==null && translated!==undefined){
-     const leading=(original.match(/^\s*/)||[''])[0], trailing=(original.match(/\s*$/)||[''])[0];
-     const value=leading+translated+trailing;
-     if(node.nodeValue!==value)node.nodeValue=value;
+ const dynamicLabels=[
+   [/^أهلًا يا (.+) ♡$/, name=>'Welcome, '+name+' ♡'],
+   [/^طريقة الدخول: (.+) · رقم الهاتف: (.+)$/, (account,phone)=>'Sign-in method: '+account+' · Mobile number: '+phone],
+   [/^طريقة الدخول: (.+) · رقم الهاتف هيتطلب عند الشراء$/, account=>'Sign-in method: '+account+' · We’ll request your mobile number at checkout'],
+   [/^المقاس:\s+(.+)$/, size=>'Size: '+size],
+   [/^عرض صورة (\d+)$/, number=>'View image '+number],
+   [/^(.+) — صورة (\d+)$/, (name,number)=>name+' — image '+number],
+   [/^صور (.+)$/, name=>'Images of '+name],
+   [/^(.+) — اضغط لعرض التفاصيل$/, name=>name+' — open details']
+ ];
+ function localizeValue(key,lang){
+   if(lang==='ar'){
+     const exact=signatureArabic[key]||englishToArabic[key]||englishAttrToArabic[key];
+     if(exact)return exact;
+     const name=key.match(/^(?:صور )?(.+?)(?: — (?:صورة \d+|اضغط لعرض التفاصيل)|$)/)?.[1];
+     return name&&signatureArabic[name]?key.replace(name,signatureArabic[name]):key;
    }
+   const exact=translations[key]||attrTranslations[key];
+   if(exact)return exact;
+   for(const [pattern,format] of dynamicLabels){
+     const match=key.match(pattern);
+     if(match)return format(...match.slice(1));
+   }
+   return key;
+ }
+ window.orkaLocalize=key=>localizeValue(key,document.documentElement.lang);
+ function translateTextNode(node,lang){
+   const current=node.nodeValue;
+   const previous=textOriginals.get(node);
+   const original=previous&&current===previous.rendered?previous.original:current;
+   const value=original.replace(/\S(?:[\s\S]*\S)?/,key=>localizeValue(key,lang));
+   textOriginals.set(node,{original,rendered:value});
+   if(current!==value)node.nodeValue=value;
  }
  function translateAttributes(el,lang){
+   let state=attrOriginals.get(el);
+   if(!state){state={};attrOriginals.set(el,state)}
    ['placeholder','aria-label','title','alt'].forEach(attr=>{
-     if(!el.hasAttribute(attr))return;
-     let map=attrOriginals.get(el);if(!map){map={};attrOriginals.set(el,map)}
-     if(!(attr in map))map[attr]=el.getAttribute(attr);
-     const original=map[attr];const value=lang==='en'?(attrTranslations[original]||translations[original]||original):(englishAttrToArabic[original]||englishToArabic[original]||original);
-     if(el.getAttribute(attr)!==value)el.setAttribute(attr,value);
+     const current=el.getAttribute(attr);
+     if(current===null){delete state[attr];return}
+     const previous=state[attr];
+     const original=previous&&current===previous.rendered?previous.original:current;
+     const rendered=localizeValue(original,lang);
+     state[attr]={original,rendered};
+     if(current!==rendered)el.setAttribute(attr,rendered);
    });
  }
  function walk(root,lang){
    if(root.nodeType===Node.TEXT_NODE){translateTextNode(root,lang);return}
    if(root.nodeType!==Node.ELEMENT_NODE && root.nodeType!==Node.DOCUMENT_NODE)return;
-   if(root.nodeType===Node.ELEMENT_NODE && root.closest && root.closest('.signature-hero-copy'))return;
    if(root.nodeType===Node.ELEMENT_NODE)translateAttributes(root,lang);
    const walker=document.createTreeWalker(root,NodeFilter.SHOW_TEXT);
    let node;while((node=walker.nextNode()))translateTextNode(node,lang);
@@ -1943,8 +2134,9 @@ window.orkaAuthReady=new Promise(resolve=>{
    document.documentElement.lang=lang;document.documentElement.dir=lang==='en'?'ltr':'rtl';document.title=lang==='en'?'ORKA HOMEWEAR | A story in every home':'ORKA HOMEWEAR | حكاية كل بيت';
    document.body.dir=lang==='en'?'ltr':'rtl';
    walk(document.body,lang);
+   if(detailProductId!==null)updateDetailOffer();
    const btn=document.getElementById('orkaLanguageToggle');
-   if(btn){btn.textContent=lang==='en'?'العربية':'English';btn.setAttribute('aria-label',lang==='en'?'Switch to Arabic':'Switch to English')}
+   if(btn){btn.textContent=lang==='en'?'العربية':'English';btn.setAttribute('aria-label',lang==='en'?'Switch to Arabic':'التبديل إلى الإنجليزية')}
    try{localStorage.setItem('orka-language',lang)}catch(e){}
  };
  window.toggleOrkaLanguage=function(){window.setOrkaLanguage(document.documentElement.lang==='en'?'ar':'en')};
