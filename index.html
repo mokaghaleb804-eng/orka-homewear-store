@@ -1072,15 +1072,15 @@ html[lang="en"] .orka-offer-money-ar,html[lang="ar"] .orka-offer-money-en{displa
 }
 </style>
 <style id="orka-launch-bar-style">
-.topbar.orka-launch-bar{padding:4px 0;min-height:54px;font-size:clamp(12px,3.5vw,16px);letter-spacing:normal}
-.orka-launch-window{overflow:hidden}
-.orka-launch-window:focus-visible{outline:2px solid #fff;outline-offset:-2px}
-.orka-launch-track{direction:ltr;display:flex;inline-size:max-content;min-inline-size:200%;animation:orka-launch-scroll 14s linear infinite}
+.topbar.orka-launch-bar{display:flex;align-items:center;padding:4px 0;min-height:54px;font-size:clamp(12px,3.5vw,16px);letter-spacing:normal}
+.orka-launch-fixed{display:flex;align-items:center;justify-content:center;gap:5px;flex:none;padding-inline:8px;border-inline-end:1px solid #ffffff46;white-space:nowrap;color:#fff}
+html[lang="ar"] .orka-launch-fixed{flex-direction:row-reverse}
+.orka-launch-window{flex:1;min-inline-size:0;overflow:hidden}
+.orka-launch-track{direction:ltr;display:flex;inline-size:max-content;min-inline-size:200%;animation:orka-launch-scroll 10s linear infinite}
 .orka-launch-group{flex:1 0 auto;display:flex;justify-content:space-around;align-items:center;gap:20px;padding-inline:10px}
 .orka-launch-message{flex:none;display:flex;justify-content:center;align-items:center;gap:10px;white-space:nowrap;font-weight:800}
 html[lang="ar"] .orka-launch-message{direction:rtl}
 .orka-launch-burst{--burst:polygon(50% 0%,58% 16%,73% 4%,76% 22%,93% 19%,88% 35%,100% 50%,88% 63%,93% 81%,76% 78%,73% 96%,58% 84%,50% 100%,42% 84%,27% 96%,24% 78%,7% 81%,12% 63%,0% 50%,12% 35%,7% 19%,24% 22%,27% 4%,42% 16%);flex:none;display:grid;place-items:center;min-inline-size:52px;min-block-size:44px;padding:8px;color:#10294a;background:#ffe4a9;clip-path:var(--burst);font-size:14px;font-weight:900;line-height:1}
-.orka-launch-window:hover .orka-launch-track,.orka-launch-window:focus .orka-launch-track{animation-play-state:paused}
 @keyframes orka-launch-scroll{to{transform:translateX(-50%)}}
 @media(prefers-reduced-motion:reduce){
  .orka-launch-track{inline-size:100%;min-inline-size:0;animation:none}
@@ -1092,19 +1092,20 @@ html[lang="ar"] .orka-launch-message{direction:rtl}
 </head>
 <body>
 <div class="topbar orka-launch-bar" id="orkaLaunchBar">
- <div class="orka-launch-window" tabindex="0" aria-label="عرض الإطلاق">
+ <strong class="orka-launch-fixed"><bdi class="orka-launch-burst">٢٥٪</bdi><span>خصم</span></strong>
+ <div class="orka-launch-window">
   <div class="orka-launch-track">
    <div class="orka-launch-group">
-    <div class="orka-launch-message"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
-    <div class="orka-launch-message orka-launch-repeat" aria-hidden="true"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
-    <div class="orka-launch-message orka-launch-repeat" aria-hidden="true"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
-    <div class="orka-launch-message orka-launch-repeat" aria-hidden="true"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
+    <div class="orka-launch-message"><bdi>بمناسبة إطلاق الموقع</bdi></div>
+    <div class="orka-launch-message orka-launch-repeat" aria-hidden="true"><bdi>بمناسبة إطلاق الموقع</bdi></div>
+    <div class="orka-launch-message orka-launch-repeat" aria-hidden="true"><bdi>بمناسبة إطلاق الموقع</bdi></div>
+    <div class="orka-launch-message orka-launch-repeat" aria-hidden="true"><bdi>بمناسبة إطلاق الموقع</bdi></div>
    </div>
    <div class="orka-launch-group orka-launch-repeat" aria-hidden="true">
-    <div class="orka-launch-message"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
-    <div class="orka-launch-message"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
-    <div class="orka-launch-message"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
-    <div class="orka-launch-message"><bdi class="orka-launch-burst">٢٥٪</bdi><bdi>خصم بمناسبة إطلاق الموقع</bdi></div>
+    <div class="orka-launch-message"><bdi>بمناسبة إطلاق الموقع</bdi></div>
+    <div class="orka-launch-message"><bdi>بمناسبة إطلاق الموقع</bdi></div>
+    <div class="orka-launch-message"><bdi>بمناسبة إطلاق الموقع</bdi></div>
+    <div class="orka-launch-message"><bdi>بمناسبة إطلاق الموقع</bdi></div>
    </div>
   </div>
  </div>
@@ -1835,8 +1836,8 @@ window.orkaAuthReady=new Promise(resolve=>{
 (function(){
  const translations = {
  "٢٥٪":"25%",
- "خصم بمناسبة إطلاق الموقع":"off to celebrate our website launch",
- "عرض الإطلاق":"Website launch offer",
+ "خصم":"OFF",
+ "بمناسبة إطلاق الموقع":"To celebrate our website launch",
  "المحفظة الجديدة قيد التجهيز، ولا يظهر رصيد فعلي قبل تفعيل الخادم الآمن.":"The new wallet is in development. Live credit will appear after the secure service is enabled.",
  "10% من قيمة المنتجات المؤهلة بالسعر الكامل، بعد تأكيد التسليم، وصلاحية الرصيد 30 يومًا. استخدام الرصيد حتى قيمة قطعة واحدة في الطلب، والباقي يظل متاحًا حتى انتهاء صلاحيته الأصلية. الرصيد شخصي وغير قابل للتحويل، ولا يُكتسب رصيد على الطلبات المخفضة أو المستخدمة فيها المحفظة.":"Earn 10% on eligible full-price items after delivery is confirmed. Credit lasts 30 days and applies to one item per order. The remainder keeps its original expiry date. Credit is personal and non-transferable. Discounted or wallet-paid orders do not earn credit.",
  "عنوان الشحن المحفوظ":"Saved delivery address",
