@@ -1075,7 +1075,7 @@ html[lang="en"] .orka-offer-money-ar,html[lang="ar"] .orka-offer-money-en{displa
 .topbar.orka-launch-bar{display:flex;align-items:center;padding:4px 0;min-height:54px;font-size:clamp(12px,3.5vw,16px);letter-spacing:normal}
 .orka-launch-fixed{display:flex;align-items:center;justify-content:center;gap:5px;flex:none;padding-inline:8px;border-inline-end:1px solid #ffffff46;white-space:nowrap;color:#fff}
 html[lang="ar"] .orka-launch-fixed{flex-direction:row-reverse}
-.orka-launch-window{flex:1;min-inline-size:0;overflow:hidden}
+.orka-launch-window{direction:ltr;flex:1;min-inline-size:0;overflow:hidden;overflow:clip}
 .orka-launch-track{direction:ltr;display:flex;inline-size:max-content;min-inline-size:200%;animation:orka-launch-scroll 10s linear infinite}
 .orka-launch-group{flex:1 0 auto;display:flex;justify-content:space-around;align-items:center;gap:20px;padding-inline:10px}
 .orka-launch-message{flex:none;display:flex;justify-content:center;align-items:center;gap:10px;white-space:nowrap;font-weight:800}
@@ -1093,7 +1093,7 @@ html[lang="ar"] .orka-launch-message{direction:rtl}
 <body>
 <div class="topbar orka-launch-bar" id="orkaLaunchBar">
  <strong class="orka-launch-fixed"><bdi class="orka-launch-burst">٢٥٪</bdi><span>خصم</span></strong>
- <div class="orka-launch-window">
+ <div class="orka-launch-window" dir="ltr">
   <div class="orka-launch-track">
    <div class="orka-launch-group">
     <div class="orka-launch-message"><bdi>بمناسبة إطلاق الموقع</bdi></div>
