@@ -1322,7 +1322,7 @@ const products=[
 {"id":112,previewPriceGroup:'hoodie',"sku":"ORK-K11-PB","name":"Pink Panther — Black","category":"girls","desc":"طقم بناتي أسود بهودي وبنطلون واسع برباط أوف وايت. كتابة بينك على الصدر وطبعة بانثر كبيرة على الضهر.","price":0,"old":0,"tag":"","img":"images/pink-panther-black-01-front.webp","gallery":["images/pink-panther-black-01-front.webp","images/pink-panther-black-02-angle.webp","images/pink-panther-black-03-back.webp","images/pink-panther-black-04-detail.webp"],"sizes":["8","10","12"],"comingSoon":true}
 ];
 let favoriteIds=[];try{favoriteIds=JSON.parse(localStorage.getItem('orka-favorites')||'[]').map(Number)}catch(e){}
-let cart=[];try{const savedCart=JSON.parse(localStorage.getItem('orka-cart')||'[]');if(Array.isArray(savedCart))cart=savedCart.filter(x=>x&&x.id!==undefined&&x.size&&Number(x.qty)>0)}catch(e){cart=[]}let activeFilter='all';let selectedSizes={};window.orkaRewardCredit=0;window.orkaReservedRewardCredit=0;window.orkaLifetimeSpend=0;window.orkaMemberDiscountRate=0;
+let cart=[];let activeFilter='all';let selectedSizes={};window.orkaRewardCredit=0;window.orkaReservedRewardCredit=0;window.orkaLifetimeSpend=0;window.orkaMemberDiscountRate=0;
 
 function money(n){return new Intl.NumberFormat('ar-EG',{maximumFractionDigits:2}).format(n)+' ج.م'}
 const previewOffersByType = {
@@ -1344,6 +1344,11 @@ const previewOffersByType = {
   }
 };
 
+const checkoutLineLimit=10;
+const checkoutQuantityLimit=30;
+function cartQuantity(items){return items.reduce((sum,item)=>sum+item.qty,0)}
+cart=restoreCatalogCart();
+
 function renderOfferMoney(amount) {
   return `<bdi class="orka-offer-money-ar" dir="rtl">${money(amount)}</bdi><bdi class="orka-offer-money-en" dir="ltr">EGP ${amount}</bdi>`;
 }
@@ -1351,6 +1356,29 @@ function renderOfferMoney(amount) {
 function previewOfferFor(product,size) {
   if(product.pricingPending || (product.sizes.length && !product.sizes.includes(size)))return;
   return previewOffersByType[product.previewPriceGroup][size];
+}
+
+function catalogCartItem(product,size,qty){
+  const offer=product&&previewOfferFor(product,size);
+  if(!offer || !Number.isInteger(qty) || qty<1 || qty>checkoutLineLimit)return null;
+  return {id:product.id,sku:product.sku,name:product.name,img:product.img,size,qty,price:offer.price};
+}
+function restoreCatalogCart(){
+  let saved=[];
+  try{saved=JSON.parse(localStorage.getItem('orka-cart')||'[]')}catch(e){return []}
+  if(!Array.isArray(saved))return [];
+  const restored=[];
+  for(const entry of saved){
+    if(!entry)continue;
+    const item=catalogCartItem(products.find(p=>p.id===Number(entry.id)),String(entry.size||''),Number(entry.qty));
+    if(!item)continue;
+    const previous=restored.find(x=>x.id===item.id&&x.size===item.size);
+    const canAdd=Math.min(item.qty,checkoutQuantityLimit-cartQuantity(restored),checkoutLineLimit-(previous?.qty||0));
+    if(canAdd<=0)continue;
+    if(previous)previous.qty+=canAdd;
+    else restored.push({...item,qty:canAdd});
+  }
+  return restored;
 }
 
 function renderPreviewOffer(product,size) {
@@ -1402,7 +1430,7 @@ window.openProductDetails=openProductDetails;
 window.toggleFavorite=toggleFavorite;
 
 let detailProductId=null;
-function openProductDetails(id){const p=products.find(x=>x.id===id);if(!p)return;trackOrkaEvent('view_item',{currency:'EGP',value:Number(p.price)||0,items:[orkaAnalyticsItem(p,'')]});detailProductId=id;document.getElementById('detailImage').src=p.img;const brandLogo=document.querySelector('.header .logo img')||document.querySelector('.brand img');const detailBrandLogo=document.querySelector('.detail-brand-mark img');if(detailBrandLogo&&brandLogo){detailBrandLogo.src=brandLogo.src;}else if(detailBrandLogo){detailBrandLogo.closest('.detail-brand-mark')?.remove();}document.getElementById('detailImage').alt=p.name;document.getElementById('detailName').textContent=p.name;document.getElementById('detailDesc').textContent=p.desc;const detailMaterial=document.getElementById('detailMaterial');detailMaterial.textContent=p.material||'';detailMaterial.hidden=!p.material;document.getElementById('detailPrice').textContent='السعر قريبًا';const galleryHost=document.getElementById('orkaMilanoGallery')||(()=>{const el=document.createElement('div');el.id='orkaMilanoGallery';el.style.cssText='display:flex;gap:8px;overflow-x:auto;margin:12px 0;padding:6px 0;max-width:100%';document.getElementById('detailImage').parentElement.insertAdjacentElement('afterend',el);return el})();galleryHost.replaceChildren();galleryHost.style.display=p.gallery?'flex':'none';if(p.gallery){p.gallery.forEach((src,i)=>{const btn=document.createElement('button');btn.type='button';btn.setAttribute('aria-label','عرض صورة '+(i+1));btn.style.cssText='flex:0 0 68px;width:68px;height:78px;padding:2px;background:#fff;border:1px solid #ddd;border-radius:8px;cursor:pointer';const img=document.createElement('img');img.src=src;img.alt=p.name+' — صورة '+(i+1);img.loading='lazy';img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:6px';btn.appendChild(img);btn.addEventListener('click',()=>{document.getElementById('detailImage').src=src;document.getElementById('detailImage').alt=img.alt});galleryHost.appendChild(btn)})}const detailAdd=document.getElementById('detailAdd');if(detailAdd){detailAdd.hidden=!!p.comingSoon;detailAdd.disabled=!!p.comingSoon;detailAdd.setAttribute('aria-disabled',String(!!p.comingSoon));detailAdd.textContent=p.comingSoon?'الشراء غير متاح حاليًا':'أضف للسلة'}const sizes=p.comingSoon&&!p.pricingPending&&!p.sizes.length?Object.keys(previewOffersByType[p.previewPriceGroup]):p.sizes;const detailSize=document.getElementById('detailSize');detailSize.hidden=!sizes.length;document.querySelector('label[for="detailSize"]').hidden=!sizes.length;detailSize.innerHTML='<option value="">اختار المقاس</option>'+sizes.map(size=>`<option value="${size}">${size}</option>`).join('');document.getElementById('detailWhatsapp').href='https://wa.me/201021006006';updateDetailOffer();document.getElementById('productModal').classList.add('show');document.body.style.overflow='hidden';if(window.orkaPresenceStart)window.orkaPresenceStart(id)}
+function openProductDetails(id){const p=products.find(x=>x.id===id);if(!p)return;trackOrkaEvent('view_item',{currency:'EGP',value:Number(p.price)||0,items:[orkaAnalyticsItem(p,'')]});detailProductId=id;document.getElementById('detailImage').src=p.img;const brandLogo=document.querySelector('.header .logo img')||document.querySelector('.brand img');const detailBrandLogo=document.querySelector('.detail-brand-mark img');if(detailBrandLogo&&brandLogo){detailBrandLogo.src=brandLogo.src;}else if(detailBrandLogo){detailBrandLogo.closest('.detail-brand-mark')?.remove();}document.getElementById('detailImage').alt=p.name;document.getElementById('detailName').textContent=p.name;document.getElementById('detailDesc').textContent=p.desc;const detailMaterial=document.getElementById('detailMaterial');detailMaterial.textContent=p.material||'';detailMaterial.hidden=!p.material;document.getElementById('detailPrice').textContent='السعر قريبًا';const galleryHost=document.getElementById('orkaMilanoGallery')||(()=>{const el=document.createElement('div');el.id='orkaMilanoGallery';el.style.cssText='display:flex;gap:8px;overflow-x:auto;margin:12px 0;padding:6px 0;max-width:100%';document.getElementById('detailImage').parentElement.insertAdjacentElement('afterend',el);return el})();galleryHost.replaceChildren();galleryHost.style.display=p.gallery?'flex':'none';if(p.gallery){p.gallery.forEach((src,i)=>{const btn=document.createElement('button');btn.type='button';btn.setAttribute('aria-label','عرض صورة '+(i+1));btn.style.cssText='flex:0 0 68px;width:68px;height:78px;padding:2px;background:#fff;border:1px solid #ddd;border-radius:8px;cursor:pointer';const img=document.createElement('img');img.src=src;img.alt=p.name+' — صورة '+(i+1);img.loading='lazy';img.style.cssText='width:100%;height:100%;object-fit:cover;border-radius:6px';btn.appendChild(img);btn.addEventListener('click',()=>{document.getElementById('detailImage').src=src;document.getElementById('detailImage').alt=img.alt});galleryHost.appendChild(btn)})}const detailAdd=document.getElementById('detailAdd');detailAdd.hidden=!!p.pricingPending;detailAdd.disabled=!!p.pricingPending;detailAdd.textContent='أضف للسلة';const sizes=p.comingSoon&&!p.pricingPending&&!p.sizes.length?Object.keys(previewOffersByType[p.previewPriceGroup]):p.sizes;const detailSize=document.getElementById('detailSize');detailSize.hidden=!sizes.length;document.querySelector('label[for="detailSize"]').hidden=!sizes.length;detailSize.innerHTML='<option value="">اختار المقاس</option>'+sizes.map(size=>`<option value="${size}">${size}</option>`).join('');document.getElementById('detailWhatsapp').href='https://wa.me/201021006006';updateDetailOffer();document.getElementById('productModal').classList.add('show');document.body.style.overflow='hidden';if(window.orkaPresenceStart)window.orkaPresenceStart(id)}
 function closeProductDetails(){if(window.orkaPresenceStop)window.orkaPresenceStop();document.getElementById('productModal').classList.remove('show');document.body.style.overflow='';detailProductId=null}
 let zoomScale=1,zoomX=0,zoomY=0,zoomPointers=new Map(),zoomStartDistance=0,zoomStartScale=1,zoomDragStart=null;
 function openImageZoom(){const src=document.getElementById('detailImage').src;if(!src)return;const im=document.getElementById('zoomImage');im.src=src;im.alt=document.getElementById('detailImage').alt+' مكبرة';document.getElementById('imageZoom').classList.add('show');resetZoom();}
@@ -1416,9 +1444,28 @@ zoomStage.addEventListener('pointerdown',e=>{zoomStage.setPointerCapture(e.point
 zoomStage.addEventListener('pointermove',e=>{if(!zoomPointers.has(e.pointerId))return;zoomPointers.set(e.pointerId,{x:e.clientX,y:e.clientY});if(zoomPointers.size>=2){const pts=[...zoomPointers.values()];const dist=Math.hypot(pts[0].x-pts[1].x,pts[0].y-pts[1].y);if(zoomStartDistance>0){zoomScale=Math.max(1,Math.min(5,zoomStartScale*dist/zoomStartDistance));if(zoomScale===1){zoomX=0;zoomY=0}applyZoom()}}else if(zoomDragStart&&zoomScale>1){zoomX=zoomDragStart.ox+(e.clientX-zoomDragStart.x);zoomY=zoomDragStart.oy+(e.clientY-zoomDragStart.y);applyZoom()}});
 function endZoomPointer(e){zoomPointers.delete(e.pointerId);if(zoomPointers.size<2)zoomStartDistance=0;if(zoomPointers.size===1){const p=[...zoomPointers.values()][0];zoomDragStart={x:p.x,y:p.y,ox:zoomX,oy:zoomY}}else zoomDragStart=null;if(!zoomPointers.size)zoomStage.classList.remove('dragging')}
 zoomStage.addEventListener('pointerup',endZoomPointer);zoomStage.addEventListener('pointercancel',endZoomPointer);document.addEventListener('keydown',e=>{if(e.key==='Escape'){closeImageZoom();closeProductDetails()}if(document.getElementById('imageZoom').classList.contains('show')&&(e.key==='+'||e.key==='='))changeZoom(.25);if(document.getElementById('imageZoom').classList.contains('show')&&e.key==='-')changeZoom(-.25)});
-function addDetailToCart(){if(!detailProductId)return;const size=document.getElementById('detailSize').value;if(!size){toast('اختار المقاس الأول');return}const p=products.find(x=>x.id===detailProductId);const found=cart.find(x=>x.id===p.id&&x.size===size);if(found)found.qty++;else cart.push({...p,size,qty:1});trackOrkaEvent('add_to_cart',{currency:'EGP',value:Number(p.price)||0,items:[orkaAnalyticsItem(p,size,1)]});updateCart();closeProductDetails();toast('اتضاف المنتج للسلة بنجاح')}
-
-function addToCart(id){const p=products.find(x=>x.id===id);const size=document.getElementById('size-'+id).value;if(!size){toast('اختار المقاس الأول');return}const found=cart.find(x=>x.id===id&&x.size===size);if(found)found.qty++;else cart.push({...p,size,qty:1});trackOrkaEvent('add_to_cart',{currency:'EGP',value:Number(p.price)||0,items:[orkaAnalyticsItem(p,size,1)]});updateCart();toast('اتضاف المنتج للسلة بنجاح')}
+function addCatalogItem(product,size){
+  if(!size){toast('اختار المقاس الأول');return false}
+  const item=catalogCartItem(product,size,1);
+  if(!item){toast('المقاس ده غير متاح');return false}
+  const prior=cart.find(x=>x.id===item.id&&x.size===size);
+  if(cartQuantity(cart)>=checkoutQuantityLimit||(prior&&prior.qty>=checkoutLineLimit)){toast('وصلت للحد الأقصى للكمية');return false}
+  if(prior)prior.qty++;
+  else cart.push(item);
+  trackOrkaEvent('add_to_cart',{currency:'EGP',value:item.price,items:[orkaAnalyticsItem(item,size)]});
+  updateCart();
+  toast('اتضاف المنتج للسلة بنجاح');
+  return true;
+}
+function addDetailToCart(){
+  if(addCatalogItem(products.find(p=>p.id===detailProductId),document.getElementById('detailSize').value)){
+    closeProductDetails();
+    openCart();
+  }
+}
+function addToCart(id){
+  addCatalogItem(products.find(p=>p.id===id),document.getElementById('size-'+id).value);
+}
 function updateCart(){
  persistOrkaCart();
  document.getElementById('cartCount').textContent=cart.reduce((sum,item)=>sum+item.qty,0);
@@ -1431,14 +1478,14 @@ function updateCart(){
  summary.innerHTML='<div class="cart-total"><span>إجمالي المنتجات</span><strong>' +renderOfferMoney(total)+'</strong></div>'+
  '<div hidden data-orka-club-promo style="border:1px solid #E8DCC8;border-radius:10px;padding:12px;margin:10px 0;background:#FFFAF1"><strong style="color:#10294A">ORKA CLUB · المحفظة الجديدة (قريبًا)</strong><p style="margin:8px 0;font-size:12px">10% رصيد على مشتريات المنتجات بالسعر الكامل بعد تأكيد التسليم، صالح 30 يومًا. يمكن استخدام الرصيد على قطعة واحدة في الطلب، والباقي يحتفظ بتاريخ صلاحيته الأصلي. الرصيد شخصي وغير قابل للتحويل. الطلب المستخدم فيه رصيد لا يكتسب رصيدًا جديدًا.</p><small>المحفظة غير مفعّلة حاليًا، ولا يُحسب أي خصم أو رصيد من المتصفح.</small></div>'+
  '<p class="notice">خدمة العملاء هتأكد لك توفر المقاس وتكلفة الشحن قبل تأكيد الطلب.</p>';
- checkout.innerHTML='<a class="wa-contact" href="https://wa.me/201021006006" target="_blank" rel="noopener">اطلب على واتساب</a>';
+ checkout.innerHTML='<a class="wa-contact" href="checkout-preview.html">راجع طلبك</a>';
  const legacyCheckoutForm=checkout.querySelector('form.checkout-form');
  if(legacyCheckoutForm)legacyCheckoutForm.remove();
  const legacyCheckoutHeading=checkout.querySelector('h4');
  if(legacyCheckoutHeading&&legacyCheckoutHeading.textContent.trim()==='بيانات التوصيل')legacyCheckoutHeading.remove();
 
 }
-function changeQty(id,size,delta){const item=cart.find(x=>x.id===id&&x.size===size);if(!item)return;item.qty+=delta;if(item.qty<=0)removeItem(id,size);else updateCart()}function removeItem(id,size){cart=cart.filter(x=>!(x.id===id&&x.size===size));updateCart()}function openCart(){updateCart();if(cart.length){trackOrkaEvent('begin_checkout',{currency:'EGP',value:cart.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0),items:cart.map(x=>orkaAnalyticsItem(x,x.size,x.qty))})}if(window.prefillOrkaCheckout)window.prefillOrkaCheckout();document.getElementById('cartOverlay').classList.add('show');document.body.style.overflow='hidden'}function closeCart(){document.getElementById('cartOverlay').classList.remove('show');document.body.style.overflow=''}async function submitOrder(e){
+function changeQty(id,size,delta){const item=cart.find(x=>x.id===id&&x.size===size);if(!item)return;if(delta>0&&cartQuantity(cart)>=checkoutQuantityLimit){toast('وصلت للحد الأقصى للكمية');return}item.qty=Math.min(checkoutLineLimit,item.qty+delta);if(item.qty<=0)removeItem(id,size);else updateCart()}function removeItem(id,size){cart=cart.filter(x=>!(x.id===id&&x.size===size));updateCart()}function openCart(){updateCart();if(cart.length){trackOrkaEvent('begin_checkout',{currency:'EGP',value:cart.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0),items:cart.map(x=>orkaAnalyticsItem(x,x.size,x.qty))})}if(window.prefillOrkaCheckout)window.prefillOrkaCheckout();document.getElementById('cartOverlay').classList.add('show');document.body.style.overflow='hidden'}function closeCart(){document.getElementById('cartOverlay').classList.remove('show');document.body.style.overflow=''}async function submitOrder(e){
  e.preventDefault();
  toast('كمّل طلبك على واتساب مع خدمة عملاء ORKA.');
 }
@@ -1863,6 +1910,9 @@ window.orkaAuthReady=new Promise(resolve=>{
 <script>
 (function(){
  const translations = {
+ "راجع طلبك":"Review your order",
+ "المقاس ده غير متاح":"This size is unavailable",
+ "وصلت للحد الأقصى للكمية":"You reached the quantity limit",
  "تواصل مع ORKA على واتساب لاختيار الموديل والمقاس.":"Contact ORKA on WhatsApp to choose a style and size.",
  "طقم بناتي بينك بهودي وبنطلون واسع برباط أوف وايت. طبعة شوكولاتة ودونات على الهودي.":"Girls’ pink hoodie and wide-leg trousers with an off-white drawstring. The hoodie features chocolate and doughnut artwork.",
  "طقم بناتي أسود بهودي وبنطلون واسع برباط أوف وايت. كتابة بينك على الصدر وطبعة بانثر كبيرة على الضهر.":"Girls’ black hoodie and wide-leg trousers with an off-white drawstring. Pink lettering on the chest and a large Panther graphic on the back.",

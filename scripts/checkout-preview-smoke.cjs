@@ -15,7 +15,7 @@ const checks=[
  ['online payment disabled',()=>assert.match(html,/name="payment" disabled/)],
  ['form never submits',()=>assert.match(html,/addEventListener\('submit',e=>e\.preventDefault\(\)\)/)],
  ['existing store submission guarded',()=>assert.match(store,/async function submitOrder\(e\)\s*\{\s*e\.preventDefault\(\);\s*toast\('كمّل طلبك على واتساب مع خدمة عملاء ORKA\.'\);\s*\}/)],
- ['customer cart directs to WhatsApp',()=>{assert.match(store,/checkout\.innerHTML='\x3ca[^>]+href="https:\/\/wa\.me\/201021006006"/);assert.doesNotMatch(store,/href=['"]checkout-preview\.html['"]/)}],
+ ['staging cart links to disabled review',()=>{assert.match(store,/checkout\.innerHTML='\x3ca[^>]+href="checkout-preview\.html"/);assert.match(html,/id="catalogSubtotal"/);assert.match(html,/x\.price\*Number\(x\.qty\)/)}],
  ['demo cart does not mutate real storage',()=>{const segment=html.split('const demoItems=')[1].split('function renderPreviewCart')[0];assert.doesNotMatch(segment,/localStorage\.setItem|fetch\(|XMLHttpRequest/)}],
  ['phone validation',()=>assert.match(html,/01\[0125\]\[0-9\]\{8\}/)],
  ['billing mode toggle',()=>{assert.match(html,/name="billingMode"/);assert.match(html,/billingDetails/)}],
