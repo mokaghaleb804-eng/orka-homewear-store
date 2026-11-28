@@ -9,3 +9,6 @@ const options={region:'me-central1',enforceAppCheck:true,maxInstances:10,timeout
 exports.quoteOrkaOrder=onCall(options,service.quoteOrkaOrder);
 exports.createOrkaOrder=onCall(options,service.createOrkaOrder);
 exports.updateOrkaOrderStatus=onCall(options,service.updateOrkaOrderStatus);
+
+const {createAdminShipping}=require('./admin-shipping');
+exports.updateOrkaShipping=onCall(options,createAdminShipping({db:getFirestore(),HttpsError,FieldValue}));
