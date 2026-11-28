@@ -2,7 +2,7 @@
 const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const html=fs.readFileSync('index.html','utf8');
-assert.match(html,/async function submitOrder\(e\)\s*\{\s*e\.preventDefault\(\);\s*toast\('نسخة تجريبية فقط — إرسال الطلبات الحقيقية معطّل\.'\);\s*\}/);
+assert.match(html,/async function submitOrder\(e\)\s*\{\s*e\.preventDefault\(\);\s*toast\('كمّل طلبك على واتساب مع خدمة عملاء ORKA\.'\);\s*\}/);
 assert.doesNotMatch(html,/window\.saveOrkaOrder\s*=/);
 assert.doesNotMatch(html,/\bORKA_TEST_PRICES\b/);
 assert.doesNotMatch(html,/\baddDoc\s*\(/);
