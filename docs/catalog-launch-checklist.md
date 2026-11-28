@@ -4,6 +4,7 @@
 
 - COD only; Google registered checkout and secure guest checkout.
 - All Egyptian governorates are intended coverage, subject to approved fees/service.
+- Owner decision: customer pays the full carrier shipping fee; ORKA subsidy is zero. Actual carrier fees remain pending verification.
 - Preparation takes 3–5 days BEFORE carrier transit.
 - Final product prices, carrier agreement and shipping fees remain unresolved.
 - Real product photographs and the official customer-service contact require approval.
