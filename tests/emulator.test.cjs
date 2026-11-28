@@ -183,3 +183,27 @@ test('HTTP callable: emulator Google and guest auth, App Check rejection, and tr
     const order=(await db.doc('orders/'+result.result.orderId).get()).data();assert.equal(order.uid,auth.localId);assert.equal(order.totalEGP,295);
   }
 });
+
+
+test('approved launch catalog: all 53 variants, flat shipping and mixed cart order',async()=>{
+ const draft=require('../config/catalog-launch-draft.json');
+ const shipping=require('../config/shipping-launch-draft.json');
+ const batch=db.batch();
+ let variants=0;
+ for(const [id,p] of Object.entries(draft.catalog)){
+  assert.equal(p.requiresSizeApproval,false);
+  for(const s of p.sizes){assert.equal(p.priceEGPBySize[s],draft.priceGroups[p.priceGroup][s]);variants++;}
+  batch.set(db.doc('catalog/'+id),{active:true,name:p.name,sizes:p.sizes,priceEGPBySize:p.priceEGPBySize,maxPerOrder:10,inventoryMode:'made-to-order'});
+ }
+ assert.equal(variants,53);
+ assert.equal(Object.keys(shipping.carrierEGPByGovernorate).length,27);
+ assert.ok(Object.values(shipping.carrierEGPByGovernorate).every(v=>v===80));
+ batch.set(db.doc('storeSettings/checkout'),{enabled:true,paymentMethod:'cod',catalogApproved:true,shippingApproved:true,abuseControlsApproved:true,carrierEGPByGovernorate:shipping.carrierEGPByGovernorate,subsidyEGPByGovernorate:shipping.subsidyEGPByGovernorate});
+ await batch.commit();
+ const {quote,result}=await makeOrder(input({items:[{productId:'101',size:'6',qty:1},{productId:'108',size:'8',qty:2}]}));
+ assert.equal(quote.subtotalEGP,1790);
+ assert.equal(quote.totalEGP,1870);
+ const order=(await db.doc('orders/'+result.orderId).get()).data();
+ assert.equal(order.totalEGP,1870);
+ await assert.rejects(api.quoteOrkaOrder(call(input({items:[{productId:'111',size:'2',qty:1}]}),user('other'))),error('failed-precondition'));
+});
