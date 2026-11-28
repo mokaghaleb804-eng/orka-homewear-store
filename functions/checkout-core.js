@@ -1,4 +1,5 @@
 const crypto=require("node:crypto");
+const {calculateShipping}=require("./shipping-policy");
 function createCheckoutService({db,HttpsError,FieldValue,now=Date.now}) {
 const REGIONS = ["القاهرة","الجيزة","الإسكندرية","القليوبية","الشرقية","الغربية","المنوفية","الدقهلية","البحيرة","كفر الشيخ","دمياط","بورسعيد","الإسماعيلية","السويس","الفيوم","بني سويف","المنيا","أسيوط","سوهاج","قنا","الأقصر","أسوان","البحر الأحمر","الوادي الجديد","مطروح","شمال سيناء","جنوب سيناء"];
 function stringField(v, min, max) {
@@ -42,7 +43,20 @@ async function calculatePrice(tx,input) {
   if(policy.enabled!==true || policy.paymentMethod!=="cod" || policy.catalogApproved!==true || policy.shippingApproved!==true || policy.abuseControlsApproved!==true) {
     throw new HttpsError('failed-precondition','الطلبات غير متاحة حتى اعتماد الإطلاق');
   }
-  const shippingEGP=policy.shippingEGPByGovernorate?.[input.gov];
+  let shippingEGP;
+  let shippingBreakdown;
+  try {
+    if (policy.carrierEGPByGovernorate !== undefined) {
+      const carrierEGP=policy.carrierEGPByGovernorate?.[input.gov];
+      const subsidyEGP=policy.subsidyEGPByGovernorate?.[input.gov] ?? 0;
+      shippingBreakdown=calculateShipping({carrierEGP,subsidyEGP});
+      shippingEGP=shippingBreakdown.shippingEGP;
+    } else {
+      shippingEGP=policy.shippingEGPByGovernorate?.[input.gov];
+    }
+  } catch {
+    throw new HttpsError('failed-precondition','تكلفة الشحن غير معتمدة');
+  }
   if(!Number.isSafeInteger(shippingEGP) || shippingEGP<0 || shippingEGP>10000) throw new HttpsError('failed-precondition','تكلفة الشحن غير معتمدة');
   const products=await Promise.all(input.items.map(x=>tx.get(db.doc('catalog/'+x.productId))));
   const quantities={};
@@ -62,7 +76,7 @@ async function calculatePrice(tx,input) {
   });
   const totalEGP=subtotalEGP+shippingEGP;
   if(!Number.isSafeInteger(totalEGP) || totalEGP<1 || totalEGP>1000000) reject('إجمالي الطلب غير صالح');
-  return {items,subtotalEGP,shippingEGP,totalEGP,discountEGP:0,paymentMethod:'cod',preparationDays:{min:3,max:5}};
+  return {items,subtotalEGP,shippingEGP,...(shippingBreakdown?{shippingBreakdown}:{}),totalEGP,discountEGP:0,paymentMethod:'cod',preparationDays:{min:3,max:5}};
 }
 async function quoteOrkaOrder(request) {
   if(!request.auth?.uid) throw new HttpsError('unauthenticated','يجب بدء جلسة آمنة');
