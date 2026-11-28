@@ -1,3 +1,4 @@
+import {reconcileLaunchCart} from '../../checkout/launch-cart.mjs';
 import launchCatalog from '../../config/catalog-launch-draft.json';
 import {initializeApp} from 'firebase/app';
 import {getAuth,connectAuthEmulator,signInAnonymously,signInWithCredential,GoogleAuthProvider,signOut,onAuthStateChanged,setPersistence,browserSessionPersistence} from 'firebase/auth';
@@ -24,7 +25,8 @@ for(const [id,p] of Object.entries(launchCatalog.catalog)){const option=document
 $('size').before(productSelect);
 function syncSizes(){const p=launchCatalog.catalog[productSelect.value];$('size').replaceChildren(...p.sizes.map(s=>{const o=document.createElement('option');o.value=s;o.textContent=s+' — '+p.priceEGPBySize[s]+' ج';return o;}));invalidate();}
 productSelect.addEventListener('change',syncSizes);
-const flow=createStorefrontCheckoutPreview({app,quoteOrder:quoteOrkaCheckoutOrder,createOrder:createOrkaCheckoutOrder,readCart:()=>[{id:productSelect.value,size:$('size').value,qty:Number($('qty').value)}]});
+const readLaunchCart=()=>[{id:productSelect.value,size:$('size').value,qty:Number($('qty').value)}];
+const flow=createStorefrontCheckoutPreview({app,quoteOrder:quoteOrkaCheckoutOrder,createOrder:createOrkaCheckoutOrder,readCart:()=>reconcileLaunchCart(readLaunchCart(),launchCatalog.catalog).rows.map(x=>({id:x.productId,size:x.size,qty:x.qty}))});
 function invalidate(){flow.invalidate();currentQuote=null;$('confirm').disabled=true;$('quote').classList.add('hidden');$('receipt').textContent='';}
 syncSizes();
 async function run(fn){if(busy)return;busy=true;try{await fn();}catch(e){status(e.message||'تعذر إكمال الاختبار');}finally{busy=false;}}
@@ -35,7 +37,9 @@ onAuthStateChanged(auth,user=>{shippingHost.replaceChildren();invalidate();$('ad
 $('form').addEventListener('input',invalidate);
 $('form').onsubmit=e=>{e.preventDefault();run(async()=>{
  if(!auth.currentUser)throw Error('اختار جلسة الاختبار أولًا');
+ const estimate=reconcileLaunchCart(readLaunchCart(),launchCatalog.catalog);
  const quote=await flow.review(mode,customer());
+ if(!quote.receipt && quote.totalEGP!==estimate.estimatedTotalEGP)status('تم تحديث الإجمالي من الخادم؛ راجعه قبل التأكيد');
  if(quote.receipt){$('receipt').textContent='الطلب محفوظ بالفعل: '+quote.receipt.orderId;status('نفس المحاولة أعادت نفس الطلب');return;}
  currentQuote=quote;$('quote').textContent='المنتجات: '+quote.subtotalEGP+' ج · الشحن: '+quote.shippingEGP+' ج · الإجمالي: '+quote.totalEGP+' ج. التجهيز 3–5 أيام قبل وقت شركة الشحن. كل القيم تجريبية.';
  $('quote').classList.remove('hidden');$('confirm').disabled=false;status('راجع الإجمالي قبل التأكيد');
