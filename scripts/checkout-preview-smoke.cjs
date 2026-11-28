@@ -14,7 +14,7 @@ const checks=[
  ['preview order button disabled',()=>assert.match(html,/type="button" disabled data-i18n="submit"/)],
  ['online payment disabled',()=>assert.match(html,/name="payment" disabled/)],
  ['form never submits',()=>assert.match(html,/addEventListener\('submit',e=>e\.preventDefault\(\)\)/)],
- ['existing store submission guarded',()=>assert.match(store,/إرسال الطلبات الحقيقية معطّل\.?'\); return;/)],
+ ['existing store submission guarded',()=>assert.match(store,/async function submitOrder\(e\)\s*\{\s*e\.preventDefault\(\);\s*toast\('نسخة تجريبية فقط — إرسال الطلبات الحقيقية معطّل\.'\);\s*\}/)],
  ['preview cart link present',()=>assert.match(store,/previewLink\.href='checkout-preview\.html'/)],
  ['demo cart does not mutate real storage',()=>{const segment=html.split('const demoItems=')[1].split('function renderPreviewCart')[0];assert.doesNotMatch(segment,/localStorage\.setItem|fetch\(|XMLHttpRequest/)}],
  ['phone validation',()=>assert.match(html,/01\[0125\]\[0-9\]\{8\}/)],
