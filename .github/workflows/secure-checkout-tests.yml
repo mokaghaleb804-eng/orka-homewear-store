@@ -3,6 +3,8 @@ on:
   pull_request:
     branches: [main]
     paths:
+      - 'index.html'
+      - 'config/**'
       - 'functions/**'
       - 'checkout/**'
       - 'tests/**'
@@ -11,8 +13,10 @@ on:
       - 'package*.json'
       - '.github/workflows/secure-checkout-tests.yml'
   push:
-    branches: [feature/secure-checkout-backend-draft]
+    branches: [feature/secure-checkout-backend-draft, integration/orka-launch-current]
     paths:
+      - 'index.html'
+      - 'config/**'
       - 'functions/**'
       - 'checkout/**'
       - 'tests/**'
