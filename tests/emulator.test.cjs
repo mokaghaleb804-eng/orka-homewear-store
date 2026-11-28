@@ -66,6 +66,21 @@ test('reject unknown SKU, invalid size, unsafe price, unsupported inventory and 
     await assert.rejects(api.quoteOrkaOrder(call(input())),error('failed-precondition'));
   }
 });
+test('server prices each size and rejects missing, invalid, or changed variant prices',async()=>{
+  const ref=db.doc('catalog/TEST-001');
+  const data=input({items:[{productId:'TEST-001',size:'6',qty:1},{productId:'TEST-001',size:'8',qty:2}]});
+  for(const priceEGPBySize of [{6:535},{6:535,8:'635'},null,[]]){
+    await ref.update({priceEGPBySize});
+    await assert.rejects(api.quoteOrkaOrder(call(data)),error('failed-precondition'));
+  }
+  await ref.update({priceEGPBySize:{6:535,8:635}});
+  const quote=await api.quoteOrkaOrder(call(data));
+  assert.deepEqual(quote.items.map(x=>x.unitPriceEGP),[535,635]);
+  assert.equal(quote.subtotalEGP,1805);
+  assert.equal(quote.totalEGP,1850);
+  await ref.update({'priceEGPBySize.8':640});
+  await assert.rejects(api.createOrkaOrder(call({...data,quoteId:quote.quoteId})),error('failed-precondition'));
+});
 test('same attempt concurrent submissions and lost-response retry return exactly one order',async()=>{
   const data=input(),q=await api.quoteOrkaOrder(call(data)),payload={...data,quoteId:q.quoteId};
   const results=await Promise.all(Array.from({length:6},()=>api.createOrkaOrder(call(payload))));

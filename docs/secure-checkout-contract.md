@@ -4,7 +4,7 @@ This document defines the minimum safe backend before enabling checkout in `inde
 
 ## Server-authoritative catalog
 
-Maintain a trusted catalog in Firestore `catalog/{productId}`, writable only by trusted administrators via a separate privileged workflow, with `active`, `priceEGP` (whole-EGP safe integer in this candidate), `sizes`, `name`, `inventoryMode`, `maxPerOrder`. Do not derive price or discount from client cart data. Freeze price, product title, size and quantity in the order snapshot.
+Maintain a trusted catalog in Firestore `catalog/{productId}`, writable only by trusted administrators via a separate privileged workflow, with `active`, `priceEGP` (whole-EGP safe integer in this candidate), `sizes`, `name`, `inventoryMode`, `maxPerOrder`. For a model priced by size, set `priceEGPBySize` to a map of size codes to valid whole-EGP prices. When that map is present, a missing or invalid size price fails closed. Existing single-price models without the map continue to use `priceEGP`. Do not derive price or discount from client cart data. Freeze price, product title, size and quantity in the order snapshot.
 
 ## Checkout API contract
 

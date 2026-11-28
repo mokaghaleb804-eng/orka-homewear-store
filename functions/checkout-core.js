@@ -50,9 +50,15 @@ async function calculatePrice(tx,input) {
   let subtotalEGP=0;
   const items=input.items.map((x,i)=>{
     const p=products[i].exists?products[i].data():{};
-    if(p.active!==true || !Array.isArray(p.sizes) || !p.sizes.includes(x.size) || !Number.isSafeInteger(p.priceEGP) || p.priceEGP<1 || p.priceEGP>1000000 || typeof p.name!=="string" || !p.name.trim() || p.name.length>100 || p.inventoryMode!=="made-to-order" || !Number.isInteger(p.maxPerOrder) || p.maxPerOrder<1 || p.maxPerOrder>30 || quantities[x.productId]>p.maxPerOrder) throw new HttpsError('failed-precondition','الموديل أو المقاس أو الكمية غير متاح');
-    const lineEGP=p.priceEGP*x.qty; subtotalEGP+=lineEGP;
-    return {productId:x.productId,name:p.name,size:x.size,qty:x.qty,unitPriceEGP:p.priceEGP,lineEGP};
+    const bySize=p.priceEGPBySize;
+    const unitPriceEGP=bySize===undefined
+      ? p.priceEGP
+      : bySize && typeof bySize==='object' && !Array.isArray(bySize) && Object.hasOwn(bySize,x.size)
+        ? bySize[x.size]
+        : undefined;
+    if(p.active!==true || !Array.isArray(p.sizes) || !p.sizes.includes(x.size) || !Number.isSafeInteger(unitPriceEGP) || unitPriceEGP<1 || unitPriceEGP>1000000 || typeof p.name!=="string" || !p.name.trim() || p.name.length>100 || p.inventoryMode!=="made-to-order" || !Number.isInteger(p.maxPerOrder) || p.maxPerOrder<1 || p.maxPerOrder>30 || quantities[x.productId]>p.maxPerOrder) throw new HttpsError('failed-precondition','الموديل أو المقاس أو الكمية غير متاح');
+    const lineEGP=unitPriceEGP*x.qty; subtotalEGP+=lineEGP;
+    return {productId:x.productId,name:p.name,size:x.size,qty:x.qty,unitPriceEGP,lineEGP};
   });
   const totalEGP=subtotalEGP+shippingEGP;
   if(!Number.isSafeInteger(totalEGP) || totalEGP<1 || totalEGP>1000000) reject('إجمالي الطلب غير صالح');
