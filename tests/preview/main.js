@@ -19,6 +19,9 @@ document.getElementById('adminPanel').append(shippingHost);
 const $=id=>document.getElementById(id);let currentQuote=null,mode='registered',busy=false;
 const status=t=>{$('status').textContent=t;};
 const customer=()=>({name:$('customer').value,phone:$('phone').value,gov:$('gov').value,address:$('address').value});
+import shippingConfig from '../../config/shipping-launch-draft.json';
+$('gov').replaceChildren(...Object.keys(shippingConfig.carrierEGPByGovernorate).map(g=>{const o=document.createElement('option');o.value=g;o.textContent=g;return o;}));
+$('qty').max='10';
 const productSelect=document.createElement('select');
 productSelect.id='launchProduct';productSelect.setAttribute('aria-label','الموديل');
 for(const [id,p] of Object.entries(launchCatalog.catalog)){const option=document.createElement('option');option.value=id;option.textContent=p.name;productSelect.append(option);}
