@@ -3,11 +3,16 @@ import {getAuth,connectAuthEmulator,signInAnonymously,signInWithCredential,Googl
 import {initializeAppCheck,CustomProvider} from 'firebase/app-check';
 import {quoteOrkaCheckoutOrder,createOrkaCheckoutOrder} from '../../checkout/secure-checkout-client.js';
 import {updateOrkaOrderStatus,allowedOrkaOrderActions} from '../../checkout/admin-status-client.js';
+import {mountShippingPanel} from '../../checkout/admin-shipping-panel.js';
+import {createAdminShippingClient} from '../../checkout/admin-shipping-client.js';
+import {getFunctions,httpsCallable} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-functions.js';
 const app=initializeApp({projectId:'demo-orka-checkout',apiKey:'demo-key',appId:'demo-orka-app',authDomain:'localhost'},'orka-emulator-preview');
 const auth=getAuth(app);connectAuthEmulator(auth,location.origin,{disableWarnings:true});await setPersistence(auth,browserSessionPersistence);
 // Unsigned token is recognized ONLY by the official Functions emulator. Never valid live.
 const encoded=v=>btoa(JSON.stringify(v)).replaceAll('=','').replaceAll('+','-').replaceAll('/','_');
 initializeAppCheck(app,{provider:new CustomProvider({getToken:async()=>({token:encoded({alg:'none',typ:'JWT'})+'.'+encoded({sub:'demo-orka-app',iat:Math.floor(Date.now()/1000),exp:Math.floor(Date.now()/1000)+3600})+'.',expireTimeMillis:Date.now()+3600000})})});
+const shippingHost=document.createElement('section');
+document.getElementById('adminPanel').append(shippingHost);
 const $=id=>document.getElementById(id);let currentQuote=null,mode='registered',busy=false;
 const status=t=>{$('status').textContent=t;};
 const customer=()=>({name:$('customer').value,phone:$('phone').value,gov:$('gov').value,address:$('address').value});
@@ -15,9 +20,9 @@ const cart=()=>[{productId:'TEST-001',size:$('size').value,qty:Number($('qty').v
 function invalidate(){currentQuote=null;$('confirm').disabled=true;$('quote').classList.add('hidden');$('receipt').textContent='';}
 async function run(fn){if(busy)return;busy=true;try{await fn();}catch(e){status(e.message||'تعذر إكمال الاختبار');}finally{busy=false;}}
 async function google(admin=false){await signOut(auth);await signInWithCredential(auth,GoogleAuthProvider.credential(JSON.stringify({sub:admin?'preview-admin-google':'preview-google',email:admin?'admin@example.invalid':'customer@example.invalid',name:admin?'مدير تجريبي':'عميل Google تجريبي'})));mode='registered';}
-$('google').onclick=()=>run(()=>google());$('admin').onclick=()=>run(async()=>{await google(true);$('adminPanel').classList.remove('hidden');await loadOrders();});
+$('google').onclick=()=>run(()=>google());$('admin').onclick=()=>run(async()=>{await google(true);$('adminPanel').classList.remove('hidden');await loadOrders();mountShippingPanel(shippingHost,createAdminShippingClient({functions:getFunctions(app,location.origin+'/__functions'),httpsCallable}));});
 $('guest').onclick=()=>run(async()=>{await signOut(auth);await signInAnonymously(auth);mode='guest';});$('logout').onclick=()=>run(()=>signOut(auth));
-onAuthStateChanged(auth,user=>{invalidate();$('adminPanel').classList.add('hidden');$('orders').textContent='';mode=user?.isAnonymous?'guest':'registered';$('identity').textContent=user?(user.isAnonymous?'ضيف تجريبي':'حساب تجريبي مسجل'):'لم تبدأ جلسة';status(user?'الجلسة جاهزة للاختبار':'اختار حسابًا تجريبيًا أو ضيفًا');});
+onAuthStateChanged(auth,user=>{shippingHost.replaceChildren();invalidate();$('adminPanel').classList.add('hidden');$('orders').textContent='';mode=user?.isAnonymous?'guest':'registered';$('identity').textContent=user?(user.isAnonymous?'ضيف تجريبي':'حساب تجريبي مسجل'):'لم تبدأ جلسة';status(user?'الجلسة جاهزة للاختبار':'اختار حسابًا تجريبيًا أو ضيفًا');});
 $('form').addEventListener('input',invalidate);
 $('form').onsubmit=e=>{e.preventDefault();run(async()=>{
  if(!auth.currentUser)throw Error('اختار جلسة الاختبار أولًا');
