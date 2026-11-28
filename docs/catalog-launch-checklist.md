@@ -4,9 +4,9 @@
 
 - COD only; Google registered checkout and secure guest checkout.
 - All Egyptian governorates are intended coverage, subject to approved fees/service.
-- Owner decision: customer pays the full carrier shipping fee; ORKA subsidy is zero. Actual carrier fees remain pending verification.
+- Owner decision: customer pays the full carrier shipping fee; ORKA subsidy is zero. Owner approved an initial flat customer shipping charge of EGP 80 across all 27 governorates, editable later. Carrier service coverage and actual carrier costs still require verification.
 - Preparation takes 3–5 days BEFORE carrier transit.
-- Final product prices, carrier agreement and shipping fees remain unresolved.
+- Final product prices and carrier agreement remain unresolved; initial customer shipping tariff is EGP 80.
 - Real product photographs and the official customer-service contact require approval.
 
 ## Catalog contract
@@ -27,4 +27,4 @@ Do not create or enable production `storeSettings/checkout`. New quotes/orders r
 
 Local Firestore/Auth emulator and loopback callable tests cover pricing, shipping, stale quotes, canonical idempotency, simultaneous retries, identity, ownership, profile protection, admin state transitions and zero loyalty mutations. See `secure-checkout-test-evidence.md` for exact evidence and limitations.
 
-Before release: approve the real catalog/fees, map the real storefront, review deployed rules and legacy data, verify real Google OAuth/Anonymous Auth/App Check, implement and verify network/device abuse controls, run real mobile/browser staging tests, and approve a controlled production rollout. The emulator demo cannot authorize or enable any live service.
+Before release: approve the real catalog and verify carrier coverage, map the real storefront, review deployed rules and legacy data, verify real Google OAuth/Anonymous Auth/App Check, implement and verify network/device abuse controls, run real mobile/browser staging tests, and approve a controlled production rollout. The emulator demo cannot authorize or enable any live service.
