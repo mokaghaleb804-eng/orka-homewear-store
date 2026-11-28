@@ -98,7 +98,10 @@ jobs:
           from pathlib import Path
           site=Path('index.html').read_text(encoding='utf-8')
           app=Path('orka-orders.html').read_text(encoding='utf-8')
-          assert ('نسخة تجريبية فقط — إرسال الطلبات الحقيقية معطّل.' in site or ('const ORKA_TEST_PRICES = true;' in site and "if(ORKA_TEST_PRICES){toast('الأسعار تجريبية فقط؛ لن يتم إرسال طلب حقيقي.');return}" in site)), 'Checkout safety gate missing'
+          import re
+          legacy_guard = re.search(r"async function submitOrder\(e\)\s*\{\s*e\.preventDefault\(\);\s*toast\('نسخة تجريبية فقط — إرسال الطلبات الحقيقية معطّل\.'\);\s*return;", site)
+          whatsapp_guard = re.search(r"async function submitOrder\(e\)\s*\{\s*e\.preventDefault\(\);\s*toast\('كمّل طلبك على واتساب مع خدمة عملاء ORKA\.'\);\s*\}", site)
+          assert legacy_guard or whatsapp_guard, 'Checkout safety gate missing'
           assert "o.status==='pending'&&!o.uid?" in app, 'Guest points action not disabled'
           assert "if(typeof o.uid!=='string'||!o.uid)throw Error" in app, 'Missing guest transaction guard'
           assert 'cloudOrders=[];updateVisibleOrders();' in app, 'Missing safe Firebase error fallback'
