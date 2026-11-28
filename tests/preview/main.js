@@ -1,3 +1,4 @@
+import launchCatalog from '../../config/catalog-launch-draft.json';
 import {initializeApp} from 'firebase/app';
 import {getAuth,connectAuthEmulator,signInAnonymously,signInWithCredential,GoogleAuthProvider,signOut,onAuthStateChanged,setPersistence,browserSessionPersistence} from 'firebase/auth';
 import {initializeAppCheck,CustomProvider} from 'firebase/app-check';
@@ -17,8 +18,15 @@ document.getElementById('adminPanel').append(shippingHost);
 const $=id=>document.getElementById(id);let currentQuote=null,mode='registered',busy=false;
 const status=t=>{$('status').textContent=t;};
 const customer=()=>({name:$('customer').value,phone:$('phone').value,gov:$('gov').value,address:$('address').value});
-const flow=createStorefrontCheckoutPreview({app,quoteOrder:quoteOrkaCheckoutOrder,createOrder:createOrkaCheckoutOrder,readCart:()=>[{id:'TEST-001',size:$('size').value,qty:Number($('qty').value)}]});
+const productSelect=document.createElement('select');
+productSelect.id='launchProduct';productSelect.setAttribute('aria-label','الموديل');
+for(const [id,p] of Object.entries(launchCatalog.catalog)){const option=document.createElement('option');option.value=id;option.textContent=p.name;productSelect.append(option);}
+$('size').before(productSelect);
+function syncSizes(){const p=launchCatalog.catalog[productSelect.value];$('size').replaceChildren(...p.sizes.map(s=>{const o=document.createElement('option');o.value=s;o.textContent=s+' — '+p.priceEGPBySize[s]+' ج';return o;}));invalidate();}
+productSelect.addEventListener('change',syncSizes);
+const flow=createStorefrontCheckoutPreview({app,quoteOrder:quoteOrkaCheckoutOrder,createOrder:createOrkaCheckoutOrder,readCart:()=>[{id:productSelect.value,size:$('size').value,qty:Number($('qty').value)}]});
 function invalidate(){flow.invalidate();currentQuote=null;$('confirm').disabled=true;$('quote').classList.add('hidden');$('receipt').textContent='';}
+syncSizes();
 async function run(fn){if(busy)return;busy=true;try{await fn();}catch(e){status(e.message||'تعذر إكمال الاختبار');}finally{busy=false;}}
 async function google(admin=false){await signOut(auth);await signInWithCredential(auth,GoogleAuthProvider.credential(JSON.stringify({sub:admin?'preview-admin-google':'preview-google',email:admin?'admin@example.invalid':'customer@example.invalid',name:admin?'مدير تجريبي':'عميل Google تجريبي'})));mode='registered';}
 $('google').onclick=()=>run(()=>google());$('admin').onclick=()=>run(async()=>{await google(true);$('adminPanel').classList.remove('hidden');await loadOrders();mountShippingPanel(shippingHost,createAdminShippingClient({functions:getFunctions(app,location.origin+'/__functions'),httpsCallable}));});
