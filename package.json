@@ -2,7 +2,7 @@
   "name": "orka-checkout-isolated-tests",
   "private": true,
   "scripts": {
-    "test": "firebase emulators:exec --config firebase.emulator.json --project demo-orka-checkout --only firestore,auth 'node --test --test-concurrency=1 tests/emulator.test.cjs tests/attempt-store.test.mjs tests/shipping-policy.test.cjs tests/admin-shipping.test.cjs tests/catalog-cart-adapter.test.mjs'",
+    "test": "firebase emulators:exec --config firebase.emulator.json --project demo-orka-checkout --only firestore,auth 'node --test --test-concurrency=1 tests/emulator.test.cjs tests/attempt-store.test.mjs tests/shipping-policy.test.cjs tests/admin-shipping.test.cjs tests/catalog-cart-adapter.test.mjs tests/launch-cart.test.mjs'",
     "dev": "node tests/preview-server.cjs"
   },
   "devDependencies": {
