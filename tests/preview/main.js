@@ -6,6 +6,7 @@ import {updateOrkaOrderStatus,allowedOrkaOrderActions} from '../../checkout/admi
 import {mountShippingPanel} from '../../checkout/admin-shipping-panel.js';
 import {createAdminShippingClient} from '../../checkout/admin-shipping-client.js';
 import {getFunctions,httpsCallable} from 'https://www.gstatic.com/firebasejs/13.0.0/firebase-functions.js';
+import {createStorefrontCheckoutPreview} from '../../checkout/storefront-checkout-preview.mjs';
 const app=initializeApp({projectId:'demo-orka-checkout',apiKey:'demo-key',appId:'demo-orka-app',authDomain:'localhost'},'orka-emulator-preview');
 const auth=getAuth(app);connectAuthEmulator(auth,location.origin,{disableWarnings:true});await setPersistence(auth,browserSessionPersistence);
 // Unsigned token is recognized ONLY by the official Functions emulator. Never valid live.
@@ -16,8 +17,8 @@ document.getElementById('adminPanel').append(shippingHost);
 const $=id=>document.getElementById(id);let currentQuote=null,mode='registered',busy=false;
 const status=t=>{$('status').textContent=t;};
 const customer=()=>({name:$('customer').value,phone:$('phone').value,gov:$('gov').value,address:$('address').value});
-const cart=()=>[{productId:'TEST-001',size:$('size').value,qty:Number($('qty').value)}];
-function invalidate(){currentQuote=null;$('confirm').disabled=true;$('quote').classList.add('hidden');$('receipt').textContent='';}
+const flow=createStorefrontCheckoutPreview({app,quoteOrder:quoteOrkaCheckoutOrder,createOrder:createOrkaCheckoutOrder,readCart:()=>[{id:'TEST-001',size:$('size').value,qty:Number($('qty').value)}]});
+function invalidate(){flow.invalidate();currentQuote=null;$('confirm').disabled=true;$('quote').classList.add('hidden');$('receipt').textContent='';}
 async function run(fn){if(busy)return;busy=true;try{await fn();}catch(e){status(e.message||'تعذر إكمال الاختبار');}finally{busy=false;}}
 async function google(admin=false){await signOut(auth);await signInWithCredential(auth,GoogleAuthProvider.credential(JSON.stringify({sub:admin?'preview-admin-google':'preview-google',email:admin?'admin@example.invalid':'customer@example.invalid',name:admin?'مدير تجريبي':'عميل Google تجريبي'})));mode='registered';}
 $('google').onclick=()=>run(()=>google());$('admin').onclick=()=>run(async()=>{await google(true);$('adminPanel').classList.remove('hidden');await loadOrders();mountShippingPanel(shippingHost,createAdminShippingClient({functions:getFunctions(app,location.origin+'/__functions'),httpsCallable}));});
@@ -26,12 +27,12 @@ onAuthStateChanged(auth,user=>{shippingHost.replaceChildren();invalidate();$('ad
 $('form').addEventListener('input',invalidate);
 $('form').onsubmit=e=>{e.preventDefault();run(async()=>{
  if(!auth.currentUser)throw Error('اختار جلسة الاختبار أولًا');
- const quote=await quoteOrkaCheckoutOrder(app,mode,customer(),cart());
+ const quote=await flow.review(mode,customer());
  if(quote.receipt){$('receipt').textContent='الطلب محفوظ بالفعل: '+quote.receipt.orderId;status('نفس المحاولة أعادت نفس الطلب');return;}
  currentQuote=quote;$('quote').textContent='المنتجات: '+quote.subtotalEGP+' ج · الشحن: '+quote.shippingEGP+' ج · الإجمالي: '+quote.totalEGP+' ج. التجهيز 3–5 أيام قبل وقت شركة الشحن. كل القيم تجريبية.';
  $('quote').classList.remove('hidden');$('confirm').disabled=false;status('راجع الإجمالي قبل التأكيد');
 });};
-$('confirm').onclick=()=>run(async()=>{if(!currentQuote)throw Error('راجع الإجمالي أولًا');const r=await createOrkaCheckoutOrder(app,mode,customer(),cart(),currentQuote.quoteId);$('receipt').textContent='تم تسجيل طلب تجريبي #'+r.orderId+' — '+r.totalEGP+' ج';$('confirm').disabled=true;status('نجح التسجيل في المحاكي فقط، دون نقاط ولاء');});
+$('confirm').onclick=()=>run(async()=>{if(!currentQuote)throw Error('راجع الإجمالي أولًا');const r=await flow.confirm(mode,customer(),currentQuote.quoteId);$('receipt').textContent='تم تسجيل طلب تجريبي #'+r.orderId+' — '+r.totalEGP+' ج';$('confirm').disabled=true;status('نجح التسجيل في المحاكي فقط، دون نقاط ولاء');});
 const decode=v=>v.stringValue??(v.integerValue!==undefined?Number(v.integerValue):v.booleanValue??(v.mapValue?Object.fromEntries(Object.entries(v.mapValue.fields||{}).map(([k,v])=>[k,decode(v)])):v.arrayValue?(v.arrayValue.values||[]).map(decode):null));
 async function loadOrders(){
  const token=await auth.currentUser.getIdToken();
