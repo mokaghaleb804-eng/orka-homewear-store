@@ -25,80 +25,174 @@
       "name": "MILANO ITALIA — Baby Blue",
       "active": false,
       "inventoryMode": "made-to-order",
-      "sizes": [],
-      "priceEGPBySize": {},
+      "sizes": [
+        "2",
+        "4",
+        "6",
+        "8",
+        "10"
+      ],
+      "priceEGPBySize": {
+        "2": 520,
+        "4": 520,
+        "6": 520,
+        "8": 620,
+        "10": 660
+      },
       "priceGroup": "crewneck",
-      "requiresSizeApproval": true
+      "requiresSizeApproval": false
     },
     "102": {
       "sku": "ORK-K02-SG",
       "name": "Be Kind — Sage Green",
       "active": false,
       "inventoryMode": "made-to-order",
-      "sizes": [],
-      "priceEGPBySize": {},
+      "sizes": [
+        "2",
+        "4",
+        "6",
+        "8",
+        "10"
+      ],
+      "priceEGPBySize": {
+        "2": 535,
+        "4": 535,
+        "6": 535,
+        "8": 635,
+        "10": 675
+      },
       "priceGroup": "hoodie",
-      "requiresSizeApproval": true
+      "requiresSizeApproval": false
     },
     "103": {
       "sku": "ORK-K03-DG",
       "name": "ORKA Whale — Dark Green",
       "active": false,
       "inventoryMode": "made-to-order",
-      "sizes": [],
-      "priceEGPBySize": {},
+      "sizes": [
+        "2",
+        "4",
+        "6",
+        "8",
+        "10"
+      ],
+      "priceEGPBySize": {
+        "2": 535,
+        "4": 535,
+        "6": 535,
+        "8": 635,
+        "10": 675
+      },
       "priceGroup": "hoodie",
-      "requiresSizeApproval": true
+      "requiresSizeApproval": false
     },
     "104": {
       "sku": "ORK-K04-CA",
       "name": "California — Sage & Navy",
       "active": false,
       "inventoryMode": "made-to-order",
-      "sizes": [],
-      "priceEGPBySize": {},
+      "sizes": [
+        "4",
+        "6",
+        "8",
+        "10"
+      ],
+      "priceEGPBySize": {
+        "4": 535,
+        "6": 535,
+        "8": 635,
+        "10": 675
+      },
       "priceGroup": "hoodie",
-      "requiresSizeApproval": true
+      "requiresSizeApproval": false
     },
     "105": {
       "sku": "ORK-K05-GR",
       "name": "MILANO ITALIA — Grey",
       "active": false,
       "inventoryMode": "made-to-order",
-      "sizes": [],
-      "priceEGPBySize": {},
+      "sizes": [
+        "2",
+        "4",
+        "6",
+        "8",
+        "10"
+      ],
+      "priceEGPBySize": {
+        "2": 520,
+        "4": 520,
+        "6": 520,
+        "8": 620,
+        "10": 660
+      },
       "priceGroup": "crewneck",
-      "requiresSizeApproval": true
+      "requiresSizeApproval": false
     },
     "106": {
       "sku": "ORK-K06-LV",
       "name": "Floral A — Lilac Wide Leg",
       "active": false,
       "inventoryMode": "made-to-order",
-      "sizes": [],
-      "priceEGPBySize": {},
+      "sizes": [
+        "4",
+        "6",
+        "8",
+        "10",
+        "12"
+      ],
+      "priceEGPBySize": {
+        "4": 535,
+        "6": 535,
+        "8": 635,
+        "10": 675,
+        "12": 675
+      },
       "priceGroup": "hoodie",
-      "requiresSizeApproval": true
+      "requiresSizeApproval": false
     },
     "107": {
       "sku": "ORK-K07-BL",
       "name": "EXPLORER — Baby Blue",
       "active": false,
       "inventoryMode": "made-to-order",
-      "sizes": [],
-      "priceEGPBySize": {},
+      "sizes": [
+        "4",
+        "6",
+        "8",
+        "10",
+        "12"
+      ],
+      "priceEGPBySize": {
+        "4": 535,
+        "6": 535,
+        "8": 635,
+        "10": 675,
+        "12": 675
+      },
       "priceGroup": "hoodie",
-      "requiresSizeApproval": true
+      "requiresSizeApproval": false
     },
     "108": {
       "sku": "ORK-K07-PK",
       "name": "EXPLORER — Pink",
       "active": false,
       "inventoryMode": "made-to-order",
-      "sizes": [],
-      "priceEGPBySize": {},
+      "sizes": [
+        "4",
+        "6",
+        "8",
+        "10",
+        "12"
+      ],
+      "priceEGPBySize": {
+        "4": 535,
+        "6": 535,
+        "8": 635,
+        "10": 675,
+        "12": 675
+      },
       "priceGroup": "hoodie",
-      "requiresSizeApproval": true
+      "requiresSizeApproval": false
     },
     "109": {
       "sku": "ORK-K08-SM",
@@ -125,10 +219,20 @@
       "name": "MILANO ITALIA — Premium Navy",
       "active": false,
       "inventoryMode": "made-to-order",
-      "sizes": [],
-      "priceEGPBySize": {},
+      "sizes": [
+        "6",
+        "8",
+        "10",
+        "12"
+      ],
+      "priceEGPBySize": {
+        "6": 535,
+        "8": 635,
+        "10": 675,
+        "12": 675
+      },
       "priceGroup": "hoodie",
-      "requiresSizeApproval": true
+      "requiresSizeApproval": false
     },
     "111": {
       "sku": "ORK-K10-CP",
