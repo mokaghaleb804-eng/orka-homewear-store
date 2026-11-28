@@ -1419,7 +1419,9 @@ zoomStage.addEventListener('pointerup',endZoomPointer);zoomStage.addEventListene
 function addDetailToCart(){if(!detailProductId)return;const size=document.getElementById('detailSize').value;if(!size){toast('اختار المقاس الأول');return}const p=products.find(x=>x.id===detailProductId);const found=cart.find(x=>x.id===p.id&&x.size===size);if(found)found.qty++;else cart.push({...p,size,qty:1});trackOrkaEvent('add_to_cart',{currency:'EGP',value:Number(p.price)||0,items:[orkaAnalyticsItem(p,size,1)]});updateCart();closeProductDetails();toast('اتضاف المنتج للسلة بنجاح')}
 
 function addToCart(id){const p=products.find(x=>x.id===id);const size=document.getElementById('size-'+id).value;if(!size){toast('اختار المقاس الأول');return}const found=cart.find(x=>x.id===id&&x.size===size);if(found)found.qty++;else cart.push({...p,size,qty:1});trackOrkaEvent('add_to_cart',{currency:'EGP',value:Number(p.price)||0,items:[orkaAnalyticsItem(p,size,1)]});updateCart();toast('اتضاف المنتج للسلة بنجاح')}
+const orkaLaunchPrices={"101":{"2":520,"4":520,"6":520,"8":620,"10":660},"102":{"2":535,"4":535,"6":535,"8":635,"10":675},"103":{"2":535,"4":535,"6":535,"8":635,"10":675},"104":{"4":535,"6":535,"8":635,"10":675},"105":{"2":520,"4":520,"6":520,"8":620,"10":660},"106":{"4":535,"6":535,"8":635,"10":675,"12":675},"107":{"4":535,"6":535,"8":635,"10":675,"12":675},"108":{"4":535,"6":535,"8":635,"10":675,"12":675},"109":{"2":520,"4":520,"6":520,"8":620},"110":{"6":535,"8":635,"10":675,"12":675},"111":{"8":635,"10":675,"12":675},"112":{"8":635,"10":675,"12":675}};
 function updateCart(){
+ for(const item of cart){const price=orkaLaunchPrices[String(item.id)]?.[String(item.size)];if(Number.isSafeInteger(price)&&price>0)item.price=price;}
  persistOrkaCart();
  document.getElementById('cartCount').textContent=cart.reduce((sum,item)=>sum+item.qty,0);
  const items=document.getElementById('cartItems');
@@ -1428,9 +1430,10 @@ function updateCart(){
  if(!cart.length){items.innerHTML='<div class="empty">سلتك لسه فاضية.<br>اختار طقم يفرّح طفلك ♡</div>';summary.innerHTML='';checkout.innerHTML='';return;}
  items.innerHTML=cart.map(x=>'<div class="cart-item"><img src="'+x.img+'" alt="رمز حوت ORKA وحرف O"><div><strong>'+x.name+'</strong><small>المقاس: '+x.size+'</small><small>' +renderOfferMoney(x.price)+'</small><div class="qty"><button onclick="changeQty('+x.id+',\''+x.size+'\',-1)">−</button><span>'+x.qty+'</span><button onclick="changeQty('+x.id+',\''+x.size+'\',1)">+</button></div></div><button class="close" onclick="removeItem('+x.id+',\''+x.size+'\')">×</button></div>').join('');
  const total=cart.reduce((sum,item)=>sum+item.price*item.qty,0);
+ const shipping=80;
  summary.innerHTML='<div class="cart-total"><span>إجمالي المنتجات</span><strong>' +renderOfferMoney(total)+'</strong></div>'+
  '<div hidden data-orka-club-promo style="border:1px solid #E8DCC8;border-radius:10px;padding:12px;margin:10px 0;background:#FFFAF1"><strong style="color:#10294A">ORKA CLUB · المحفظة الجديدة (قريبًا)</strong><p style="margin:8px 0;font-size:12px">10% رصيد على مشتريات المنتجات بالسعر الكامل بعد تأكيد التسليم، صالح 30 يومًا. يمكن استخدام الرصيد على قطعة واحدة في الطلب، والباقي يحتفظ بتاريخ صلاحيته الأصلي. الرصيد شخصي وغير قابل للتحويل. الطلب المستخدم فيه رصيد لا يكتسب رصيدًا جديدًا.</p><small>المحفظة غير مفعّلة حاليًا، ولا يُحسب أي خصم أو رصيد من المتصفح.</small></div>'+
- '<p class="notice">خدمة العملاء هتأكد لك توفر المقاس وتكلفة الشحن قبل تأكيد الطلب.</p>';
+ '<div class="cart-total"><span>الشحن</span><strong>'+shipping+' EGP</strong></div><div class="cart-total"><span>الإجمالي شامل الشحن</span><strong>'+(total+shipping)+' EGP</strong></div><p class="notice">الدفع عند الاستلام. تأكيد الطلب عبر خدمة العملاء حاليًا.</p>';
  checkout.innerHTML='<a class="wa-contact" href="https://wa.me/201021006006" target="_blank" rel="noopener">اطلب على واتساب</a>';
  const legacyCheckoutForm=checkout.querySelector('form.checkout-form');
  if(legacyCheckoutForm)legacyCheckoutForm.remove();
