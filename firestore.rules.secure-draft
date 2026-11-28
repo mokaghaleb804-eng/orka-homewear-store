@@ -1,0 +1,66 @@
+// DRAFT ONLY. DO NOT DEPLOY without emulator tests and migration review.
+// Intended to replace existing rules only after callable checkout backend is deployed.
+// Server Admin SDK bypasses these rules.
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function registered() {
+      return signedIn() && request.auth.token.firebase.sign_in_provider != 'anonymous';
+    }
+    function profileFields(d) {
+      return d.keys().hasAll(['displayName','phoneNumber','createdAt'])
+        && d.keys().hasOnly(['displayName','phoneNumber','email','shippingGov','shippingAddress','createdAt','points','rewardCredit','lifetimeSpend'])
+        && d.displayName is string && d.displayName.size() > 0 && d.displayName.size() <= 80
+        && d.phoneNumber is string && d.phoneNumber.size() <= 30
+        && (!('email' in d) || (d.email is string && d.email.size() <= 254))
+        && (!('shippingGov' in d) || (d.shippingGov is string && d.shippingGov.size() <= 60))
+        && (!('shippingAddress' in d) || (d.shippingAddress is string && d.shippingAddress.size() <= 500));
+    }
+    function admin() {
+      return signedIn()
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid))
+        && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.role == 'admin';
+    }
+    match /admins/{uid} {
+      allow get: if signedIn() && request.auth.uid == uid;
+      allow list, create, update, delete: if false;
+    }
+    match /catalog/{productId} {
+      // Public read of available product details only; no client-side price writes.
+      allow get, list: if true;
+      allow create, update, delete: if false;
+    }
+    match /orders/{orderId} {
+      allow get, list: if admin()
+        || (signedIn() && resource.data.uid == request.auth.uid
+            && resource.data.checkoutMode == 'registered'
+            && request.auth.token.firebase.sign_in_provider != 'anonymous');
+      allow create, update, delete: if false;
+    }
+    match /customers/{uid} {
+      allow get: if admin() || (signedIn() && request.auth.uid == uid);
+      allow list: if admin();
+      // Contact fields are not verified identity. Balances are initialized at zero only.
+      allow create: if registered() && request.auth.uid == uid
+        && profileFields(request.resource.data)
+        && request.resource.data.createdAt == request.time
+        && (!('points' in request.resource.data) || (request.resource.data.points is int && request.resource.data.points == 0))
+        && (!('rewardCredit' in request.resource.data) || (request.resource.data.rewardCredit is number && request.resource.data.rewardCredit == 0))
+        && (!('lifetimeSpend' in request.resource.data) || (request.resource.data.lifetimeSpend is number && request.resource.data.lifetimeSpend == 0));
+      allow update: if registered() && request.auth.uid == uid
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['displayName','phoneNumber','email','shippingGov','shippingAddress'])
+        && request.resource.data.displayName is string && request.resource.data.displayName.size() > 0 && request.resource.data.displayName.size() <= 80
+        && request.resource.data.phoneNumber is string && request.resource.data.phoneNumber.size() <= 30
+        && (!('email' in request.resource.data) || (request.resource.data.email is string && request.resource.data.email.size() <= 254))
+        && (!('shippingGov' in request.resource.data) || (request.resource.data.shippingGov is string && request.resource.data.shippingGov.size() <= 60))
+        && (!('shippingAddress' in request.resource.data) || (request.resource.data.shippingAddress is string && request.resource.data.shippingAddress.size() <= 500));
+      allow delete: if false;
+    }
+    match /checkoutRateLimits/{uid} {
+      allow read, write: if false;
+    }
+    match /{document=**} { allow read, write: if false; }
+  }
+}
+
