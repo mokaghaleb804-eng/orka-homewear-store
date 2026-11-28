@@ -1344,6 +1344,9 @@ const previewOffersByType = {
   }
 };
 
+const checkoutLineLimit=10;
+const checkoutQuantityLimit=30;
+function cartQuantity(items){return items.reduce((sum,item)=>sum+item.qty,0)}
 cart=restoreCatalogCart();
 
 function renderOfferMoney(amount) {
@@ -1357,7 +1360,7 @@ function previewOfferFor(product,size) {
 
 function catalogCartItem(product,size,qty){
   const offer=product&&previewOfferFor(product,size);
-  if(!offer || !Number.isInteger(qty) || qty<1 || qty>30)return null;
+  if(!offer || !Number.isInteger(qty) || qty<1 || qty>checkoutLineLimit)return null;
   return {id:product.id,sku:product.sku,name:product.name,img:product.img,size,qty,price:offer.price};
 }
 function restoreCatalogCart(){
@@ -1370,8 +1373,10 @@ function restoreCatalogCart(){
     const item=catalogCartItem(products.find(p=>p.id===Number(entry.id)),String(entry.size||''),Number(entry.qty));
     if(!item)continue;
     const previous=restored.find(x=>x.id===item.id&&x.size===item.size);
-    if(previous)previous.qty=Math.min(30,previous.qty+item.qty);
-    else restored.push(item);
+    const canAdd=Math.min(item.qty,checkoutQuantityLimit-cartQuantity(restored),checkoutLineLimit-(previous?.qty||0));
+    if(canAdd<=0)continue;
+    if(previous)previous.qty+=canAdd;
+    else restored.push({...item,qty:canAdd});
   }
   return restored;
 }
@@ -1444,7 +1449,7 @@ function addCatalogItem(product,size){
   const item=catalogCartItem(product,size,1);
   if(!item){toast('المقاس ده غير متاح');return false}
   const prior=cart.find(x=>x.id===item.id&&x.size===size);
-  if(prior&&prior.qty>=30){toast('وصلت للحد الأقصى للكمية');return false}
+  if(cartQuantity(cart)>=checkoutQuantityLimit||(prior&&prior.qty>=checkoutLineLimit)){toast('وصلت للحد الأقصى للكمية');return false}
   if(prior)prior.qty++;
   else cart.push(item);
   trackOrkaEvent('add_to_cart',{currency:'EGP',value:item.price,items:[orkaAnalyticsItem(item,size)]});
@@ -1480,7 +1485,7 @@ function updateCart(){
  if(legacyCheckoutHeading&&legacyCheckoutHeading.textContent.trim()==='بيانات التوصيل')legacyCheckoutHeading.remove();
 
 }
-function changeQty(id,size,delta){const item=cart.find(x=>x.id===id&&x.size===size);if(!item)return;item.qty=Math.min(30,item.qty+delta);if(item.qty<=0)removeItem(id,size);else updateCart()}function removeItem(id,size){cart=cart.filter(x=>!(x.id===id&&x.size===size));updateCart()}function openCart(){updateCart();if(cart.length){trackOrkaEvent('begin_checkout',{currency:'EGP',value:cart.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0),items:cart.map(x=>orkaAnalyticsItem(x,x.size,x.qty))})}if(window.prefillOrkaCheckout)window.prefillOrkaCheckout();document.getElementById('cartOverlay').classList.add('show');document.body.style.overflow='hidden'}function closeCart(){document.getElementById('cartOverlay').classList.remove('show');document.body.style.overflow=''}async function submitOrder(e){
+function changeQty(id,size,delta){const item=cart.find(x=>x.id===id&&x.size===size);if(!item)return;if(delta>0&&cartQuantity(cart)>=checkoutQuantityLimit){toast('وصلت للحد الأقصى للكمية');return}item.qty=Math.min(checkoutLineLimit,item.qty+delta);if(item.qty<=0)removeItem(id,size);else updateCart()}function removeItem(id,size){cart=cart.filter(x=>!(x.id===id&&x.size===size));updateCart()}function openCart(){updateCart();if(cart.length){trackOrkaEvent('begin_checkout',{currency:'EGP',value:cart.reduce((s,x)=>s+(Number(x.price)||0)*(Number(x.qty)||1),0),items:cart.map(x=>orkaAnalyticsItem(x,x.size,x.qty))})}if(window.prefillOrkaCheckout)window.prefillOrkaCheckout();document.getElementById('cartOverlay').classList.add('show');document.body.style.overflow='hidden'}function closeCart(){document.getElementById('cartOverlay').classList.remove('show');document.body.style.overflow=''}async function submitOrder(e){
  e.preventDefault();
  toast('كمّل طلبك على واتساب مع خدمة عملاء ORKA.');
 }
