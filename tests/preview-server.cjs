@@ -43,6 +43,11 @@ async function main(){
         if(!auth.localId)throw Error('Cannot seed demo admin');
         await db.doc('admins/'+auth.localId).set({role:'admin'});
         await db.doc('storeSettings/checkout').set({enabled:true,paymentMethod:'cod',catalogApproved:true,shippingApproved:true,abuseControlsApproved:true,shippingEGPByGovernorate:{'القاهرة':45,'الجيزة':50}});
+        const launch=require('../config/catalog-launch-draft.json');const shipping=require('../config/shipping-launch-draft.json');
+        const batch=db.batch();
+        for(const [id,p] of Object.entries(launch.catalog))batch.set(db.doc('catalog/'+id),{...p,active:true,maxPerOrder:10});
+        batch.set(db.doc('storeSettings/checkout'),{enabled:true,paymentMethod:'cod',catalogApproved:true,shippingApproved:true,abuseControlsApproved:true,carrierEGPByGovernorate:shipping.carrierEGPByGovernorate,subsidyEGPByGovernorate:{}});
+        await batch.commit();
         await db.doc('catalog/TEST-001').set({active:true,priceEGP:250,name:'طقم تجريبي — ليس للبيع',sizes:['6','8'],inventoryMode:'made-to-order',maxPerOrder:3});
         ready=true;console.log('Synthetic demo is ready. No production connections.');break;
       }
